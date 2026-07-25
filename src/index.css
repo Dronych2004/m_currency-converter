@@ -1,0 +1,747 @@
+@import "tailwindcss";
+
+/* ============================================
+   ПРОДВИНУТАЯ ЦВЕТОВАЯ ПАЛИТРА
+   ============================================ */
+
+:root {
+  /* Основные фоны - глубокий космический градиент */
+  --bg-primary: #030014;
+  --bg-secondary: #0a0a2e;
+  --bg-tertiary: #12123a;
+  
+  /* Стекло (glass morphism) */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  
+  /* Акцент - неоновый индиго */
+  --accent-1: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-3: #a78bfa;
+  --accent-glow: rgba(99, 102, 241, 0.5);
+  --accent-glow-strong: rgba(99, 102, 241, 0.8);
+  
+  /* Вторичный акцент - циан */
+  --cyan-1: #06b6d4;
+  --cyan-2: #22d3ee;
+  --cyan-glow: rgba(6, 182, 212, 0.4);
+  
+  /* Текст */
+  --text-bright: #ffffff;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  
+  /* Градиенты для текста */
+  --gradient-text: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #818cf8 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--cyan-1));
+  --gradient-card: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+}
+
+/* ============================================
+   ГЛОБАЛЬНЫЕ СТИЛИ
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  min-height: 100vh;
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Анимированный фон */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 50% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   АНИМАЦИИ - ПРОДВИНУТЫЕ
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(99, 102, 241, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--accent-glow-strong), 0 0 60px rgba(99, 102, 241, 0.3);
+  }
+}
+
+@keyframes border-flow {
+  0% {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    border-color: rgba(139, 92, 246, 0.5);
+  }
+  100% {
+    border-color: rgba(6, 182, 212, 0.3);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Утилиты анимаций */
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-zoom-in {
+  animation: zoomIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 1.5s linear infinite;
+}
+
+/* ============================================
+   GLASS MORPHISM - СТЕКЛО
+   ============================================ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(99, 102, 241, 0.1);
+}
+
+/* ============================================
+   НЕОНОВАЯ ПОДСВЕТКА
+   ============================================ */
+
+.neon-card {
+  box-shadow: 
+    0 0 15px rgba(99, 102, 241, 0.15),
+    0 0 30px rgba(99, 102, 241, 0.08),
+    inset 0 0 15px rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+.neon-card:hover {
+  box-shadow: 
+    0 0 20px rgba(99, 102, 241, 0.25),
+    0 0 40px rgba(99, 102, 241, 0.15),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 0 20px rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+.neon-main {
+  box-shadow: 
+    0 0 20px rgba(99, 102, 241, 0.2),
+    0 0 40px rgba(99, 102, 241, 0.1),
+    0 0 60px rgba(139, 92, 246, 0.05),
+    inset 0 0 20px rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.neon-main:hover {
+  box-shadow: 
+    0 0 30px rgba(99, 102, 241, 0.3),
+    0 0 60px rgba(99, 102, 241, 0.15),
+    0 0 80px rgba(139, 92, 246, 0.1),
+    inset 0 0 30px rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.5) !important;
+}
+
+/* ============================================
+   КНОПКИ - ПРОДВИНУТЫЕ
+   ============================================ */
+
+.btn-primary {
+  background: var(--gradient-accent);
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 36px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 15px 35px var(--accent-glow),
+    0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Кнопка обмена валют */
+.btn-swap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+  border: 3px solid var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 8px 25px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-swap:hover {
+  transform: rotate(180deg) scale(1.15);
+  box-shadow: 
+    0 12px 35px var(--accent-glow-strong),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-swap:active {
+  transform: rotate(180deg) scale(1.05);
+}
+
+/* ============================================
+   ИНПУТЫ - ПРОДВИНУТЫЕ
+   ============================================ */
+
+.input-glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 18px 24px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-bright);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  position: relative;
+}
+
+.input-glass:focus {
+  outline: none;
+  border-color: var(--accent-1);
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 
+    0 0 0 4px rgba(99, 102, 241, 0.1),
+    0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+.input-glass::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ============================================
+   ВЫБОР ВАЛЮТЫ - ПРОДВИНУТЫЙ
+   ============================================ */
+
+.currency-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 2px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .currency-btn {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+}
+
+.currency-btn:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.currency-btn.active {
+  border-color: var(--accent-1);
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Флаг */
+.flag-emoji {
+  font-size: 36px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.currency-btn:hover .flag-emoji {
+  transform: scale(1.15);
+}
+
+/* ============================================
+   КАРТОЧКИ РЕЗУЛЬТАТОВ
+   ============================================ */
+
+.result-card {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(139, 92, 246, 0.1) 50%,
+    rgba(6, 182, 212, 0.08) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 2px solid transparent;
+  border-radius: 24px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  animation: border-flow 6s ease infinite;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(99, 102, 241, 0.1),
+    transparent,
+    rgba(139, 92, 246, 0.1),
+    transparent
+  );
+  animation: spin-slow 10s linear infinite;
+  opacity: 0.5;
+}
+
+.result-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.result-amount {
+  font-size: 52px;
+  font-weight: 800;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: -1px;
+}
+
+/* ============================================
+   КАРТОЧКИ ИНФОРМАЦИИ (погода, время)
+   ============================================ */
+
+.info-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.info-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.info-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.info-card:hover::after {
+  opacity: 1;
+}
+
+.info-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--gradient-accent);
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 8px 20px var(--accent-glow);
+}
+
+/* ============================================
+   ВЫПАДАЮЩИЙ СПИСОК
+   ============================================ */
+
+.dropdown {
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(99, 102, 241, 0.1);
+}
+
+.dropdown-item {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.dropdown-item.selected {
+  background: var(--accent-1);
+}
+
+/* ============================================
+   ЗАГРУЗКА
+   ============================================ */
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-1);
+  border-radius: 50%;
+  animation: spin-slow 0.8s linear infinite;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--glass-bg) 25%,
+    var(--glass-bg-hover) 50%,
+    var(--glass-bg) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 12px;
+}
+
+/* ============================================
+   ТЕКСТОВЫЕ ЭФФЕКТЫ
+   ============================================ */
+
+.text-gradient {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-glow {
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+@media (max-width: 768px) {
+  .input-glass {
+    font-size: 22px;
+    padding: 14px 18px;
+  }
+  
+  .result-amount {
+    font-size: 36px;
+  }
+  
+  .glass-card {
+    border-radius: 20px;
+    padding: 20px;
+  }
+  
+  .btn-swap {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .flag-emoji {
+    font-size: 28px;
+  }
+}
+
+/* ============================================
+   СКРОЛЛБАР
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-2);
+}
+
+/* ============================================
+   ВЫДЕЛЕНИЕ ТЕКСТА
+   ============================================ */
+
+::selection {
+  background: rgba(99, 102, 241, 0.4);
+  color: white;
+}

@@ -1,0 +1,310 @@
+/**
+ * СЕРВИСЫ API ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ
+ * 
+ * Здесь мы封装 все запросы к внешним API.
+ * Это удобно по нескольким причинам:
+ * 1. Все запросы в одном месте - легко найти и изменить
+ * 2. Легко заменить API на другое, если нужно
+ * 3. Легко добавить обработку ошибок и кэширование
+ * 
+ * Используемые API:
+ * - open.er-api.com - бесплатные курсы валют (без ключа!)
+ * - open-meteo.com - бесплатные данные о погоде (без ключа!)
+ */
+
+import type { Currency, WeatherData, TimezoneData } from '../types';
+import { getFlagByCurrencyCode, capitalCities } from '../utils/flags';
+import { getWeatherDescription } from '../utils/weather';
+import { getCurrencyName } from '../i18n/currencies';
+import type { Lang } from '../i18n/translations';
+import { fetchCryptoRates } from './crypto';
+
+// Валюты, которые мы поддерживаем (есть в capitalCities)
+const SUPPORTED_CURRENCIES = new Set(Object.keys(capitalCities));
+
+// ============================================
+// КОНСТАНТЫ
+// ============================================
+
+// Базовый URL для API курсов валют
+const EXCHANGE_RATE_API_BASE = 'https://open.er-api.com/v6/latest';
+
+// Базовый URL для API погоды
+const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
+
+// ============================================
+// СЕРВИС КУРСОВ ВАЛЮТ
+// ============================================
+
+/**
+ * Получить список всех доступных валют с их курсами
+ * 
+ * Как это работает:
+ * 1. Делаем GET запрос к API
+ * 2. Получаем JSON с курсами
+ * 3. Преобразуем данные в наш формат Currency[]
+ * 4. Возвращаем список валют
+ */
+export async function fetchCurrencies(lang: Lang = 'ru'): Promise<Currency[]> {
+  try {
+    // Делаем запрос к API
+    // open.er-api.com/v6/latest/USD вернёт курсы всех валют к доллару
+    const response = await fetch(`${EXCHANGE_RATE_API_BASE}/USD`);
+
+    // Проверяем, что запрос прошёл успешно
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Парсим JSON ответ
+    const data = await response.json();
+
+    // Преобразуем данные в наш формат
+    // Фильтруем: оставляем только поддерживаемые валюты
+    const currencies: Currency[] = Object.entries(data.rates)
+      .filter(([code]) => SUPPORTED_CURRENCIES.has(code))
+      .map(([code, rate]) => ({
+        code,
+        name: getCurrencyName(code, lang),
+        flag: getFlagByCurrencyCode(code),
+        symbol: getCurrencySymbol(code),
+        rate: rate as number,
+      }));
+
+    return currencies;
+  } catch (error) {
+    console.error('Ошибка при загрузке валют:', error);
+    throw error;
+  }
+}
+
+/**
+ * Конвертировать валюту
+ *
+ * @param from - код исходной валюты (например, "USD")
+ * @param to - код целевой валюты (например, "EUR")
+ * @param amount - сумма для конвертации
+ * @returns - сколько получим в целевой валюте
+ */
+export async function convertCurrency(
+  from: string,
+  to: string,
+  amount: number
+): Promise<{ rate: number; result: number }> {
+  try {
+    // Если конвертируем в ту же валюту - возвращаем 1:1
+    if (from === to) {
+      return { rate: 1, result: amount };
+    }
+
+    // Список криптовалют
+    const cryptoCodes = ['BTC', 'ETH', 'USDT', 'USDC', 'BNB', 'XRP', 'SOL', 'ADA', 'DOGE', 'TRX', 'DOT', 'LINK', 'MATIC', 'LTC', 'UNI'];
+
+    const fromIsCrypto = cryptoCodes.includes(from);
+    const toIsCrypto = cryptoCodes.includes(to);
+
+    // Если обе валюты фиатные - используем существующий API
+    if (!fromIsCrypto && !toIsCrypto) {
+      const response = await fetch(`${EXCHANGE_RATE_API_BASE}/${from}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const rate = data.rates[to];
+      if (!rate) {
+        throw new Error(`Валюта ${to} не найдена`);
+      }
+      return { rate, result: amount * rate };
+    }
+
+    // Если есть криптовалюта - используем CoinGecko
+    const cryptoRates = await fetchCryptoRates();
+
+    // Получаем цены в USD
+    const fromRateUSD = fromIsCrypto
+      ? (cryptoRates.find(c => c.code === from)?.rate || 0)
+      : (await getFiatRateToUSD(from));
+
+    const toRateUSD = toIsCrypto
+      ? (cryptoRates.find(c => c.code === to)?.rate || 0)
+      : (await getFiatRateToUSD(to));
+
+    if (!fromRateUSD || !toRateUSD) {
+      throw new Error('Не удалось получить курс');
+    }
+
+    // Конвертируем через USD
+    // amount in from -> USD -> to
+    const amountInUSD = amount * fromRateUSD;
+    const result = amountInUSD / toRateUSD;
+    const rate = result / amount;
+
+    return { rate, result };
+  } catch (error) {
+    console.error('Ошибка конвертации:', error);
+    throw error;
+  }
+}
+
+// Получить стоимость 1 единицы фиатной валюты в USD
+// API возвращает "сколько единиц = 1 USD", нам нужно "сколько USD за 1 единицу"
+async function getFiatRateToUSD(code: string): Promise<number> {
+  if (code === 'USD') return 1;
+  const response = await fetch(`${EXCHANGE_RATE_API_BASE}/USD`);
+  if (!response.ok) throw new Error('Failed to fetch fiat rate');
+  const data = await response.json();
+  const unitsPerUSD = data.rates[code] || 0;
+  // Инвертируем: если 0.73 GBP = 1 USD, то 1 GBP = 1/0.73 = 1.37 USD
+  return unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;
+}
+
+// ============================================
+// СЕРВИС ПОГОДЫ
+// ============================================
+
+/**
+ * Получить данные о погоде для столицы страны
+ * 
+ * Open-Meteo API:
+ * https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62&current_weather=true
+ * 
+ * @param latitude - широта столицы
+ * @param longitude - долгота столицы
+ * @returns - объект с данными о погоде
+ */
+export async function fetchWeather(
+  latitude: number,
+  longitude: number
+): Promise<WeatherData> {
+  try {
+    // Формируем URL с параметрами
+    const url = new URL(WEATHER_API_BASE);
+    url.searchParams.set('latitude', latitude.toString());
+    url.searchParams.set('longitude', longitude.toString());
+    url.searchParams.set('current_weather', 'true');  // Только текущая погода
+    url.searchParams.set('timezone', 'auto');          // Автоматически определить часовой пояс
+    
+    const response = await fetch(url.toString());
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Извлекаем данные о текущей погоде
+    const currentWeather = data.current_weather;
+    
+    // Получаем описание погоды по коду
+    const weatherInfo = getWeatherDescription(currentWeather.weathercode);
+    
+    return {
+      temperature: currentWeather.temperature,
+      humidity: 0,  // Open-Meteo не даёт влажность в current_weather, ставим 0
+      windSpeed: currentWeather.windspeed,
+      weatherCode: currentWeather.weathercode,
+      description: weatherInfo.description,
+      icon: weatherInfo.icon,
+    };
+  } catch (error) {
+    console.error('Ошибка при загрузке погоды:', error);
+    throw error;
+  }
+}
+
+// ============================================
+// СЕРВИС ЧАСОВОГО ПОЯСА
+// ============================================
+
+/**
+ * Получить текущее время для столицы страны
+ * 
+ * Мы используем JavaScript Intl API для получения времени
+ * Это не требует внешнего API - всё работает на стороне клиента
+ * 
+ * @param timezone - название часового пояса (например, "Europe/Moscow")
+ * @returns - объект с данными о времени
+ */
+export function getCurrentTime(timezone: string): TimezoneData {
+  try {
+    // Создаём объект Date для текущего момента
+    const now = new Date();
+    
+    // Используем Intl.DateTimeFormat для получения времени в нужном часовом поясе
+    const formatter = new Intl.DateTimeFormat('ru-RU', {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,  // 24-часовой формат
+    });
+    
+    const timeString = formatter.format(now);
+    
+    // Получаем дату
+    const dateFormatter = new Intl.DateTimeFormat('ru-RU', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    
+    const dateString = dateFormatter.format(now);
+    
+    // Вычисляем смещение от UTC
+    // Получаем время в UTC и в目标ном часовом поясе
+    const utcDate = new Date(now.toLocaleString('en-US', { timeZone: 'UTC' }));
+    const tzDate = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+    const utcOffset = (tzDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
+    
+    return {
+      timezone,
+      currentTime: timeString,
+      utcOffset,
+      date: dateString,
+    };
+  } catch (error) {
+    console.error('Ошибка при получении времени:', error);
+    // Возвращаем дефолтные данные в случае ошибки
+    return {
+      timezone,
+      currentTime: '--:--:--',
+      utcOffset: 0,
+      date: '--.--.----',
+    };
+  }
+}
+
+// ============================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================
+
+/**
+ * Получить символ валюты по коду
+ */
+function getCurrencySymbol(code: string): string {
+  const symbols: Record<string, string> = {
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+    JPY: '¥',
+    CNY: '¥',
+    RUB: '₽',
+    BYN: 'Br',
+    UAH: '₴',
+    KZT: '₸',
+    GEL: '₾',
+    AMD: '֏',
+    AZN: '₼',
+    KRW: '₩',
+    INR: '₹',
+    BRL: 'R$',
+    TRY: '₺',
+    ILS: '₪',
+    THB: '฿',
+    VND: '₫',
+    PHP: '₱',
+  };
+  
+  return symbols[code] || code;
+}
