@@ -3,16 +3,16 @@
  */
 
 interface SwapButtonProps {
-  onClick: () => void;
-  disabled?: boolean;
+  onClick: () => void
+  disabled?: boolean
 }
 
 export function SwapButton({ onClick, disabled = false }: SwapButtonProps) {
   return (
     <div className="relative">
       {/* Фоновое свечение */}
-      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur-xl opacity-50 animate-pulse" />
-      
+      <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 rounded-full blur-xl opacity-50 animate-pulse" />
+
       <button
         type="button"
         onClick={onClick}
@@ -40,5 +40,5 @@ export function SwapButton({ onClick, disabled = false }: SwapButtonProps) {
         </svg>
       </button>
     </div>
-  );
+  )
 }

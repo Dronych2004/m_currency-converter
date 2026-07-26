@@ -11,7 +11,7 @@ export function AdBanner({ position }: AdBannerProps) {
     <div
       className={`
         ${isDesktopSide ? 'hidden xl:flex' : 'flex xl:hidden'}
-        flex-col items-center justify-start flex-shrink-0
+        flex-col items-center justify-start shrink-0
         ${position === 'left' || position === 'right' ? 'pt-24' : ''}
         ${position === 'top' ? 'mb-3 md:mb-6' : ''}
         ${position === 'bottom' ? 'mt-3 md:mt-6' : ''}
