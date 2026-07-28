@@ -67,8 +67,7 @@
       rel="stylesheet"
     />
 
-    <!-- Яндекс.Метрика (приватная аналитика) -->
-    <!-- Замените XXXXXX на ваш ID счётчика из cabinet.yandex.ru -->
+    <!-- Яндекс.Метрика (реальный счётчик) -->
     <script type="text/javascript">
       ;(function (m, e, t, r, i, k, a) {
         m[i] =
@@ -91,19 +90,33 @@
         window,
         document,
         'script',
-        'https://mc.yandex.ru/metrika/tag.js',
+        'https://mc.yandex.ru/metrika/tag.js?id=111108791',
         'ym',
       )
-      ym(XXXXXX, 'init', {
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true,
+
+      ym(111108791, 'init', {
+        ssr: true,
         webvisor: true,
+        clickmap: true,
+        ecommerce: 'dataLayer',
+        referrer: document.referrer,
+        url: location.href,
+        accurateTrackBounce: true,
+        trackLinks: true,
       })
     </script>
+    <noscript>
+      <div>
+        <img
+          src="https://mc.yandex.ru/watch/111108791"
+          style="position: absolute; left: -9999px"
+          alt=""
+        />
+      </div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
 
-    <!-- Google Analytics (приватная аналитика) -->
-    <!-- Замените G-XXXXXXXXXX на ваш Measurement ID из analytics.google.com -->
+    <!-- Google Analytics (заглушка – пока не используется) -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
@@ -118,14 +131,6 @@
     </script>
   </head>
   <body>
-    <noscript
-      ><div>
-        <img
-          src="https://mc.yandex.ru/watch/XXXXXX"
-          style="position: absolute; left: -9999px"
-          alt=""
-        /></div
-    ></noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
