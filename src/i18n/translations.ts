@@ -1,11 +1,13 @@
-export type Lang = 'ru' | 'en';
+export type Lang = 'ru' | 'en'
 
 export const translations = {
   ru: {
     title: 'Конвертер валют',
-    subtitle: 'Конвертация валют в реальном времени с погодой и часами по всему миру',
+    subtitle:
+      'Конвертация валют в реальном времени с погодой и часами по всему миру',
     loading: 'Загружаем курсы валют...',
-    errorLoad: 'Не удалось загрузить курсы валют. Проверьте подключение к интернету.',
+    errorLoad:
+      'Не удалось загрузить курсы валют. Проверьте подключение к интернету.',
     errorConvert: 'Ошибка конвертации. Попробуйте снова.',
     from: 'Из',
     to: 'В',
@@ -28,12 +30,15 @@ export const translations = {
     currencyType: 'Тип валюты',
     traditional: 'Традиционная валюта',
     crypto: 'Криптовалюта',
-    cryptoHint: 'Традиционные — доллары, евро, рубли. Криптовалюты — Bitcoin, Ethereum и другие.',
+    cryptoHint:
+      'Традиционные — доллары, евро, рубли. Криптовалюты — Bitcoin, Ethereum и другие.',
     privacy: 'Политика конфиденциальности',
+    terms: 'Пользовательское соглашение',
   },
   en: {
     title: 'Currency Converter',
-    subtitle: 'Real-time currency conversion with weather and clocks around the world',
+    subtitle:
+      'Real-time currency conversion with weather and clocks around the world',
     loading: 'Loading exchange rates...',
     errorLoad: 'Failed to load exchange rates. Check your internet connection.',
     errorConvert: 'Conversion error. Please try again.',
@@ -58,9 +63,11 @@ export const translations = {
     currencyType: 'Currency type',
     traditional: 'Traditional',
     crypto: 'Crypto',
-    cryptoHint: 'Traditional — dollars, euros, rubles. Crypto — Bitcoin, Ethereum and others.',
+    cryptoHint:
+      'Traditional — dollars, euros, rubles. Crypto — Bitcoin, Ethereum and others.',
     privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
   },
-} as const;
+} as const
 
-export type TranslationKey = keyof typeof translations.ru;
+export type TranslationKey = keyof typeof translations.ru

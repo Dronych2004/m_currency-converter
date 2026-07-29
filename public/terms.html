@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terms of Use / Пользовательское соглашение</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #030014;
+        color: #e2e8f0;
+        line-height: 1.7;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 2rem;
+      }
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #fff, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      h2 {
+        font-size: 1.3rem;
+        margin: 2rem 0 1rem;
+        color: #818cf8;
+      }
+      p {
+        margin-bottom: 1rem;
+        color: #94a3b8;
+      }
+      a {
+        color: #818cf8;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #818cf8;
+      }
+      .lang-tabs {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+      .lang-tabs button {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 18px;
+        border-radius: 20px;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+      }
+      .lang-tabs button.active {
+        background: rgba(99, 102, 241, 0.3);
+        border-color: #6366f1;
+        color: #fff;
+      }
+      .lang-content {
+        display: none;
+      }
+      .lang-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back">← Back / Назад</a>
+      <div class="card">
+        <div class="lang-tabs">
+          <button id="tab-ru" class="active" onclick="switchLang('ru')">
+            🇷🇺 Русский
+          </button>
+          <button id="tab-en" onclick="switchLang('en')">🇬🇧 English</button>
+        </div>
+
+        <!-- Русская версия -->
+        <div id="lang-ru" class="lang-content active">
+          <h1>Пользовательское соглашение</h1>
+          <h2>1. Общие положения</h2>
+          <p>
+            Настоящее Соглашение регулирует отношения между администрацией сайта
+            cconverter.ru (далее — «Сайт») и пользователем Сайта.
+          </p>
+          <h2>2. Предмет соглашения</h2>
+          <p>
+            Сайт предоставляет пользователю возможность конвертировать валюты по
+            актуальным курсам, просматривать погоду и время в столицах мира. Все
+            данные носят информационный характер и не являются публичной
+            офертой.
+          </p>
+          <h2>3. Права и обязанности сторон</h2>
+          <p>
+            Пользователь обязуется использовать Сайт только в законных целях, не
+            нарушать работу Сайта и не предпринимать действий, направленных на
+            получение несанкционированного доступа.
+          </p>
+          <h2>4. Ответственность</h2>
+          <p>
+            Администрация Сайта не несёт ответственности за возможные убытки,
+            возникшие в результате использования данных, полученных на Сайте.
+            Курсы валют могут отличаться от реальных и не являются рекомендацией
+            к совершению операций.
+          </p>
+          <h2>5. Изменение условий</h2>
+          <p>
+            Администрация Сайта оставляет за собой право изменять условия
+            Соглашения без предварительного уведомления. Новая редакция вступает
+            в силу с момента публикации.
+          </p>
+          <h2>6. Контакты</h2>
+          <p>
+            По всем вопросам вы можете связаться с нами по электронной почте:
+            <a href="mailto:info@cconverter.ru">info@cconverter.ru</a>.
+          </p>
+          <p style="margin-top: 2rem; font-size: 0.875rem; color: #64748b">
+            Последнее обновление: Июль 2025
+          </p>
+        </div>
+
+        <!-- Английская версия -->
+        <div id="lang-en" class="lang-content">
+          <h1>Terms of Use</h1>
+          <h2>1. General Provisions</h2>
+          <p>
+            This Agreement governs the relationship between the administration
+            of cconverter.ru (hereinafter — the "Site") and the user of the
+            Site.
+          </p>
+          <h2>2. Subject of the Agreement</h2>
+          <p>
+            The Site provides the user with the ability to convert currencies at
+            current rates, view weather and time in world capitals. All data is
+            for informational purposes only and does not constitute a public
+            offer.
+          </p>
+          <h2>3. Rights and Obligations</h2>
+          <p>
+            The user agrees to use the Site only for lawful purposes, not to
+            disrupt the Site's operation, and not to take actions aimed at
+            gaining unauthorized access.
+          </p>
+          <h2>4. Liability</h2>
+          <p>
+            The Site administration is not liable for any possible damages
+            arising from the use of the data obtained on the Site. Exchange
+            rates may differ from actual rates and are not a recommendation to
+            perform transactions.
+          </p>
+          <h2>5. Changes to Terms</h2>
+          <p>
+            The Site administration reserves the right to change the terms of
+            the Agreement without prior notice. The new version comes into force
+            upon publication.
+          </p>
+          <h2>6. Contact</h2>
+          <p>
+            For any questions, you can contact us by email:
+            <a href="mailto:info@cconverter.ru">info@cconverter.ru</a>.
+          </p>
+          <p style="margin-top: 2rem; font-size: 0.875rem; color: #64748b">
+            Last updated: July 2025
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchLang(lang) {
+        // Переключаем вкладки
+        document
+          .querySelectorAll('.lang-tabs button')
+          .forEach((b) => b.classList.remove('active'))
+        document.getElementById('tab-' + lang).classList.add('active')
+        // Переключаем контент
+        document
+          .querySelectorAll('.lang-content')
+          .forEach((el) => el.classList.remove('active'))
+        document.getElementById('lang-' + lang).classList.add('active')
+      }
+      // Если в localStorage есть язык, используем его
+      ;(function () {
+        try {
+          const saved = localStorage.getItem('currency-converter-lang')
+          if (saved === 'en') {
+            switchLang('en')
+          }
+        } catch (e) {}
+      })()
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -164,5 +164,267 @@
         </p>
       </div>
     </div>
+  </body>
+</html> -->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy / Политика конфиденциальности</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #030014;
+        color: #e2e8f0;
+        line-height: 1.7;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 2rem;
+      }
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #fff, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      h2 {
+        font-size: 1.3rem;
+        margin: 2rem 0 1rem;
+        color: #818cf8;
+      }
+      p {
+        margin-bottom: 1rem;
+        color: #94a3b8;
+      }
+      ul {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        color: #94a3b8;
+      }
+      a {
+        color: #818cf8;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .back {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #818cf8;
+      }
+      .lang-tabs {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+      .lang-tabs button {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 18px;
+        border-radius: 20px;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+      }
+      .lang-tabs button.active {
+        background: rgba(99, 102, 241, 0.3);
+        border-color: #6366f1;
+        color: #fff;
+      }
+      .lang-content {
+        display: none;
+      }
+      .lang-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back">← Back / Назад</a>
+      <div class="card">
+        <div class="lang-tabs">
+          <button id="tab-ru" class="active" onclick="switchLang('ru')">
+            🇷🇺 Русский
+          </button>
+          <button id="tab-en" onclick="switchLang('en')">🇬🇧 English</button>
+        </div>
+
+        <!-- Русская версия -->
+        <div id="lang-ru" class="lang-content active">
+          <h1>Политика конфиденциальности</h1>
+          <h2>1. Общие положения</h2>
+          <p>
+            Настоящая Политика конфиденциальности описывает, как сайт
+            cconverter.ru (далее — «Сайт») обрабатывает информацию о
+            пользователях.
+          </p>
+
+          <h2>2. Сбор информации</h2>
+          <p>Мы собираем следующие типы информации:</p>
+          <ul>
+            <li>IP-адрес браузера</li>
+            <li>Тип устройства и браузера</li>
+            <li>Страницы, которые вы посещаете на Сайте</li>
+            <li>Время и дата посещения</li>
+            <li>Источник перехода на Сайт</li>
+          </ul>
+
+          <h2>3. Использование информации</h2>
+          <p>Собранная информация используется для:</p>
+          <ul>
+            <li>Обеспечения работы Сайта</li>
+            <li>Анализа посещаемости и улучшения качества сервиса</li>
+            <li>Предотвращения мошенничества и злоупотреблений</li>
+          </ul>
+
+          <h2>4. Файлы cookie</h2>
+          <p>
+            Сайт использует файлы cookie для сохранения настроек пользователя
+            (язык интерфейса) и сбора статистики посещений.
+          </p>
+
+          <h2>5. Хранение данных</h2>
+          <p>
+            Мы не храним личные данные пользователей на своих серверах. Вся
+            информация хранится в браузере пользователя (localStorage) и в
+            сервисах аналитики (Яндекс.Метрика).
+          </p>
+
+          <h2>6. Безопасность</h2>
+          <p>
+            Мы принимаем разумные меры для защиты информации от
+            несанкционированного доступа, использования или раскрытия.
+          </p>
+
+          <h2>7. Изменения в политике</h2>
+          <p>
+            Мы оставляем за собой право изменять настоящую Политику
+            конфиденциальности. Изменения вступают в силу с момента публикации
+            на этой странице.
+          </p>
+
+          <h2>8. Контакты</h2>
+          <p>
+            По всем вопросам, связанным с политикой конфиденциальности, вы
+            можете связаться с нами по электронной почте:
+            <a href="mailto:info@cconverter.ru">info@cconverter.ru</a>.
+          </p>
+
+          <p style="margin-top: 2rem; font-size: 0.875rem; color: #64748b">
+            Последнее обновление: Июль 2025
+          </p>
+        </div>
+
+        <!-- Английская версия -->
+        <div id="lang-en" class="lang-content">
+          <h1>Privacy Policy</h1>
+          <h2>1. General Provisions</h2>
+          <p>
+            This Privacy Policy describes how the website cconverter.ru
+            (hereinafter — the "Site") processes information about users.
+          </p>
+
+          <h2>2. Information Collection</h2>
+          <p>We collect the following types of information:</p>
+          <ul>
+            <li>Browser IP address</li>
+            <li>Device and browser type</li>
+            <li>Pages you visit on the Site</li>
+            <li>Time and date of visit</li>
+            <li>Referral source</li>
+          </ul>
+
+          <h2>3. Use of Information</h2>
+          <p>Collected information is used for:</p>
+          <ul>
+            <li>Ensuring the operation of the Site</li>
+            <li>Analyzing traffic and improving the service</li>
+            <li>Preventing fraud and abuse</li>
+          </ul>
+
+          <h2>4. Cookies</h2>
+          <p>
+            The Site uses cookies to save user settings (interface language) and
+            collect visit statistics.
+          </p>
+
+          <h2>5. Data Storage</h2>
+          <p>
+            We do not store users' personal data on our servers. All information
+            is stored in the user's browser (localStorage) and in analytics
+            services (Yandex.Metrica).
+          </p>
+
+          <h2>6. Security</h2>
+          <p>
+            We take reasonable measures to protect information from unauthorized
+            access, use, or disclosure.
+          </p>
+
+          <h2>7. Changes to the Policy</h2>
+          <p>
+            We reserve the right to change this Privacy Policy. Changes come
+            into force upon publication on this page.
+          </p>
+
+          <h2>8. Contact</h2>
+          <p>
+            For any questions regarding this Privacy Policy, you can contact us
+            by email:
+            <a href="mailto:info@cconverter.ru">info@cconverter.ru</a>.
+          </p>
+
+          <p style="margin-top: 2rem; font-size: 0.875rem; color: #64748b">
+            Last updated: July 2025
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchLang(lang) {
+        document
+          .querySelectorAll('.lang-tabs button')
+          .forEach((b) => b.classList.remove('active'))
+        document.getElementById('tab-' + lang).classList.add('active')
+        document
+          .querySelectorAll('.lang-content')
+          .forEach((el) => el.classList.remove('active'))
+        document.getElementById('lang-' + lang).classList.add('active')
+      }
+      ;(function () {
+        try {
+          const saved = localStorage.getItem('currency-converter-lang')
+          if (saved === 'en') {
+            switchLang('en')
+          }
+        } catch (e) {}
+      })()
+    </script>
   </body>
 </html>
