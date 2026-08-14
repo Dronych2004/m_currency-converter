@@ -28,8 +28,6 @@ function App() {
     error,
     fromWeather,
     toWeather,
-    fromTimezone,
-    toTimezone,
     currencyType,
     setFromCurrency,
     setToCurrency,
@@ -230,7 +228,6 @@ function App() {
                 >
                   <CityInfoCard
                     weather={fromWeather}
-                    timezone={fromTimezone}
                     cityName={fromCityName}
                     cityNameEn={fromCityNameEn}
                     currencyCode={fromCurrency.code}
@@ -247,7 +244,6 @@ function App() {
                 >
                   <CityInfoCard
                     weather={toWeather}
-                    timezone={toTimezone}
                     cityName={toCityName}
                     cityNameEn={toCityNameEn}
                     currencyCode={toCurrency.code}

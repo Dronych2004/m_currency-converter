@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { Currency, WeatherData, TimezoneData } from '../types';
-import { fetchCurrencies, convertCurrency, fetchWeather, getCurrentTime } from '../services/api';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import type { Currency, WeatherData } from '../types';
+import { fetchCurrencies, convertCurrency, fetchWeather } from '../services/api';
 import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto';
 import { currencies as currencyMeta } from '../data/currencies';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -17,8 +17,6 @@ export interface UseCurrencyConverterReturn {
   error: string | null;
   fromWeather: WeatherData | null;
   toWeather: WeatherData | null;
-  fromTimezone: TimezoneData | null;
-  toTimezone: TimezoneData | null;
   currencyType: CurrencyType;
   setFromCurrency: (currency: Currency) => void;
   setToCurrency: (currency: Currency) => void;
@@ -26,6 +24,31 @@ export interface UseCurrencyConverterReturn {
   swapCurrencies: () => void;
   setCurrencyType: (type: CurrencyType) => void;
 }
+
+// Простой in-memory кэш с TTL (без class syntax для совместимости с erasableSyntaxOnly)
+function createCache<T>(ttlMs: number) {
+  const store = new Map<string, { value: T; expiresAt: number }>();
+
+  return {
+    get(key: string): T | undefined {
+      const entry = store.get(key);
+      if (!entry) return undefined;
+      if (Date.now() > entry.expiresAt) {
+        store.delete(key);
+        return undefined;
+      }
+      return entry.value;
+    },
+    set(key: string, value: T): void {
+      store.set(key, { value, expiresAt: Date.now() + ttlMs });
+    },
+  };
+}
+
+// Кэш погоды на 10 минут (погода не меняется так часто)
+const weatherCache = createCache<WeatherData>(10 * 60 * 1000);
+// Кэш курсов на 5 минут
+const rateCache = createCache<{ rate: number; result: number }>(5 * 60 * 1000);
 
 export function useCurrencyConverter(): UseCurrencyConverterReturn {
   const { lang } = useLanguage();
@@ -40,9 +63,10 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
   const [error, setError] = useState<string | null>(null);
   const [fromWeather, setFromWeather] = useState<WeatherData | null>(null);
   const [toWeather, setToWeather] = useState<WeatherData | null>(null);
-  const [fromTimezone, setFromTimezone] = useState<TimezoneData | null>(null);
-  const [toTimezone, setToTimezone] = useState<TimezoneData | null>(null);
   const [currencyType, setCurrencyType] = useState<CurrencyType>('traditional');
+
+  // AbortController для отмены устаревших запросов конвертации
+  const convertAbortRef = useRef<AbortController | null>(null);
 
   // Загрузка валют при смене типа или языка
   useEffect(() => {
@@ -54,13 +78,11 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
         let currenciesData: Currency[];
 
         if (currencyType === 'crypto') {
-          // Загружаем криптовалюты + базовые fiat для конвертации
           const [cryptoData, fiatData] = await Promise.all([
             fetchCryptoRates(),
             fetchCurrencies(lang),
           ]);
 
-          // Криптовалюты с переводами
           const translatedCrypto = cryptoData.map(c => ({
             ...c,
             name: getCryptoName(c.code, lang),
@@ -68,7 +90,6 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
             flag: getCryptoIcon(c.code),
           }));
 
-          // Все фиатные валюты
           currenciesData = [...translatedCrypto, ...fiatData];
         } else {
           currenciesData = await fetchCurrencies(lang);
@@ -76,7 +97,6 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
 
         setCurrencies(currenciesData);
 
-        // Устанавливаем валюты по умолчанию
         if (currencyType === 'crypto') {
           const btc = currenciesData.find(c => c.code === 'BTC');
           const usd = currenciesData.find(c => c.code === 'USD');
@@ -101,7 +121,7 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     loadCurrencies();
   }, [currencyType, lang]);
 
-  // Конвертация
+  // Конвертация с debounce 300ms и кэшированием
   useEffect(() => {
     if (!fromCurrency || !toCurrency || !amount) {
       setConvertedAmount(null);
@@ -116,31 +136,55 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
       return;
     }
 
-    async function convert() {
+    // Ключ кэша: пара + сумма
+    const cacheKey = `${fromCurrency.code}:${toCurrency.code}:${amount}`;
+    const cached = rateCache.get(cacheKey);
+    if (cached) {
+      setConvertedAmount(cached.result);
+      setExchangeRate(cached.rate);
+      return;
+    }
+
+    // Отменяем предыдущий запрос
+    convertAbortRef.current?.abort();
+    const controller = new AbortController();
+    convertAbortRef.current = controller;
+
+    const timer = setTimeout(async () => {
       try {
         setIsLoading(true);
         setError(null);
 
         const result = await convertCurrency(
-          fromCurrency!.code,
-          toCurrency!.code,
+          fromCurrency.code,
+          toCurrency.code,
           amountNumber
         );
 
-        setConvertedAmount(result.result);
-        setExchangeRate(result.rate);
+        if (!controller.signal.aborted) {
+          rateCache.set(cacheKey, result);
+          setConvertedAmount(result.result);
+          setExchangeRate(result.rate);
+        }
       } catch (err) {
-        setError(lang === 'ru' ? 'Ошибка конвертации. Попробуйте снова.' : 'Conversion error. Please try again.');
-        console.error(err);
+        if (!controller.signal.aborted) {
+          setError(lang === 'ru' ? 'Ошибка конвертации. Попробуйте снова.' : 'Conversion error. Please try again.');
+          console.error(err);
+        }
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
-    }
+    }, 300);
 
-    convert();
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [fromCurrency, toCurrency, amount, lang]);
 
-  // Погода
+  // Погода с кэшированием
   useEffect(() => {
     async function loadWeather() {
       if (!fromCurrency || !toCurrency) return;
@@ -154,57 +198,53 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
       const fromCapital = currencyMeta[fromCityCode]?.capital;
       const toCapital = currencyMeta[toCityCode]?.capital;
 
-      try {
-        const [fromWeatherData, toWeatherData] = await Promise.all([
-          fetchWeather(
-            fromCapital?.lat || 0,
-            fromCapital?.lon || 0
-          ),
-          fetchWeather(
-            toCapital?.lat || 0,
-            toCapital?.lon || 0
-          ),
-        ]);
+      const fromKey = `${fromCapital?.lat},${fromCapital?.lon}`;
+      const toKey = `${toCapital?.lat},${toCapital?.lon}`;
 
-        setFromWeather(fromWeatherData);
-        setToWeather(toWeatherData);
+      // Проверяем кэш
+      const cachedFrom = weatherCache.get(fromKey);
+      const cachedTo = weatherCache.get(toKey);
+
+      if (cachedFrom) setFromWeather(cachedFrom);
+      if (cachedTo) setToWeather(cachedTo);
+
+      // Загружаем только то, чего нет в кэше
+      const promises: Promise<WeatherData>[] = [];
+
+      if (!cachedFrom && fromCapital) {
+        promises.push(
+          fetchWeather(fromCapital.lat, fromCapital.lon).then(data => {
+            weatherCache.set(fromKey, data);
+            return data;
+          })
+        );
+      }
+      if (!cachedTo && toCapital) {
+        promises.push(
+          fetchWeather(toCapital.lat, toCapital.lon).then(data => {
+            weatherCache.set(toKey, data);
+            return data;
+          })
+        );
+      }
+
+      if (promises.length === 0) return;
+
+      try {
+        const results = await Promise.all(promises);
+        let idx = 0;
+        if (!cachedFrom && fromCapital) {
+          setFromWeather(results[idx++]);
+        }
+        if (!cachedTo && toCapital) {
+          setToWeather(results[idx++]);
+        }
       } catch (err) {
         console.error('Ошибка загрузки погоды:', err);
       }
     }
 
     loadWeather();
-  }, [fromCurrency, toCurrency]);
-
-  // Время
-  useEffect(() => {
-    function updateTime() {
-      if (!fromCurrency || !toCurrency) return;
-
-      const fromMeta = currencyMeta[fromCurrency.code];
-      const toMeta = currencyMeta[toCurrency.code];
-
-      const fromCityCode = fromMeta?.crypto?.cityCode || fromCurrency.code;
-      const toCityCode = toMeta?.crypto?.cityCode || toCurrency.code;
-
-      const fromCapital = currencyMeta[fromCityCode]?.capital;
-      const toCapital = currencyMeta[toCityCode]?.capital;
-
-      const fromTimezoneData = getCurrentTime(
-        fromCapital?.timezone || 'UTC'
-      );
-
-      const toTimezoneData = getCurrentTime(
-        toCapital?.timezone || 'UTC'
-      );
-
-      setFromTimezone(fromTimezoneData);
-      setToTimezone(toTimezoneData);
-    }
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
   }, [fromCurrency, toCurrency]);
 
   const swapCurrencies = useCallback(() => {
@@ -225,8 +265,6 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     error,
     fromWeather,
     toWeather,
-    fromTimezone,
-    toTimezone,
     currencyType,
     setFromCurrency,
     setToCurrency,
