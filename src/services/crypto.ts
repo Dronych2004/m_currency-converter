@@ -1,6 +1,10 @@
 import type { Currency } from '../types';
 import type { Lang } from '../i18n/translations';
 import { currencies, CRYPTO_CODES } from '../data/currencies';
+import { createCache } from '../utils/cache';
+
+// Кэш крипто-курсов на 5 минут (CoinGecko rate limit: 10-30 req/min)
+const cryptoCache = createCache<Currency[]>(5 * 60 * 1000);
 
 export function getCryptoName(code: string, lang: Lang): string {
   return currencies[code]?.name[lang] ?? code;
@@ -16,13 +20,23 @@ export function getCryptoIcon(code: string): string {
 
 // Получить курсы криптовалют к USD
 export async function fetchCryptoRates(): Promise<Currency[]> {
+  const cacheKey = 'crypto-rates';
+  const cached = cryptoCache.get(cacheKey);
+  if (cached) return cached;
+
   try {
     const response = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether,usd-coin,binancecoin,ripple,solana,cardano,dogecoin,tron,polkadot,chainlink,matic-network,litecoin,uniswap&vs_currencies=usd`
     );
 
+    // Обработка rate limit (429)
+    if (response.status === 429) {
+      console.warn('CoinGecko: превышен лимит запросов (429). Повторите позже.');
+      throw new Error('CoinGecko rate limit exceeded. Try again later.');
+    }
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`CoinGecko HTTP error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -60,6 +74,7 @@ export async function fetchCryptoRates(): Promise<Currency[]> {
       })
       .filter((c): c is Currency => c !== null);
 
+    cryptoCache.set(cacheKey, result);
     return result;
   } catch (error) {
     console.error('Ошибка при загрузке криптовалют:', error);
