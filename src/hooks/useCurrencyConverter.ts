@@ -3,7 +3,7 @@ import type { Currency, WeatherData } from '../types';
 import { fetchCurrencies, convertCurrency, fetchWeather } from '../services/api';
 import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto';
 import { currencies as currencyMeta } from '../data/currencies';
-import { createCache } from '../utils/cache';
+import { createCache, createPersistentCache } from '../utils/cache';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { CurrencyType } from '../types';
 
@@ -26,10 +26,10 @@ export interface UseCurrencyConverterReturn {
   setCurrencyType: (type: CurrencyType) => void;
 }
 
-// Кэш погоды на 10 минут (погода не меняется так часто)
+// Кэш погоды на 10 минут (in-memory — погода часто меняется)
 const weatherCache = createCache<WeatherData>(10 * 60 * 1000);
-// Кэш курсов на 5 минут
-const rateCache = createCache<{ rate: number; result: number }>(5 * 60 * 1000);
+// Кэш курсов на 24 часа (persistent — курсы обновляются раз в день)
+const rateCache = createPersistentCache<{ rate: number; result: number }>(24 * 60 * 60 * 1000, 'cc-rates');
 
 export function useCurrencyConverter(): UseCurrencyConverterReturn {
   const { lang } = useLanguage();
