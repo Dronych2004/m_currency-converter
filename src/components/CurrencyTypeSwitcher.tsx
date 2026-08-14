@@ -1,6 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext';
+import type { CurrencyType } from '../types';
 
-export type CurrencyType = 'traditional' | 'crypto';
+export type { CurrencyType };
 
 interface CurrencyTypeSwitcherProps {
   value: CurrencyType;

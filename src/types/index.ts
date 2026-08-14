@@ -124,20 +124,18 @@ export interface CountryInfo {
  * Это то, что хранится в useState в главном компоненте
  */
 export interface AppState {
-  // Валюта, ИЗ которой конвертируем
   fromCurrency: Currency | null;
-  // Валюта, В которую конвертируем
   toCurrency: Currency | null;
-  // Сумма для конвертации
   amount: string;
-  // Результат конвертации (вычисляемое значение)
   convertedAmount: number | null;
-  // Курс обмена (сколько единиц целевой валюты за 1 единицу исходной)
   exchangeRate: number | null;
-  // Список всех доступных валют
   currencies: Currency[];
-  // Флаг загрузки данных
   isLoading: boolean;
-  // Сообщение об ошибке (если что-то пошло не так)
   error: string | null;
 }
+
+// ============================================
+// ТИПЫ ДЛЯ ВЫБОРА ТИПА ВАЛЮТЫ
+// ============================================
+
+export type CurrencyType = 'traditional' | 'crypto';

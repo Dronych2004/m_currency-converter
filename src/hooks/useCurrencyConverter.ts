@@ -4,7 +4,7 @@ import { fetchCurrencies, convertCurrency, fetchWeather } from '../services/api'
 import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto';
 import { currencies as currencyMeta } from '../data/currencies';
 import { useLanguage } from '../i18n/LanguageContext';
-import type { CurrencyType } from '../components/CurrencyTypeSwitcher';
+import type { CurrencyType } from '../types';
 
 export interface UseCurrencyConverterReturn {
   currencies: Currency[];
