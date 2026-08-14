@@ -1,78 +1,14 @@
-import type { Lang } from './translations';
+/**
+ * Переэкспорт из централизованного словаря для обратной совместимости.
+ * Данные живут в src/data/currencies.ts — правьте ТОЛЬКО там.
+ */
+import { currencies, getCurrencyName as _getCurrencyName, type CurrencyMeta } from '../data/currencies';
 
-export const currencyNames: Record<string, { ru: string; en: string }> = {
-  USD: { ru: 'Доллар США', en: 'US Dollar' },
-  EUR: { ru: 'Евро', en: 'Euro' },
-  GBP: { ru: 'Фунт стерлингов', en: 'British Pound' },
-  JPY: { ru: 'Японская иена', en: 'Japanese Yen' },
-  CNY: { ru: 'Китайский юань', en: 'Chinese Yuan' },
-  RUB: { ru: 'Российский рубль', en: 'Russian Ruble' },
-  BYN: { ru: 'Белорусский рубль', en: 'Belarusian Ruble' },
-  UAH: { ru: 'Украинская гривна', en: 'Ukrainian Hryvnia' },
-  KZT: { ru: 'Казахстанский тенге', en: 'Kazakhstani Tenge' },
-  GEL: { ru: 'Грузинский лари', en: 'Georgian Lari' },
-  AMD: { ru: 'Армянский драм', en: 'Armenian Dram' },
-  AZN: { ru: 'Азербайджанский манат', en: 'Azerbaijani Manat' },
-  KRW: { ru: 'Южнокорейская вона', en: 'South Korean Won' },
-  INR: { ru: 'Индийская рупия', en: 'Indian Rupee' },
-  BRL: { ru: 'Бразильский реал', en: 'Brazilian Real' },
-  CAD: { ru: 'Канадский доллар', en: 'Canadian Dollar' },
-  AUD: { ru: 'Австралийский доллар', en: 'Australian Dollar' },
-  CHF: { ru: 'Швейцарский франк', en: 'Swiss Franc' },
-  SEK: { ru: 'Шведская крона', en: 'Swedish Krona' },
-  NOK: { ru: 'Норвежская крона', en: 'Norwegian Krone' },
-  DKK: { ru: 'Датская крона', en: 'Danish Krone' },
-  PLN: { ru: 'Польский злотый', en: 'Polish Zloty' },
-  CZK: { ru: 'Чешская крона', en: 'Czech Koruna' },
-  HUF: { ru: 'Венгерский форинт', en: 'Hungarian Forint' },
-  RON: { ru: 'Румынский лей', en: 'Romanian Leu' },
-  BGN: { ru: 'Болгарский лев', en: 'Bulgarian Lev' },
-  HRK: { ru: 'Хорватская куна', en: 'Croatian Kuna' },
-  TRY: { ru: 'Турецкая лира', en: 'Turkish Lira' },
-  ILS: { ru: 'Израильский шекель', en: 'Israeli Shekel' },
-  AED: { ru: 'ОАЭ дирхам', en: 'UAE Dirham' },
-  SAR: { ru: 'Саудовский риял', en: 'Saudi Riyal' },
-  QAR: { ru: 'Катарский риял', en: 'Qatari Riyal' },
-  KWD: { ru: 'Кувейтский динар', en: 'Kuwaiti Dinar' },
-  BHD: { ru: 'Бахрейнский динар', en: 'Bahraini Dinar' },
-  OMR: { ru: 'Оманский риял', en: 'Omani Rial' },
-  JOD: { ru: 'Иорданский динар', en: 'Jordanian Dinar' },
-  LBP: { ru: 'Ливанский фунт', en: 'Lebanese Pound' },
-  EGP: { ru: 'Египетский фунт', en: 'Egyptian Pound' },
-  ZAR: { ru: 'Южноафриканский ранд', en: 'South African Rand' },
-  NGN: { ru: 'Нигерийская найра', en: 'Nigerian Naira' },
-  KES: { ru: 'Кенийский шиллинг', en: 'Kenyan Shilling' },
-  GHS: { ru: 'Ганский седи', en: 'Ghanaian Cedi' },
-  TZS: { ru: 'Танзанийский шиллинг', en: 'Tanzanian Shilling' },
-  UGX: { ru: 'Угандийский шиллинг', en: 'Ugandan Shilling' },
-  ETB: { ru: 'Эфиопский быр', en: 'Ethiopian Birr' },
-  MAD: { ru: 'Марокканский дирхам', en: 'Moroccan Dirham' },
-  TND: { ru: 'Тунисский динар', en: 'Tunisian Dinar' },
-  DZD: { ru: 'Алжирский динар', en: 'Algerian Dinar' },
-  LYD: { ru: 'Ливийский динар', en: 'Libyan Dinar' },
-  MMK: { ru: 'Мьянманский кьят', en: 'Myanmar Kyat' },
-  THB: { ru: 'Тайский бат', en: 'Thai Baht' },
-  VND: { ru: 'Вьетнамский донг', en: 'Vietnamese Dong' },
-  MYR: { ru: 'Малайзийский ринггит', en: 'Malaysian Ringgit' },
-  SGD: { ru: 'Сингапурский доллар', en: 'Singapore Dollar' },
-  IDR: { ru: 'Индонезийская рупия', en: 'Indonesian Rupiah' },
-  PHP: { ru: 'Филиппинское песо', en: 'Philippine Peso' },
-  PKR: { ru: 'Пакистанская рупия', en: 'Pakistani Rupee' },
-  BDT: { ru: 'Бангладешская така', en: 'Bangladeshi Taka' },
-  LKR: { ru: 'Шри-ланкийская рупия', en: 'Sri Lankan Rupee' },
-  NPR: { ru: 'Непальская рупия', en: 'Nepalese Rupee' },
-  MVR: { ru: 'Мальдивская руфия', en: 'Maldivian Rufiyaa' },
-  AFN: { ru: 'Афганский афгани', en: 'Afghan Afghani' },
-  IQD: { ru: 'Иракский динар', en: 'Iraqi Dinar' },
-  IRR: { ru: 'Иранский риал', en: 'Iranian Rial' },
-  SYP: { ru: 'Сирийский фунт', en: 'Syrian Pound' },
-  YER: { ru: 'Йеменский риал', en: 'Yemeni Rial' },
-};
+export type { CurrencyMeta };
+export const currencyNames: Record<string, { ru: string; en: string }> = Object.fromEntries(
+  Object.values(currencies).map(c => [c.code, c.name])
+);
 
-export function getCurrencyName(code: string, lang: Lang): string {
-  const names = currencyNames[code];
-  if (names) {
-    return names[lang];
-  }
-  return code;
+export function getCurrencyName(code: string, lang: 'ru' | 'en'): string {
+  return _getCurrencyName(code, lang);
 }

@@ -12,7 +12,7 @@ import { CityInfoCard } from './components/CityInfoCard'
 import { AdBanner } from './components/AdBanner'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { CurrencyTypeSwitcher } from './components/CurrencyTypeSwitcher'
-import { capitalCities } from './utils/flags'
+import { currencies as currencyMeta } from './data/currencies'
 
 function App() {
   const { t, lang } = useLanguage()
@@ -39,26 +39,26 @@ function App() {
   } = useCurrencyConverter()
 
   // Определяем город для крипты или фиата
-  const fromCryptoInfo = CRYPTO_INFO[fromCurrency?.code || '']
-  const toCryptoInfo = CRYPTO_INFO[toCurrency?.code || '']
+  const fromMeta = fromCurrency ? currencyMeta[fromCurrency.code] : undefined
+  const toMeta = toCurrency ? currencyMeta[toCurrency.code] : undefined
 
-  const fromCityCode = fromCryptoInfo?.cityCode || fromCurrency?.code
-  const toCityCode = toCryptoInfo?.cityCode || toCurrency?.code
+  const fromCityCode = fromMeta?.crypto?.cityCode || fromCurrency?.code
+  const toCityCode = toMeta?.crypto?.cityCode || toCurrency?.code
 
-  const fromCity = fromCityCode ? capitalCities[fromCityCode] : null
-  const toCity = toCityCode ? capitalCities[toCityCode] : null
+  const fromCity = fromCityCode ? currencyMeta[fromCityCode]?.capital : null
+  const toCity = toCityCode ? currencyMeta[toCityCode]?.capital : null
 
-  // Для крипты используем название из CRYPTO_INFO, для фиата - из capitalCities
+  // Для крипты используем название из crypto, для фиата - из capital
   const fromCityName =
-    fromCryptoInfo?.cityRu ||
+    fromMeta?.crypto?.cityRu ||
     fromCity?.name ||
     (lang === 'ru' ? 'Неизвестно' : 'Unknown')
-  const fromCityNameEn = fromCryptoInfo?.cityEn || fromCity?.nameEn || 'Unknown'
+  const fromCityNameEn = fromMeta?.crypto?.cityEn || fromCity?.nameEn || 'Unknown'
   const toCityName =
-    toCryptoInfo?.cityRu ||
+    toMeta?.crypto?.cityRu ||
     toCity?.name ||
     (lang === 'ru' ? 'Неизвестно' : 'Unknown')
-  const toCityNameEn = toCryptoInfo?.cityEn || toCity?.nameEn || 'Unknown'
+  const toCityNameEn = toMeta?.crypto?.cityEn || toCity?.nameEn || 'Unknown'
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
@@ -319,28 +319,6 @@ function App() {
       </div>
     </div>
   )
-}
-
-// Информация о городах для криптовалют
-const CRYPTO_INFO: Record<
-  string,
-  { cityCode: string; cityRu: string; cityEn: string }
-> = {
-  BTC: { cityCode: 'USD', cityRu: 'Сатоши-Сити', cityEn: 'Satoshi City' },
-  ETH: { cityCode: 'USD', cityRu: 'Сан-Франциско', cityEn: 'San Francisco' },
-  USDT: { cityCode: 'USD', cityRu: 'Пало-Альто', cityEn: 'Palo Alto' },
-  USDC: { cityCode: 'USD', cityRu: 'Бостон', cityEn: 'Boston' },
-  BNB: { cityCode: 'SGD', cityRu: 'Сингапур', cityEn: 'Singapore' },
-  XRP: { cityCode: 'USD', cityRu: 'Сан-Франциско', cityEn: 'San Francisco' },
-  SOL: { cityCode: 'USD', cityRu: 'Сан-Франциско', cityEn: 'San Francisco' },
-  ADA: { cityCode: 'JPY', cityRu: 'Токио', cityEn: 'Tokyo' },
-  DOGE: { cityCode: 'USD', cityRu: 'Пало-Альто', cityEn: 'Palo Alto' },
-  TRX: { cityCode: 'SGD', cityRu: 'Сингапур', cityEn: 'Singapore' },
-  DOT: { cityCode: 'USD', cityRu: 'Берлин', cityEn: 'Berlin' },
-  LINK: { cityCode: 'USD', cityRu: 'Нью-Йорк', cityEn: 'New York' },
-  MATIC: { cityCode: 'USD', cityRu: 'Сан-Франциско', cityEn: 'San Francisco' },
-  LTC: { cityCode: 'USD', cityRu: 'Сан-Франциско', cityEn: 'San Francisco' },
-  UNI: { cityCode: 'USD', cityRu: 'Нью-Йорк', cityEn: 'New York' },
 }
 
 export default App

@@ -2,16 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Currency, WeatherData, TimezoneData } from '../types';
 import { fetchCurrencies, convertCurrency, fetchWeather, getCurrentTime } from '../services/api';
 import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto';
-import { capitalCities } from '../utils/flags';
+import { currencies as currencyMeta } from '../data/currencies';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { CurrencyType } from '../components/CurrencyTypeSwitcher';
-
-// Карта криптовалют к столицам (для погоды/времени)
-const CRYPTO_TO_CITY: Record<string, string> = {
-  BTC: 'US', ETH: 'US', USDT: 'US', USDC: 'US', BNB: 'SG',
-  XRP: 'US', SOL: 'US', ADA: 'JP', DOGE: 'US', TRX: 'SG',
-  DOT: 'US', LINK: 'US', MATIC: 'US', LTC: 'US', UNI: 'US',
-};
 
 export interface UseCurrencyConverterReturn {
   currencies: Currency[];
@@ -152,18 +145,24 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     async function loadWeather() {
       if (!fromCurrency || !toCurrency) return;
 
-      const fromCityCode = CRYPTO_TO_CITY[fromCurrency.code] || fromCurrency.code;
-      const toCityCode = CRYPTO_TO_CITY[toCurrency.code] || toCurrency.code;
+      const fromMeta = currencyMeta[fromCurrency.code];
+      const toMeta = currencyMeta[toCurrency.code];
+
+      const fromCityCode = fromMeta?.crypto?.cityCode || fromCurrency.code;
+      const toCityCode = toMeta?.crypto?.cityCode || toCurrency.code;
+
+      const fromCapital = currencyMeta[fromCityCode]?.capital;
+      const toCapital = currencyMeta[toCityCode]?.capital;
 
       try {
         const [fromWeatherData, toWeatherData] = await Promise.all([
           fetchWeather(
-            capitalCities[fromCityCode]?.lat || 0,
-            capitalCities[fromCityCode]?.lon || 0
+            fromCapital?.lat || 0,
+            fromCapital?.lon || 0
           ),
           fetchWeather(
-            capitalCities[toCityCode]?.lat || 0,
-            capitalCities[toCityCode]?.lon || 0
+            toCapital?.lat || 0,
+            toCapital?.lon || 0
           ),
         ]);
 
@@ -182,15 +181,21 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     function updateTime() {
       if (!fromCurrency || !toCurrency) return;
 
-      const fromCityCode = CRYPTO_TO_CITY[fromCurrency.code] || fromCurrency.code;
-      const toCityCode = CRYPTO_TO_CITY[toCurrency.code] || toCurrency.code;
+      const fromMeta = currencyMeta[fromCurrency.code];
+      const toMeta = currencyMeta[toCurrency.code];
+
+      const fromCityCode = fromMeta?.crypto?.cityCode || fromCurrency.code;
+      const toCityCode = toMeta?.crypto?.cityCode || toCurrency.code;
+
+      const fromCapital = currencyMeta[fromCityCode]?.capital;
+      const toCapital = currencyMeta[toCityCode]?.capital;
 
       const fromTimezoneData = getCurrentTime(
-        capitalCities[fromCityCode]?.timezone || 'UTC'
+        fromCapital?.timezone || 'UTC'
       );
 
       const toTimezoneData = getCurrentTime(
-        capitalCities[toCityCode]?.timezone || 'UTC'
+        toCapital?.timezone || 'UTC'
       );
 
       setFromTimezone(fromTimezoneData);

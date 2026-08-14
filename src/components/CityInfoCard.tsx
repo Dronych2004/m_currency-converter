@@ -1,45 +1,6 @@
 import type { WeatherData, TimezoneData } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
-
-// Коды стран для фиатных валют
-const CURRENCY_TO_COUNTRY: Record<string, string> = {
-  USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', RUB: 'ru',
-  BYN: 'by', UAH: 'ua', KZT: 'kz', GEL: 'ge', AMD: 'am', AZN: 'az',
-  KRW: 'kr', INR: 'in', BRL: 'br', CAD: 'ca', AUD: 'au', CHF: 'ch',
-  SEK: 'se', NOK: 'no', DKK: 'dk', PLN: 'pl', CZK: 'cz', HUF: 'hu',
-  RON: 'ro', BGN: 'bg', HRK: 'hr', TRY: 'tr', ILS: 'il', AED: 'ae',
-  SAR: 'sa', QAR: 'qa', KWD: 'kw', BHD: 'bh', OMR: 'om', JOD: 'jo',
-  LBP: 'lb', EGP: 'eg', ZAR: 'za', NGN: 'ng', KES: 'ke', GHS: 'gh',
-  TZS: 'tz', UGX: 'ug', ETB: 'et', MAD: 'ma', TND: 'tn', DZD: 'dz',
-  LYD: 'ly', MMK: 'mm', THB: 'th', VND: 'vn', MYR: 'my', SGD: 'sg',
-  IDR: 'id', PHP: 'ph', PKR: 'pk', BDT: 'bd', LKR: 'lk', NPR: 'np',
-  MVR: 'mv', AFN: 'af', IQD: 'iq', IRR: 'ir', SYP: 'sy', YER: 'ye',
-};
-
-// Эмодзи-флаги для фиатных валют
-const FIAT_FLAG_EMOJI: Record<string, string> = {
-  USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺',
-  BYN: '🇧🇾', UAH: '🇺🇦', KZT: '🇰🇿', GEL: '🇬🇪', AMD: '🇦🇲', AZN: '🇦🇿',
-  KRW: '🇰🇷', INR: '🇮🇳', BRL: '🇧🇷', CAD: '🇨🇦', AUD: '🇦🇺', CHF: '🇨🇭',
-  SEK: '🇸🇪', NOK: '🇳🇴', DKK: '🇩🇰', PLN: '🇵🇱', CZK: '🇨🇿', HUF: '🇭🇺',
-  RON: '🇷🇴', BGN: '🇧🇬', HRK: '🇭🇷', TRY: '🇹🇷', ILS: '🇮🇱', AED: '🇦🇪',
-  SAR: '🇸🇦', QAR: '🇶🇦', KWD: '🇰🇼', BHD: '🇧🇭', OMR: '🇴🇲', JOD: '🇯🇴',
-  LBP: '🇱🇧', EGP: '🇪🇬', ZAR: '🇿🇦', NGN: '🇳🇬', KES: '🇰🇪', GHS: '🇬🇭',
-  TZS: '🇹🇿', UGX: '🇺🇬', ETB: '🇪🇹', MAD: '🇲🇦', TND: '🇹🇳', DZD: '🇩🇿',
-  LYD: '🇱🇾', MMK: '🇲🇲', THB: '🇹🇭', VND: '🇻🇳', MYR: '🇲🇾', SGD: '🇸🇬',
-  IDR: '🇮🇩', PHP: '🇵🇭', PKR: '🇵🇰', BDT: '🇧🇩', LKR: '🇱🇰', NPR: '🇳🇵',
-  MVR: '🇲🇻', AFN: '🇦🇫', IQD: '🇮🇶', IRR: '🇮🇷', SYP: '🇸🇾', YER: '🇾🇪',
-};
-
-// Символы криптовалют
-const CRYPTO_ICONS: Record<string, string> = {
-  BTC: '₿', ETH: '◆', USDT: '₮', USDC: '$', BNB: '◆',
-  XRP: '✕', SOL: '◎', ADA: '◇', DOGE: 'Ð', TRX: '▶',
-  DOT: '●', LINK: '⬡', MATIC: '⬡', LTC: 'Ł', UNI: '🦄',
-};
-
-// Проверка, является ли валюта криптовалютой
-const CRYPTO_CODES = ['BTC', 'ETH', 'USDT', 'USDC', 'BNB', 'XRP', 'SOL', 'ADA', 'DOGE', 'TRX', 'DOT', 'LINK', 'MATIC', 'LTC', 'UNI'];
+import { CURRENCY_TO_COUNTRY, CURRENCY_FLAG_EMOJI, CRYPTO_CODES } from '../data/currencies';
 
 interface CityInfoCardProps {
   weather: WeatherData | null;
@@ -64,10 +25,10 @@ export function CityInfoCard({ weather, timezone, cityName, cityNameEn, currency
   const offsetSign = timezone.utcOffset >= 0 ? '+' : '';
   const offsetString = `${offsetSign}${timezone.utcOffset}`;
 
-  const isCrypto = CRYPTO_CODES.includes(currencyCode);
+  const isCrypto = CRYPTO_CODES.has(currencyCode);
   const countryCode = CURRENCY_TO_COUNTRY[currencyCode];
-  const fiatFlag = FIAT_FLAG_EMOJI[currencyCode] || '🏳️';
-  const cryptoIcon = CRYPTO_ICONS[currencyCode] || '🪙';
+  const fiatFlag = CURRENCY_FLAG_EMOJI[currencyCode] || '🏳️';
+  const cryptoIcon = CURRENCY_FLAG_EMOJI[currencyCode] || '🪙';
   const flagUrl = countryCode ? `https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/1x1/${countryCode}.svg` : '';
 
   // Для крипто и фиата показываем название города

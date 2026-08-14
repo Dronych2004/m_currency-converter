@@ -15,9 +15,9 @@
 import type { Currency, WeatherData, TimezoneData } from '../types';
 import { getFlagByCurrencyCode, capitalCities } from '../utils/flags';
 import { getWeatherDescription } from '../utils/weather';
-import { getCurrencyName } from '../i18n/currencies';
+import { getCurrencyName, getCurrencySymbol } from '../data/currencies';
 import type { Lang } from '../i18n/translations';
-import { fetchCryptoRates } from './crypto';
+import { fetchCryptoRates, cryptoCodes } from './crypto';
 
 // Валюты, которые мы поддерживаем (есть в capitalCities)
 const SUPPORTED_CURRENCIES = new Set(Object.keys(capitalCities));
@@ -97,11 +97,8 @@ export async function convertCurrency(
       return { rate: 1, result: amount };
     }
 
-    // Список криптовалют
-    const cryptoCodes = ['BTC', 'ETH', 'USDT', 'USDC', 'BNB', 'XRP', 'SOL', 'ADA', 'DOGE', 'TRX', 'DOT', 'LINK', 'MATIC', 'LTC', 'UNI'];
-
-    const fromIsCrypto = cryptoCodes.includes(from);
-    const toIsCrypto = cryptoCodes.includes(to);
+    const fromIsCrypto = cryptoCodes.has(from);
+    const toIsCrypto = cryptoCodes.has(to);
 
     // Если обе валюты фиатные - используем существующий API
     if (!fromIsCrypto && !toIsCrypto) {
@@ -275,36 +272,4 @@ export function getCurrentTime(timezone: string): TimezoneData {
   }
 }
 
-// ============================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ============================================
 
-/**
- * Получить символ валюты по коду
- */
-function getCurrencySymbol(code: string): string {
-  const symbols: Record<string, string> = {
-    USD: '$',
-    EUR: '€',
-    GBP: '£',
-    JPY: '¥',
-    CNY: '¥',
-    RUB: '₽',
-    BYN: 'Br',
-    UAH: '₴',
-    KZT: '₸',
-    GEL: '₾',
-    AMD: '֏',
-    AZN: '₼',
-    KRW: '₩',
-    INR: '₹',
-    BRL: 'R$',
-    TRY: '₺',
-    ILS: '₪',
-    THB: '฿',
-    VND: '₫',
-    PHP: '₱',
-  };
-  
-  return symbols[code] || code;
-}

@@ -1,40 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Currency } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
-
-// Коды стран для флагов
-const CURRENCY_TO_COUNTRY: Record<string, string> = {
-  USD: 'us', EUR: 'eu', GBP: 'gb', JPY: 'jp', CNY: 'cn', RUB: 'ru',
-  BYN: 'by', UAH: 'ua', KZT: 'kz', GEL: 'ge', AMD: 'am', AZN: 'az',
-  KRW: 'kr', INR: 'in', BRL: 'br', CAD: 'ca', AUD: 'au', CHF: 'ch',
-  SEK: 'se', NOK: 'no', DKK: 'dk', PLN: 'pl', CZK: 'cz', HUF: 'hu',
-  RON: 'ro', BGN: 'bg', HRK: 'hr', TRY: 'tr', ILS: 'il', AED: 'ae',
-  SAR: 'sa', QAR: 'qa', KWD: 'kw', BHD: 'bh', OMR: 'om', JOD: 'jo',
-  LBP: 'lb', EGP: 'eg', ZAR: 'za', NGN: 'ng', KES: 'ke', GHS: 'gh',
-  TZS: 'tz', UGX: 'ug', ETB: 'et', MAD: 'ma', TND: 'tn', DZD: 'dz',
-  LYD: 'ly', MMK: 'mm', THB: 'th', VND: 'vn', MYR: 'my', SGD: 'sg',
-  IDR: 'id', PHP: 'ph', PKR: 'pk', BDT: 'bd', LKR: 'lk', NPR: 'np',
-  MVR: 'mv', AFN: 'af', IQD: 'iq', IRR: 'ir', SYP: 'sy', YER: 'ye',
-};
-
-// Эмодзи-флаги как fallback
-const CURRENCY_FLAG_EMOJI: Record<string, string> = {
-  USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', JPY: '🇯🇵', CNY: '🇨🇳', RUB: '🇷🇺',
-  BYN: '🇧🇾', UAH: '🇺🇦', KZT: '🇰🇿', GEL: '🇬🇪', AMD: '🇦🇲', AZN: '🇦🇿',
-  KRW: '🇰🇷', INR: '🇮🇳', BRL: '🇧🇷', CAD: '🇨🇦', AUD: '🇦🇺', CHF: '🇨🇭',
-  SEK: '🇸🇪', NOK: '🇳🇴', DKK: '🇩🇰', PLN: '🇵🇱', CZK: '🇨🇿', HUF: '🇭🇺',
-  RON: '🇷🇴', BGN: '🇧🇬', HRK: '🇭🇷', TRY: '🇹🇷', ILS: '🇮🇱', AED: '🇦🇪',
-  SAR: '🇸🇦', QAR: '🇶🇦', KWD: '🇰🇼', BHD: '🇧🇭', OMR: '🇴🇲', JOD: '🇯🇴',
-  LBP: '🇱🇧', EGP: '🇪🇬', ZAR: '🇿🇦', NGN: '🇳🇬', KES: '🇰🇪', GHS: '🇬🇭',
-  TZS: '🇹🇿', UGX: '🇺🇬', ETB: '🇪🇹', MAD: '🇲🇦', TND: '🇹🇳', DZD: '🇩🇿',
-  LYD: '🇱🇾', MMK: '🇲🇲', THB: '🇹🇭', VND: '🇻🇳', MYR: '🇲🇾', SGD: '🇸🇬',
-  IDR: '🇮🇩', PHP: '🇵🇭', PKR: '🇵🇰', BDT: '🇧🇩', LKR: '🇱🇰', NPR: '🇳🇵',
-  MVR: '🇲🇻', AFN: '🇦🇫', IQD: '🇮🇶', IRR: '🇮🇷', SYP: '🇸🇾', YER: '🇾🇪',
-  // Криптовалюты
-  BTC: '₿', ETH: 'Ξ', USDT: '₮', USDC: '$', BNB: '◆',
-  XRP: '✕', SOL: '◎', ADA: '◇', DOGE: 'Ð', TRX: '▶',
-  DOT: '●', LINK: '⬡', MATIC: '⬡', LTC: 'Ł', UNI: '🦄',
-};
+import { CURRENCY_TO_COUNTRY, CURRENCY_FLAG_EMOJI } from '../data/currencies';
 
 function FlagImage({ code, emoji }: { code: string; emoji: string }) {
   const countryCode = CURRENCY_TO_COUNTRY[code];
