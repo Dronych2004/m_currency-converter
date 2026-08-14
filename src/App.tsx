@@ -3,6 +3,7 @@
  */
 
 import { useCurrencyConverter } from './hooks/useCurrencyConverter'
+import { useCityInfo } from './hooks/useCityInfo'
 import { useLanguage } from './i18n/LanguageContext'
 import { CurrencySelector } from './components/CurrencySelector'
 import { AmountInput } from './components/AmountInput'
@@ -12,10 +13,9 @@ import { CityInfoCard } from './components/CityInfoCard'
 import { AdBanner } from './components/AdBanner'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { CurrencyTypeSwitcher } from './components/CurrencyTypeSwitcher'
-import { currencies as currencyMeta } from './data/currencies'
 
 function App() {
-  const { t, lang } = useLanguage()
+  const { t } = useLanguage()
 
   const {
     currencies,
@@ -36,28 +36,8 @@ function App() {
     setCurrencyType,
   } = useCurrencyConverter()
 
-  // Определяем город для крипты или фиата
-  const fromMeta = fromCurrency ? currencyMeta[fromCurrency.code] : undefined
-  const toMeta = toCurrency ? currencyMeta[toCurrency.code] : undefined
-
-  const fromCityCode = fromMeta?.crypto?.cityCode || fromCurrency?.code
-  const toCityCode = toMeta?.crypto?.cityCode || toCurrency?.code
-
-  const fromCity = fromCityCode ? currencyMeta[fromCityCode]?.capital : null
-  const toCity = toCityCode ? currencyMeta[toCityCode]?.capital : null
-
-  // Название города: crypto → capital → fallback
-  const cityUnavailable = lang === 'ru' ? 'Город не определён' : 'City unavailable'
-  const fromCityName =
-    fromMeta?.crypto?.cityRu ||
-    fromCity?.name ||
-    cityUnavailable
-  const fromCityNameEn = fromMeta?.crypto?.cityEn || fromCity?.nameEn || cityUnavailable
-  const toCityName =
-    toMeta?.crypto?.cityRu ||
-    toCity?.name ||
-    cityUnavailable
-  const toCityNameEn = toMeta?.crypto?.cityEn || toCity?.nameEn || cityUnavailable
+  const fromCity = useCityInfo(fromCurrency)
+  const toCity = useCityInfo(toCurrency)
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
@@ -229,8 +209,8 @@ function App() {
                 >
                   <CityInfoCard
                     weather={fromWeather}
-                    cityName={fromCityName}
-                    cityNameEn={fromCityNameEn}
+                    cityName={fromCity.cityName}
+                    cityNameEn={fromCity.cityNameEn}
                     currencyCode={fromCurrency.code}
                   />
                 </div>
@@ -245,8 +225,8 @@ function App() {
                 >
                   <CityInfoCard
                     weather={toWeather}
-                    cityName={toCityName}
-                    cityNameEn={toCityNameEn}
+                    cityName={toCity.cityName}
+                    cityNameEn={toCity.cityNameEn}
                     currencyCode={toCurrency.code}
                   />
                 </div>
