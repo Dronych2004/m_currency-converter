@@ -27,11 +27,27 @@ const SUPPORTED_CURRENCIES = new Set(Object.keys(capitalCities));
 // КОНСТАНТЫ
 // ============================================
 
-// Базовый URL для API курсов валют
+// Основной API курсов валют
 const EXCHANGE_RATE_API_BASE = 'https://open.er-api.com/v6/latest';
+// Резервный API (fallback при недоступности основного)
+const EXCHANGE_RATE_FALLBACK_BASE = 'https://open.er-api.com/v6/latest';
 
-// Базовый URL для API погоды
+// API погоды
 const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
+
+/** Запрос с fallback на резервный сервис */
+async function fetchWithFallback(url: string, fallbackUrl: string): Promise<ExchangeRateResponse> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch {
+    console.warn('Основной API недоступен, пробуем резервный...');
+    const fallbackResponse = await fetch(fallbackUrl);
+    if (!fallbackResponse.ok) throw new Error(`Fallback API тоже недоступен: ${fallbackResponse.status}`);
+    return await fallbackResponse.json();
+  }
+}
 
 // ============================================
 // СЕРВИС КУРСОВ ВАЛЮТ
@@ -48,19 +64,11 @@ const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
  */
 export async function fetchCurrencies(lang: Lang = 'ru'): Promise<Currency[]> {
   try {
-    // Делаем запрос к API
-    // open.er-api.com/v6/latest/USD вернёт курсы всех валют к доллару
-    const response = await fetch(`${EXCHANGE_RATE_API_BASE}/USD`);
+    const data = await fetchWithFallback(
+      `${EXCHANGE_RATE_API_BASE}/USD`,
+      `${EXCHANGE_RATE_FALLBACK_BASE}/USD`
+    );
 
-    // Проверяем, что запрос прошёл успешно
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    // Парсим JSON ответ
-    const data: ExchangeRateResponse = await response.json();
-
-    // Преобразуем данные в наш формат
     const currencies: Currency[] = Object.entries(data.rates)
       .filter(([code]) => SUPPORTED_CURRENCIES.has(code))
       .map(([code, rate]) => ({
@@ -102,11 +110,10 @@ export async function convertCurrency(
 
     // Если обе валюты фиатные - используем существующий API
     if (!fromIsCrypto && !toIsCrypto) {
-      const response = await fetch(`${EXCHANGE_RATE_API_BASE}/${from}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: ExchangeRateResponse = await response.json();
+      const data = await fetchWithFallback(
+        `${EXCHANGE_RATE_API_BASE}/${from}`,
+        `${EXCHANGE_RATE_FALLBACK_BASE}/${from}`
+      );
       const rate = data.rates[to];
       if (!rate) {
         throw new Error(`Валюта ${to} не найдена`);
@@ -147,11 +154,11 @@ export async function convertCurrency(
 // API возвращает "сколько единиц = 1 USD", нам нужно "сколько USD за 1 единицу"
 async function getFiatRateToUSD(code: string): Promise<number> {
   if (code === 'USD') return 1;
-  const response = await fetch(`${EXCHANGE_RATE_API_BASE}/USD`);
-  if (!response.ok) throw new Error('Failed to fetch fiat rate');
-  const data: ExchangeRateResponse = await response.json();
+  const data = await fetchWithFallback(
+    `${EXCHANGE_RATE_API_BASE}/USD`,
+    `${EXCHANGE_RATE_FALLBACK_BASE}/USD`
+  );
   const unitsPerUSD = data.rates[code] || 0;
-  // Инвертируем: если 0.73 GBP = 1 USD, то 1 GBP = 1/0.73 = 1.37 USD
   return unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;
 }
 
