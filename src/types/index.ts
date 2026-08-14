@@ -48,15 +48,38 @@ export interface ExchangeRateResponse {
 
 /**
  * Данные о погоде для столицы страны
- * Open-Meteo API возвращает данные в таком формате
  */
 export interface WeatherData {
-  temperature: number;      // Температура в градусах Цельсия
-  humidity: number;         // Влажность в процентах
-  windSpeed: number;        // Скорость ветра в км/ч
-  weatherCode: number;      // Код погоды (0-99, определяет тип погоды)
-  description: string;      // Человекочитаемое описание погоды
-  icon: string;             // Эмодзи для отображения
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  weatherCode: number;
+  description: string;
+  icon: string;
+}
+
+/**
+ * Сырой ответ Open-Meteo API (current_weather)
+ */
+export interface OpenMeteoResponse {
+  current_weather: {
+    temperature: number;
+    windspeed: number;
+    weathercode: number;
+  };
+}
+
+/** Runtime-guard: проверяет, что ответ Open-Meteo имеет нужную форму */
+export function isOpenMeteoResponse(data: unknown): data is OpenMeteoResponse {
+  if (typeof data !== 'object' || data === null) return false;
+  const obj = data as Record<string, unknown>;
+  if (!obj.current_weather || typeof obj.current_weather !== 'object') return false;
+  const cw = obj.current_weather as Record<string, unknown>;
+  return (
+    typeof cw.temperature === 'number' &&
+    typeof cw.windspeed === 'number' &&
+    typeof cw.weathercode === 'number'
+  );
 }
 
 // ============================================

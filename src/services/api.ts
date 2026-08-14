@@ -12,7 +12,8 @@
  * - open-meteo.com - бесплатные данные о погоде (без ключа!)
  */
 
-import type { Currency, WeatherData, TimezoneData } from '../types';
+import type { Currency, WeatherData, TimezoneData, ExchangeRateResponse } from '../types';
+import { isOpenMeteoResponse } from '../types';
 import { getFlagByCurrencyCode, capitalCities } from '../utils/flags';
 import { getWeatherDescription } from '../utils/weather';
 import { getCurrencyName, getCurrencySymbol } from '../data/currencies';
@@ -57,10 +58,9 @@ export async function fetchCurrencies(lang: Lang = 'ru'): Promise<Currency[]> {
     }
 
     // Парсим JSON ответ
-    const data = await response.json();
+    const data: ExchangeRateResponse = await response.json();
 
     // Преобразуем данные в наш формат
-    // Фильтруем: оставляем только поддерживаемые валюты
     const currencies: Currency[] = Object.entries(data.rates)
       .filter(([code]) => SUPPORTED_CURRENCIES.has(code))
       .map(([code, rate]) => ({
@@ -68,7 +68,7 @@ export async function fetchCurrencies(lang: Lang = 'ru'): Promise<Currency[]> {
         name: getCurrencyName(code, lang),
         flag: getFlagByCurrencyCode(code),
         symbol: getCurrencySymbol(code),
-        rate: rate as number,
+        rate,
       }));
 
     return currencies;
@@ -106,7 +106,7 @@ export async function convertCurrency(
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
+      const data: ExchangeRateResponse = await response.json();
       const rate = data.rates[to];
       if (!rate) {
         throw new Error(`Валюта ${to} не найдена`);
@@ -149,7 +149,7 @@ async function getFiatRateToUSD(code: string): Promise<number> {
   if (code === 'USD') return 1;
   const response = await fetch(`${EXCHANGE_RATE_API_BASE}/USD`);
   if (!response.ok) throw new Error('Failed to fetch fiat rate');
-  const data = await response.json();
+  const data: ExchangeRateResponse = await response.json();
   const unitsPerUSD = data.rates[code] || 0;
   // Инвертируем: если 0.73 GBP = 1 USD, то 1 GBP = 1/0.73 = 1.37 USD
   return unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;
@@ -200,7 +200,11 @@ export async function fetchWeather(
     }
     
     const data = await response.json();
-    
+
+    if (!isOpenMeteoResponse(data)) {
+      throw new Error('Неожиданный формат ответа Open-Meteo');
+    }
+
     // Извлекаем данные о текущей погоде
     const currentWeather = data.current_weather;
     
