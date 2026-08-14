@@ -173,6 +173,18 @@ export async function fetchWeather(
   latitude: number,
   longitude: number
 ): Promise<WeatherData> {
+  // Проверяем координаты — не отправляем запрос в Атлантику
+  if (!latitude && !longitude) {
+    return {
+      temperature: 0,
+      humidity: 0,
+      windSpeed: 0,
+      weatherCode: -1,
+      description: '',
+      icon: '',
+    };
+  }
+
   try {
     // Формируем URL с параметрами
     const url = new URL(WEATHER_API_BASE);

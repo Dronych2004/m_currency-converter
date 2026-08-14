@@ -46,17 +46,18 @@ function App() {
   const fromCity = fromCityCode ? currencyMeta[fromCityCode]?.capital : null
   const toCity = toCityCode ? currencyMeta[toCityCode]?.capital : null
 
-  // Для крипты используем название из crypto, для фиата - из capital
+  // Название города: crypto → capital → fallback
+  const cityUnavailable = lang === 'ru' ? 'Город не определён' : 'City unavailable'
   const fromCityName =
     fromMeta?.crypto?.cityRu ||
     fromCity?.name ||
-    (lang === 'ru' ? 'Неизвестно' : 'Unknown')
-  const fromCityNameEn = fromMeta?.crypto?.cityEn || fromCity?.nameEn || 'Unknown'
+    cityUnavailable
+  const fromCityNameEn = fromMeta?.crypto?.cityEn || fromCity?.nameEn || cityUnavailable
   const toCityName =
     toMeta?.crypto?.cityRu ||
     toCity?.name ||
-    (lang === 'ru' ? 'Неизвестно' : 'Unknown')
-  const toCityNameEn = toMeta?.crypto?.cityEn || toCity?.nameEn || 'Unknown'
+    cityUnavailable
+  const toCityNameEn = toMeta?.crypto?.cityEn || toCity?.nameEn || cityUnavailable
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
