@@ -68,12 +68,19 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
   // AbortController для отмены устаревших запросов конвертации
   const convertAbortRef = useRef<AbortController | null>(null);
 
+  // Отслеживаем предыдущий currencyType чтобы понять: сброс при смене типа или обновление имён при смене языка
+  const prevTypeRef = useRef(currencyType);
+
   // Загрузка валют при смене типа или языка
   useEffect(() => {
     async function loadCurrencies() {
       try {
         setIsLoading(true);
         setError(null);
+
+        // Сбрасываем выбор ТОЛЬКО при смене типа (traditional ↔ crypto)
+        const typeChanged = prevTypeRef.current !== currencyType;
+        prevTypeRef.current = currencyType;
 
         let currenciesData: Currency[];
 
@@ -97,16 +104,29 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
 
         setCurrencies(currenciesData);
 
-        if (currencyType === 'crypto') {
-          const btc = currenciesData.find(c => c.code === 'BTC');
-          const usd = currenciesData.find(c => c.code === 'USD');
-          if (btc) setFromCurrency(btc);
-          if (usd) setToCurrency(usd);
+        // Устанавливаем валюты по умолчанию ТОЛЬКО при первом загрузке или смене типа
+        if (typeChanged || !fromCurrency || !toCurrency) {
+          if (currencyType === 'crypto') {
+            const btc = currenciesData.find(c => c.code === 'BTC');
+            const usd = currenciesData.find(c => c.code === 'USD');
+            if (btc) setFromCurrency(btc);
+            if (usd) setToCurrency(usd);
+          } else {
+            const usd = currenciesData.find(c => c.code === 'USD');
+            const eur = currenciesData.find(c => c.code === 'EUR');
+            if (usd) setFromCurrency(usd);
+            if (eur) setToCurrency(eur);
+          }
         } else {
-          const usd = currenciesData.find(c => c.code === 'USD');
-          const eur = currenciesData.find(c => c.code === 'EUR');
-          if (usd) setFromCurrency(usd);
-          if (eur) setToCurrency(eur);
+          // При смене языка — обновляем объекты fromCurrency/toCurrency новыми переводами
+          setFromCurrency(prev => {
+            if (!prev) return prev;
+            return currenciesData.find(c => c.code === prev.code) || prev;
+          });
+          setToCurrency(prev => {
+            if (!prev) return prev;
+            return currenciesData.find(c => c.code === prev.code) || prev;
+          });
         }
       } catch (err) {
         setError(lang === 'ru'
