@@ -3,6 +3,7 @@ import type { Currency, WeatherData } from '../types';
 import { fetchCurrencies, convertCurrency, fetchWeather } from '../services/api';
 import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto';
 import { currencies as currencyMeta } from '../data/currencies';
+import { createCache } from '../utils/cache';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { CurrencyType } from '../types';
 
@@ -23,26 +24,6 @@ export interface UseCurrencyConverterReturn {
   setAmount: (amount: string) => void;
   swapCurrencies: () => void;
   setCurrencyType: (type: CurrencyType) => void;
-}
-
-// Простой in-memory кэш с TTL (без class syntax для совместимости с erasableSyntaxOnly)
-function createCache<T>(ttlMs: number) {
-  const store = new Map<string, { value: T; expiresAt: number }>();
-
-  return {
-    get(key: string): T | undefined {
-      const entry = store.get(key);
-      if (!entry) return undefined;
-      if (Date.now() > entry.expiresAt) {
-        store.delete(key);
-        return undefined;
-      }
-      return entry.value;
-    },
-    set(key: string, value: T): void {
-      store.set(key, { value, expiresAt: Date.now() + ttlMs });
-    },
-  };
 }
 
 // Кэш погоды на 10 минут (погода не меняется так часто)

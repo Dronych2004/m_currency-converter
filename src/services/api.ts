@@ -16,6 +16,7 @@ import type { Currency, WeatherData, TimezoneData, ExchangeRateResponse } from '
 import { isOpenMeteoResponse } from '../types';
 import { getFlagByCurrencyCode, capitalCities } from '../utils/flags';
 import { getWeatherDescription } from '../utils/weather';
+import { createCache } from '../utils/cache';
 import { getCurrencyName, getCurrencySymbol } from '../data/currencies';
 import type { Lang } from '../i18n/translations';
 import { fetchCryptoRates, cryptoCodes } from './crypto';
@@ -150,16 +151,25 @@ export async function convertCurrency(
   }
 }
 
+// Кэш фиатных курсов к USD (обновляются раз в день, кэшируем на час)
+const fiatRateCache = createCache<number>(60 * 60 * 1000);
+
 // Получить стоимость 1 единицы фиатной валюты в USD
-// API возвращает "сколько единиц = 1 USD", нам нужно "сколько USD за 1 единицу"
 async function getFiatRateToUSD(code: string): Promise<number> {
   if (code === 'USD') return 1;
+
+  const cacheKey = `fiat-usd-${code}`;
+  const cached = fiatRateCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
   const data = await fetchWithFallback(
     `${EXCHANGE_RATE_API_BASE}/USD`,
     `${EXCHANGE_RATE_FALLBACK_BASE}/USD`
   );
   const unitsPerUSD = data.rates[code] || 0;
-  return unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;
+  const result = unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;
+  fiatRateCache.set(cacheKey, result);
+  return result;
 }
 
 // ============================================
