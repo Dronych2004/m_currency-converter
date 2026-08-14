@@ -67,6 +67,9 @@ export interface OpenMeteoResponse {
     windspeed: number;
     weathercode: number;
   };
+  current?: {
+    relative_humidity_2m?: number;
+  };
 }
 
 /** Runtime-guard: проверяет, что ответ Open-Meteo имеет нужную форму */

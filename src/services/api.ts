@@ -207,8 +207,9 @@ export async function fetchWeather(
     const url = new URL(WEATHER_API_BASE);
     url.searchParams.set('latitude', latitude.toString());
     url.searchParams.set('longitude', longitude.toString());
-    url.searchParams.set('current_weather', 'true');  // Только текущая погода
-    url.searchParams.set('timezone', 'auto');          // Автоматически определить часовой пояс
+    url.searchParams.set('current_weather', 'true');
+    url.searchParams.set('current', 'relative_humidity_2m');
+    url.searchParams.set('timezone', 'auto');
     
     const response = await fetch(url.toString());
     
@@ -224,13 +225,14 @@ export async function fetchWeather(
 
     // Извлекаем данные о текущей погоде
     const currentWeather = data.current_weather;
-    
+    const current = data.current as { relative_humidity_2m?: number } | undefined;
+
     // Получаем описание погоды по коду
     const weatherInfo = getWeatherDescription(currentWeather.weathercode);
-    
+
     return {
       temperature: currentWeather.temperature,
-      humidity: 0,  // Open-Meteo не даёт влажность в current_weather, ставим 0
+      humidity: current?.relative_humidity_2m ?? 0,
       windSpeed: currentWeather.windspeed,
       weatherCode: currentWeather.weathercode,
       description: weatherInfo.description,
