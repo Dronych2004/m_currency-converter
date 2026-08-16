@@ -18,6 +18,70 @@ npm run dev
 | `npm run preview` | Предпросмотр сборки |
 | `npm run lint` | Проверка кода (oxlint) |
 
+## Производительность
+
+| Метрика | Результат |
+|---------|-----------|
+| Lighthouse Performance | 96/100 |
+| Accessibility | 95/100 |
+| SEO | 100/100 |
+
+### Оптимизации
+
+- **React.memo / useMemo / useCallback** — предотвращение лишних re-render компонентов
+- **Code splitting** — React вынесен в отдельный чанк (53KB vs 243KB之前)
+- **Lazy loading** — изображения флагов загружаются по требованию
+- **Async fonts** — Google Fonts не блокируют рендер
+- **Deferred analytics** — Yandex Metrika загружается после полной загрузки
+- **Content visibility** — браузер пропускает рендер невидимого контента
+- **GPU ускорение** — `will-change` для тяжёлых элементов
+- **CSS оптимизации** — убран backdrop-filter, упрощены анимации
+
+## История изменений
+
+### v1.0 — MVP
+
+- Базовый конвертер валют с API open.er-api.com
+- Поддержка 150+ фиатных валют
+- Двуязычный интерфейс (русский/английский)
+- Адаптивный дизайн для мобильных устройств
+
+### v1.1 — Криптовалюты
+
+- Добавлена поддержка 15 криптовалют (BTC, ETH, USDT, BNB, XRP, SOL, ADA, DOGE, TRX, DOT, LINK, MATIC, LTC, UNI)
+- CoinGecko API для получения курсов криптовалют
+- Переключатель "Традиционные / Криптовалюты"
+- Конвертация через USD (fiat ↔ crypto)
+
+### v1.2 — Погода и время
+
+- Отображение текущей погоды в столицах стран
+- Часы с текущим время в часовом поясе столицы
+- Open-Meteo API для погодных данных
+- Карточки информации о городах
+
+### v1.3 — Оптимизация
+
+- **Производительность:** Lighthouse 53 → 96
+- Persistent кэш курсов в localStorage (24 часа)
+- Debounce 300ms для конвертации
+- Fallback API при недоступности основного
+- Обработка ошибок CoinGecko (rate limit 429)
+
+### v1.4 — SEO и аналитика
+
+- JSON-LD структурированные данные
+- Open Graph и Twitter Card мета-теги
+- Yandex.Metrika (вебвизор, кликкарта, ecommerce)
+- robots.txt и sitemap.xml
+
+### v1.5 — UX улучшения
+
+- Фикс: смена языка больше не сбрасывает выбранные валюты
+- Fallback-состояния при ошибках загрузки
+- Валидация API-ответов (runtime type checking)
+- Удалён мёртвый код (App.css, useStats)
+
 ## Настройка перед деплоем
 
 ### 1. Замена домена
@@ -100,25 +164,33 @@ Sitemap: https://твой-домен.com/sitemap.xml
 src/
 ├── components/       # React-компоненты
 │   ├── AdBanner      # Рекламные блоки (левый/правый)
-│   ├── AmountInput
-│   ├── CityInfoCard
-│   ├── ConversionResult
-│   ├── CurrencySelector
-│   ├── StatsDisplay   # Счётчики посещений/конвертаций
-│   ├── SwapButton
-│   ├── TimezoneCard
-│   └── WeatherCard
+│   ├── AmountInput   # Ввод суммы
+│   ├── CityInfoCard  # Карточка информации о городе
+│   ├── ConversionResult  # Результат конвертации
+│   ├── CurrencySelector  # Выбор валюты
+│   ├── CurrencyTypeSwitcher  # Переключатель传统/крипто
+│   ├── LanguageSwitcher  # Переключатель языка
+│   └── SwapButton    # Кнопка обмена валют
 ├── hooks/            # Кастомные хуки
-│   ├── useCurrencyConverter
-│   └── useStats      # Статистика (localStorage)
+│   ├── useCurrencyConverter  # Основная логика конвертации
+│   └── useCityInfo   # Информация о городе
 ├── services/         # API-запросы
+│   ├── api.ts        # Курсы валют, погода, время
+│   └── crypto.ts     # Курсы криптовалют (CoinGecko)
+├── data/             # Данные
+│   └── currencies.ts # Метаданные валют (столицы, флаги)
+├── i18n/             # Интернационализация
+│   ├── translations.ts
+│   └── LanguageContext.tsx
 ├── types/            # TypeScript типы
 ├── utils/            # Утилиты
+│   ├── cache.ts      # In-memory и persistent кэш
+│   ├── flags.ts      # Флаги стран
+│   └── weather.ts    # Описание погоды
 ├── App.tsx           # Главный компонент
 └── main.tsx          # Точка входа
 public/
 ├── favicon.svg       # Иконка
-├── icons.svg         # Спрайт иконок
 ├── robots.txt        # Для поисковиков
 └── sitemap.xml       # Карта сайта
 ```
@@ -126,6 +198,7 @@ public/
 ## API
 
 - **Курсы валют:** [open.er-api.com](https://open.er-api.com) — бесплатный, без ключа
+- **Криптовалюты:** [CoinGecko](https://www.coingecko.com/) — бесплатный, без ключа
 - **Погода:** [Open-Meteo](https://open-meteo.com) — бесплатный, без ключа
 
 ## Деплой
