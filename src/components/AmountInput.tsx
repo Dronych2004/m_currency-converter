@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface AmountInputProps {
@@ -5,7 +6,7 @@ interface AmountInputProps {
   onChange: (value: string) => void;
 }
 
-export function AmountInput({ value, onChange }: AmountInputProps) {
+export const AmountInput = memo(function AmountInput({ value, onChange }: AmountInputProps) {
   const { t } = useLanguage();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,4 +45,4 @@ export function AmountInput({ value, onChange }: AmountInputProps) {
       </div>
     </div>
   );
-}
+});

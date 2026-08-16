@@ -2,12 +2,14 @@
  * КОМПОНЕНТ КНОПКИ ОБМЕНА - ПРОДВИНУТЫЙ ДИЗАЙН
  */
 
+import { memo } from 'react'
+
 interface SwapButtonProps {
   onClick: () => void
   disabled?: boolean
 }
 
-export function SwapButton({ onClick, disabled = false }: SwapButtonProps) {
+export const SwapButton = memo(function SwapButton({ onClick, disabled = false }: SwapButtonProps) {
   return (
     <div className="relative">
       {/* Фоновое свечение */}
@@ -41,4 +43,4 @@ export function SwapButton({ onClick, disabled = false }: SwapButtonProps) {
       </button>
     </div>
   )
-}
+})

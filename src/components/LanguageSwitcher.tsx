@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-export function LanguageSwitcher() {
+export const LanguageSwitcher = memo(function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
@@ -19,6 +20,8 @@ export function LanguageSwitcher() {
             alt="RU"
             width="20"
             height="14"
+            loading="lazy"
+            decoding="async"
             style={{ borderRadius: '2px' }}
           />
           RU
@@ -36,6 +39,8 @@ export function LanguageSwitcher() {
             alt="EN"
             width="20"
             height="14"
+            loading="lazy"
+            decoding="async"
             style={{ borderRadius: '2px' }}
           />
           EN
@@ -43,4 +48,4 @@ export function LanguageSwitcher() {
       </div>
     </div>
   );
-}
+});

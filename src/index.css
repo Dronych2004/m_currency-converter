@@ -167,34 +167,34 @@ body::before {
 
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(99, 102, 241, 0.2);
+    opacity: 0.5;
   }
   50% {
-    box-shadow: 0 0 30px var(--accent-glow-strong), 0 0 60px rgba(99, 102, 241, 0.3);
+    opacity: 0.8;
   }
 }
 
 @keyframes border-flow {
   0% {
-    border-color: rgba(99, 102, 241, 0.3);
+    opacity: 0.3;
   }
   50% {
-    border-color: rgba(139, 92, 246, 0.5);
+    opacity: 0.5;
   }
   100% {
-    border-color: rgba(6, 182, 212, 0.3);
+    opacity: 0.3;
   }
 }
 
 @keyframes gradient-shift {
   0% {
-    background-position: 0% 50%;
+    opacity: 0.8;
   }
   50% {
-    background-position: 100% 50%;
+    opacity: 1;
   }
   100% {
-    background-position: 0% 50%;
+    opacity: 0.8;
   }
 }
 
@@ -267,17 +267,19 @@ body::before {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
+  will-change: transform;
 }
 
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  background: rgba(10, 10, 46, 0.9);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
 }
 
 .glass-card::before {
@@ -304,11 +306,12 @@ body::before {
    ============================================ */
 
 .neon-card {
-  box-shadow: 
+  box-shadow:
     0 0 15px rgba(99, 102, 241, 0.15),
     0 0 30px rgba(99, 102, 241, 0.08),
     inset 0 0 15px rgba(99, 102, 241, 0.05);
   border-color: rgba(99, 102, 241, 0.25) !important;
+  will-change: box-shadow;
 }
 
 .neon-card:hover {
@@ -344,8 +347,6 @@ body::before {
 
 .btn-primary {
   background: var(--gradient-accent);
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
   border: none;
   border-radius: 14px;
   padding: 16px 36px;
@@ -396,15 +397,13 @@ body::before {
   height: 56px;
   border-radius: 50%;
   background: var(--gradient-accent);
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
   border: 3px solid var(--bg-primary);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
+  box-shadow:
     0 8px 25px var(--accent-glow),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -456,8 +455,7 @@ body::before {
    ============================================ */
 
 .currency-btn {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
+  background: rgba(10, 10, 46, 0.9);
   border: 2px solid var(--glass-border);
   border-radius: 18px;
   padding: 16px 20px;
@@ -513,13 +511,15 @@ body::before {
     rgba(139, 92, 246, 0.1) 50%,
     rgba(6, 182, 212, 0.08) 100%
   );
-  backdrop-filter: blur(20px);
   border: 2px solid transparent;
   border-radius: 24px;
   padding: 32px;
   position: relative;
   overflow: hidden;
   animation: border-flow 6s ease infinite;
+  will-change: transform;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
 }
 
 .result-card::before {
@@ -562,14 +562,16 @@ body::before {
    ============================================ */
 
 .info-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
+  background: rgba(10, 10, 46, 0.9);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 20px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 200px;
 }
 
 .info-card::after {
@@ -599,8 +601,6 @@ body::before {
   width: 48px;
   height: 48px;
   background: var(--gradient-accent);
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -614,14 +614,14 @@ body::before {
    ============================================ */
 
 .dropdown {
-  background: rgba(15, 15, 35, 0.95);
-  backdrop-filter: blur(30px);
+  background: rgba(15, 15, 35, 0.98);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(0, 0, 0, 0.5),
     0 0 40px rgba(99, 102, 241, 0.1);
+  will-change: transform;
 }
 
 .dropdown-item {

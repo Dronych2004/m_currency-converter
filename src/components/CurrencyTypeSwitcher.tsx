@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import type { CurrencyType } from '../types';
 
@@ -8,7 +9,7 @@ interface CurrencyTypeSwitcherProps {
   onChange: (type: CurrencyType) => void;
 }
 
-export function CurrencyTypeSwitcher({ value, onChange }: CurrencyTypeSwitcherProps) {
+export const CurrencyTypeSwitcher = memo(function CurrencyTypeSwitcher({ value, onChange }: CurrencyTypeSwitcherProps) {
   const { t } = useLanguage();
 
   return (
@@ -43,4 +44,4 @@ export function CurrencyTypeSwitcher({ value, onChange }: CurrencyTypeSwitcherPr
       </span>
     </div>
   );
-}
+});

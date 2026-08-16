@@ -34,7 +34,7 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
     }
 
     tick();
-    const interval = setInterval(tick, 1000);
+    const interval = setInterval(tick, 30000);
     return () => clearInterval(interval);
   }, [currencyCode]);
 
@@ -75,6 +75,8 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
             src={flagUrl}
             alt={displayName}
             width="48" height="32"
+            loading="lazy"
+            decoding="async"
             style={{ borderRadius: '4px', flexShrink: 0 }}
             onError={(e) => {
               const target = e.target as HTMLImageElement;

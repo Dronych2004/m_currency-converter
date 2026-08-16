@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from 'react';
 import { translations, type Lang, type TranslationKey } from './translations';
 
 interface LanguageContextType {
@@ -22,19 +22,21 @@ function getInitialLang(): Lang {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(getInitialLang);
 
-  const setLang = (newLang: Lang) => {
+  const setLang = useCallback((newLang: Lang) => {
     setLangState(newLang);
     try {
       localStorage.setItem(STORAGE_KEY, newLang);
     } catch {}
-  };
+  }, []);
 
-  const t = (key: TranslationKey): string => {
+  const t = useCallback((key: TranslationKey): string => {
     return translations[lang][key];
-  };
+  }, [lang]);
+
+  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

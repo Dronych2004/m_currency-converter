@@ -41,14 +41,11 @@ function App() {
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
-      {/* Декоративные элементы фона */}
+      {/* Декоративные элементы фона — статичные, без blur3d */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-float" />
-        <div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-float"
-          style={{ animationDelay: '2s' }}
-        />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-cyan-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-cyan-500/5 rounded-full blur-2xl" />
       </div>
 
       <LanguageSwitcher />
@@ -198,7 +195,10 @@ function App() {
 
             {/* ИНФОРМАЦИОННЫЕ КАРТОЧКИ */}
             {fromCurrency && toCurrency && (
-              <div className="grid md:grid-cols-2 gap-3 md:gap-4">
+              <div
+                className="grid md:grid-cols-2 gap-3 md:gap-4"
+                style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
+              >
                 <div
                   className="animate-slide-in-left"
                   style={{
@@ -238,6 +238,8 @@ function App() {
           <footer
             className="text-center mt-8 pb-4 animate-fade-in-up"
             style={{
+              contentVisibility: 'auto',
+              containIntrinsicSize: 'auto 200px',
               animationDelay: '0.6s',
               opacity: 0,
               animationFillMode: 'forwards',

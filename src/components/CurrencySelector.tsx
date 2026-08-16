@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, memo } from 'react';
 import type { Currency } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { CURRENCY_TO_COUNTRY, CURRENCY_FLAG_EMOJI } from '../data/currencies';
@@ -21,6 +21,8 @@ function FlagImage({ code, emoji }: { code: string; emoji: string }) {
       alt={code}
       width="32"
       height="22"
+      loading="lazy"
+      decoding="async"
       style={{ borderRadius: '3px', flexShrink: 0 }}
       onError={(e) => {
         const target = e.target as HTMLImageElement;
@@ -46,7 +48,7 @@ interface CurrencySelectorProps {
   id: string;
 }
 
-export function CurrencySelector({
+export const CurrencySelector = memo(function CurrencySelector({
   currencies,
   selected,
   onSelect,
@@ -68,13 +70,14 @@ export function CurrencySelector({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredCurrencies = currencies.filter(currency => {
+  const filteredCurrencies = useMemo(() => {
+    if (!searchTerm) return currencies;
     const searchLower = searchTerm.toLowerCase();
-    return (
+    return currencies.filter(currency =>
       currency.code.toLowerCase().includes(searchLower) ||
       currency.name.toLowerCase().includes(searchLower)
     );
-  });
+  }, [currencies, searchTerm]);
 
   const handleSelect = (currency: Currency) => {
     onSelect(currency);
@@ -183,4 +186,4 @@ export function CurrencySelector({
       )}
     </div>
   );
-}
+});
