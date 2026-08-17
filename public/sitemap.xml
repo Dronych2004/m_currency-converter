@@ -74,6 +74,42 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/usd-cny" />
   </url>
   <url>
+    <loc>https://cconverter.ru/rub-byn</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/rub-byn?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/rub-byn?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/rub-byn" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/rub-kzt</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/rub-kzt?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/rub-kzt?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/rub-kzt" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/rub-try</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/rub-try?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/rub-try?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/rub-try" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/rub-egp</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/rub-egp?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/rub-egp?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/rub-egp" />
+  </url>
+  <url>
     <loc>https://cconverter.ru/privacy.html</loc>
     <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>

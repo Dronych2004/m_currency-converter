@@ -108,14 +108,17 @@ function Home() {
               <Link to="/btc-usd" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 BTC/USD
               </Link>
-              <Link to="/usd-kzt" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                USD/KZT
+              <Link to="/rub-byn" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                RUB/BYN
               </Link>
-              <Link to="/usd-uah" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                USD/UAH
+              <Link to="/rub-kzt" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                RUB/KZT
               </Link>
-              <Link to="/usd-cny" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                USD/CNY
+              <Link to="/rub-try" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                RUB/TRY
+              </Link>
+              <Link to="/rub-egp" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                RUB/EGP
               </Link>
             </div>
           </div>

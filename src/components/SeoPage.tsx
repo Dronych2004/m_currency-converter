@@ -4,7 +4,9 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 import { CurrencySelector } from './CurrencySelector'
 import { AmountInput } from './AmountInput'
 import { ConversionResult } from './ConversionResult'
+import { CityInfoCard } from './CityInfoCard'
 import { useCurrencyConverter } from '../hooks/useCurrencyConverter'
+import { useCityInfo } from '../hooks/useCityInfo'
 import { useLanguage } from '../i18n/LanguageContext'
 
 interface SeoPageProps {
@@ -35,10 +37,15 @@ export function SeoPage({
     convertedAmount,
     exchangeRate,
     isLoading,
+    fromWeather,
+    toWeather,
     setFromCurrency,
     setToCurrency,
     setAmount,
   } = useCurrencyConverter()
+
+  const fromCity = useCityInfo(fromCurrency)
+  const toCity = useCityInfo(toCurrency)
 
   // Устанавливаем валюты по умолчанию для этой страницы
   useEffect(() => {
@@ -127,14 +134,14 @@ export function SeoPage({
 
         {/* Центральный контент */}
         <div className="max-w-5xl mx-auto relative z-10 flex-1 min-w-0">
-        {/* Хлебные крошки */}
-        <nav className="text-sm text-slate-400 mb-6">
-          <Link to="/" className="hover:text-white transition-colors">
-            {t('title')}
-          </Link>
-          <span className="mx-2">›</span>
-          <span className="text-white">{h1}</span>
-        </nav>
+        {/* Кнопка возврата */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white transition-all"
+        >
+          <span className="text-lg">←</span>
+          <span>{t('title')}</span>
+        </Link>
 
         {/* Заголовок */}
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{h1}</h1>
@@ -188,6 +195,24 @@ export function SeoPage({
           </div>
         </div>
 
+        {/* Карточки погоды и времени */}
+        {fromCurrency && toCurrency && (
+          <div className="grid md:grid-cols-2 gap-3 md:gap-4 mb-8">
+            <CityInfoCard
+              weather={fromWeather}
+              cityName={fromCity.cityName}
+              cityNameEn={fromCity.cityNameEn}
+              currencyCode={fromCurrency.code}
+            />
+            <CityInfoCard
+              weather={toWeather}
+              cityName={toCity.cityName}
+              cityNameEn={toCity.cityNameEn}
+              currencyCode={toCurrency.code}
+            />
+          </div>
+        )}
+
         {/* Контент статьи */}
         <article className="prose prose-invert max-w-none mb-8">
           <div dangerouslySetInnerHTML={{ __html: content }} />
@@ -227,9 +252,10 @@ export function SeoPage({
               { from: 'EUR', to: 'RUB', label: 'EUR/RUB' },
               { from: 'EUR', to: 'USD', label: 'EUR/USD' },
               { from: 'BTC', to: 'USD', label: 'BTC/USD' },
-              { from: 'USD', to: 'KZT', label: 'USD/KZT' },
-              { from: 'USD', to: 'UAH', label: 'USD/UAH' },
-              { from: 'USD', to: 'CNY', label: 'USD/CNY' },
+              { from: 'RUB', to: 'BYN', label: 'RUB/BYN' },
+              { from: 'RUB', to: 'KZT', label: 'RUB/KZT' },
+              { from: 'RUB', to: 'TRY', label: 'RUB/TRY' },
+              { from: 'RUB', to: 'EGP', label: 'RUB/EGP' },
             ].map(pair => (
               <Link
                 key={pair.label}
