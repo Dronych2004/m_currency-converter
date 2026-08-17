@@ -2,9 +2,12 @@
  * ГЛАВНЫЙ КОМПОНЕНТ С МАРШРУТИЗАЦИЕЙ
  */
 
+import { useRef, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useCurrencyConverter } from './hooks/useCurrencyConverter'
 import { useCityInfo } from './hooks/useCityInfo'
+import { useHistory } from './hooks/useHistory'
+import { useFavorites } from './hooks/useFavorites'
 import { useLanguage } from './i18n/LanguageContext'
 import { CurrencySelector } from './components/CurrencySelector'
 import { AmountInput } from './components/AmountInput'
@@ -14,6 +17,8 @@ import { CityInfoCard } from './components/CityInfoCard'
 import { AdBanner } from './components/AdBanner'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { CurrencyTypeSwitcher } from './components/CurrencyTypeSwitcher'
+import { HistoryCard } from './components/HistoryCard'
+import { FavoritesCard } from './components/FavoritesCard'
 import { SeoPage } from './components/SeoPage'
 import { seoPages } from './data/seoPages'
 
@@ -41,6 +46,36 @@ function Home() {
 
   const fromCity = useCityInfo(fromCurrency)
   const toCity = useCityInfo(toCurrency)
+  const { history, addConversion, clearHistory, removeRecord } = useHistory()
+  const { favorites, isFavorite, toggleFavorite, removeFavorite } = useFavorites()
+
+  // Автоматически сохраняем конвертацию при изменении результата
+  const lastConversionRef = useRef<string>('')
+
+  useEffect(() => {
+    if (fromCurrency && toCurrency && convertedAmount !== null && amount) {
+      const key = `${fromCurrency.code}-${toCurrency.code}-${amount}`
+      if (lastConversionRef.current !== key) {
+        lastConversionRef.current = key
+        addConversion(
+          fromCurrency.code,
+          toCurrency.code,
+          fromCurrency.flag,
+          toCurrency.flag,
+          parseFloat(amount),
+          convertedAmount,
+          exchangeRate || 0
+        )
+      }
+    }
+  }, [fromCurrency, toCurrency, amount, convertedAmount, exchangeRate, addConversion])
+
+  const handleSelectPair = (fromCode: string, toCode: string) => {
+    const from = currencies.find(c => c.code === fromCode)
+    const to = currencies.find(c => c.code === toCode)
+    if (from) setFromCurrency(from)
+    if (to) setToCurrency(to)
+  }
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
@@ -201,6 +236,22 @@ function Home() {
                           1 {toCurrency.code} = {(1 / exchangeRate).toFixed(4)} {fromCurrency.code}
                         </span>
                       </div>
+                      <button
+                        onClick={() => toggleFavorite(
+                          fromCurrency.code,
+                          toCurrency.code,
+                          fromCurrency.flag,
+                          toCurrency.flag
+                        )}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-full transition-all ${
+                          isFavorite(fromCurrency.code, toCurrency.code)
+                            ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                            : 'bg-white/5 text-slate-400 hover:text-yellow-300 border border-white/5 hover:border-yellow-500/30'
+                        }`}
+                      >
+                        <span>{isFavorite(fromCurrency.code, toCurrency.code) ? '⭐' : '☆'}</span>
+                        <span className="text-xs">{isFavorite(fromCurrency.code, toCurrency.code) ? t('removeFromFavorites') : t('addToFavorites')}</span>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -231,6 +282,25 @@ function Home() {
                 </div>
               </div>
             )}
+
+            {/* ИЗБРАННОЕ */}
+            <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.55s', opacity: 0, animationFillMode: 'forwards' }}>
+              <FavoritesCard
+                favorites={favorites}
+                onSelect={handleSelectPair}
+                onRemove={removeFavorite}
+              />
+            </div>
+
+            {/* ИСТОРИЯ */}
+            <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
+              <HistoryCard
+                history={history}
+                onRepeat={handleSelectPair}
+                onRemove={removeRecord}
+                onClear={clearHistory}
+              />
+            </div>
           </main>
 
           {/* ПОДВАЛ */}
