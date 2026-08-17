@@ -110,10 +110,23 @@ export function SeoPage({
   }, [title, description])
 
   return (
-    <div className="min-h-screen py-4 px-3 md:py-8 md:px-4">
+    <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
+      {/* Декоративные элементы фона */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-cyan-500/5 rounded-full blur-2xl" />
+      </div>
+
       <LanguageSwitcher />
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      {/* Основной контент с боковыми блоками */}
+      <div className="flex items-start justify-center gap-6 max-w-7xl mx-auto relative z-10">
+        {/* Левый рекламный блок (заглушка) */}
+        <div className="hidden xl:flex flex-col items-center justify-start shrink-0 w-[300px] min-h-[250px] pt-24" />
+
+        {/* Центральный контент */}
+        <div className="max-w-5xl mx-auto relative z-10 flex-1 min-w-0">
         {/* Хлебные крошки */}
         <nav className="text-sm text-slate-400 mb-6">
           <Link to="/" className="hover:text-white transition-colors">
@@ -242,6 +255,10 @@ export function SeoPage({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
+        </div>
+
+        {/* Правый рекламный блок (заглушка) */}
+        <div className="hidden xl:flex flex-col items-center justify-start shrink-0 w-[300px] min-h-[250px] pt-24" />
       </div>
     </div>
   )
