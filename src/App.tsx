@@ -269,6 +269,89 @@ function Home() {
       <div className="xl:hidden max-w-7xl mx-auto relative z-10">
         <AdBanner position="bottom" />
       </div>
+
+      {/* JSON-LD микроразметка */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Как конвертировать валюту онлайн?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Выберите валюту из и в поле "Из" и "В", введите сумму, и конвертер автоматически рассчитает результат по текущему курсу.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Как часто обновляются курсы валют?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Курсы валют обновляются один раз в день. Данные берутся из открытого API open.er-api.com.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Какие валюты поддерживает конвертер?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Конвертер поддерживает более 150 фиатных валют и 15 криптовалют, включая Bitcoin, Ethereum и другие.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Можно ли конвертировать криптовалюты?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Да, конвертер поддерживает 15 криптовалют: BTC, ETH, USDT, BNB, XRP, SOL, ADA, DOGE и другие. Курсы загружаются через CoinGecko API.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Главная',
+                item: 'https://cconverter.ru',
+              },
+            ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Конвертер валют',
+            alternateName: 'Currency Converter',
+            url: 'https://cconverter.ru',
+            description: 'Бесплатный онлайн конвертер валют с реальными курсами, погодой и часами в столицах мира',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'https://cconverter.ru/?search={search_term_string}',
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          }),
+        }}
+      />
     </div>
   )
 }
