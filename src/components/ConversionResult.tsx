@@ -34,7 +34,7 @@ export function ConversionResult({
   return (
     <div className="result-card">
       <div className="text-center mb-6">
-        <div className="text-sm font-medium text-slate-400 mb-2 uppercase tracking-wide">
+        <div className="text-sm font-medium text-slate-300 mb-2 uppercase tracking-wide">
           {t('initialAmount')}
         </div>
         <div className="flex items-center justify-center gap-3">
@@ -57,7 +57,7 @@ export function ConversionResult({
       </div>
 
       <div className="text-center">
-        <div className="text-sm font-medium text-slate-400 mb-3 uppercase tracking-wide">
+        <div className="text-sm font-medium text-slate-300 mb-3 uppercase tracking-wide">
           {t('youWillGet')}
         </div>
 
