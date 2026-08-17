@@ -213,7 +213,7 @@ function Home() {
                 className="grid md:grid-cols-2 gap-3 md:gap-4"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
               >
-                <div className="animate-slide-in-left" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
+                <div className="animate-slide-in-left self-stretch" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
                   <CityInfoCard
                     weather={fromWeather}
                     cityName={fromCity.cityName}
@@ -221,7 +221,7 @@ function Home() {
                     currencyCode={fromCurrency.code}
                   />
                 </div>
-                <div className="animate-slide-in-right" style={{ animationDelay: '0.45s', opacity: 0, animationFillMode: 'forwards' }}>
+                <div className="animate-slide-in-right self-stretch" style={{ animationDelay: '0.45s', opacity: 0, animationFillMode: 'forwards' }}>
                   <CityInfoCard
                     weather={toWeather}
                     cityName={toCity.cityName}

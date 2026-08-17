@@ -40,7 +40,7 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
 
   if (isLoading) {
     return (
-      <div className="info-card neon-card">
+      <div className="info-card neon-card h-full">
         <div className="skeleton w-full h-32 rounded-xl" />
       </div>
     );
@@ -58,7 +58,7 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
   const displayName = lang === 'en' ? cityNameEn : cityName;
 
   return (
-    <div className="info-card neon-card" style={{ padding: '16px 20px' }}>
+    <div className="info-card neon-card h-full" style={{ padding: '16px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
         {isCrypto ? (
           <div style={{

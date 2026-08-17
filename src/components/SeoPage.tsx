@@ -198,18 +198,22 @@ export function SeoPage({
         {/* Карточки погоды и времени */}
         {fromCurrency && toCurrency && (
           <div className="grid md:grid-cols-2 gap-3 md:gap-4 mb-8">
-            <CityInfoCard
-              weather={fromWeather}
-              cityName={fromCity.cityName}
-              cityNameEn={fromCity.cityNameEn}
-              currencyCode={fromCurrency.code}
-            />
-            <CityInfoCard
-              weather={toWeather}
-              cityName={toCity.cityName}
-              cityNameEn={toCity.cityNameEn}
-              currencyCode={toCurrency.code}
-            />
+            <div className="self-stretch">
+              <CityInfoCard
+                weather={fromWeather}
+                cityName={fromCity.cityName}
+                cityNameEn={fromCity.cityNameEn}
+                currencyCode={fromCurrency.code}
+              />
+            </div>
+            <div className="self-stretch">
+              <CityInfoCard
+                weather={toWeather}
+                cityName={toCity.cityName}
+                cityNameEn={toCity.cityNameEn}
+                currencyCode={toCurrency.code}
+              />
+            </div>
           </div>
         )}
 
