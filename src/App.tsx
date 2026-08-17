@@ -21,6 +21,7 @@ import { HistoryCard } from './components/HistoryCard'
 import { FavoritesCard } from './components/FavoritesCard'
 import { SeoPage } from './components/SeoPage'
 import { seoPages } from './data/seoPages'
+import { trackSwap, trackAddFavorite, trackRemoveFavorite, trackQuickPair } from './utils/analytics'
 
 function Home() {
   const { t } = useLanguage()
@@ -131,28 +132,28 @@ function Home() {
           {/* БЫСТРЫЙ ДОСТУП К ПОПУЛЯРНЫМ ПАРАМ */}
           <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <Link to="/usd-rub" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/usd-rub" onClick={() => trackQuickPair('USD', 'RUB')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 USD/RUB
               </Link>
-              <Link to="/eur-rub" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/eur-rub" onClick={() => trackQuickPair('EUR', 'RUB')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 EUR/RUB
               </Link>
-              <Link to="/eur-usd" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/eur-usd" onClick={() => trackQuickPair('EUR', 'USD')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 EUR/USD
               </Link>
-              <Link to="/btc-usd" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/btc-usd" onClick={() => trackQuickPair('BTC', 'USD')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 BTC/USD
               </Link>
-              <Link to="/rub-byn" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/rub-byn" onClick={() => trackQuickPair('RUB', 'BYN')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 RUB/BYN
               </Link>
-              <Link to="/rub-kzt" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/rub-kzt" onClick={() => trackQuickPair('RUB', 'KZT')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 RUB/KZT
               </Link>
-              <Link to="/rub-try" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/rub-try" onClick={() => trackQuickPair('RUB', 'TRY')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 RUB/TRY
               </Link>
-              <Link to="/rub-egp" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+              <Link to="/rub-egp" onClick={() => trackQuickPair('RUB', 'EGP')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 RUB/EGP
               </Link>
             </div>
@@ -199,7 +200,12 @@ function Home() {
                   </div>
 
                   <div className="flex items-center justify-center pt-10">
-                    <SwapButton onClick={swapCurrencies} disabled={isLoading} />
+                    <SwapButton onClick={() => {
+                      if (fromCurrency && toCurrency) {
+                        trackSwap(fromCurrency.code, toCurrency.code)
+                      }
+                      swapCurrencies()
+                    }} disabled={isLoading} />
                   </div>
 
                   <div className="space-y-4">
@@ -237,12 +243,20 @@ function Home() {
                         </span>
                       </div>
                       <button
-                        onClick={() => toggleFavorite(
-                          fromCurrency.code,
-                          toCurrency.code,
-                          fromCurrency.flag,
-                          toCurrency.flag
-                        )}
+                        onClick={() => {
+                          const wasFav = isFavorite(fromCurrency.code, toCurrency.code)
+                          toggleFavorite(
+                            fromCurrency.code,
+                            toCurrency.code,
+                            fromCurrency.flag,
+                            toCurrency.flag
+                          )
+                          if (wasFav) {
+                            trackRemoveFavorite(fromCurrency.code, toCurrency.code)
+                          } else {
+                            trackAddFavorite(fromCurrency.code, toCurrency.code)
+                          }
+                        }}
                         className={`flex items-center gap-1.5 px-4 py-2 rounded-full transition-all ${
                           isFavorite(fromCurrency.code, toCurrency.code)
                             ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'

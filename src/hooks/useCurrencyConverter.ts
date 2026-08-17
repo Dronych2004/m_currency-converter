@@ -5,6 +5,7 @@ import { fetchCryptoRates, getCryptoName, getCryptoSymbol, getCryptoIcon } from 
 import { currencies as currencyMeta } from '../data/currencies';
 import { createCache, createPersistentCache } from '../utils/cache';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackConversion } from '../utils/analytics';
 import type { CurrencyType } from '../types';
 
 export interface UseCurrencyConverterReturn {
@@ -166,6 +167,7 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
           rateCache.set(cacheKey, result);
           setConvertedAmount(result.result);
           setExchangeRate(result.rate);
+          trackConversion(fromCurrency.code, toCurrency.code, amountNumber, result.result);
         }
       } catch (err) {
         if (!controller.signal.aborted) {

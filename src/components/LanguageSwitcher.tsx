@@ -1,14 +1,22 @@
 import { memo } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackLanguageChange } from '../utils/analytics';
 
 export const LanguageSwitcher = memo(function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
+
+  const handleLanguageChange = (newLang: 'ru' | 'en') => {
+    if (lang !== newLang) {
+      trackLanguageChange(newLang);
+    }
+    setLang(newLang);
+  };
 
   return (
     <div className="fixed top-8 right-8 z-50">
       <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10">
         <button
-          onClick={() => setLang('ru')}
+          onClick={() => handleLanguageChange('ru')}
           className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-all ${
             lang === 'ru'
               ? 'bg-indigo-500 text-white shadow-lg'
@@ -27,7 +35,7 @@ export const LanguageSwitcher = memo(function LanguageSwitcher() {
           RU
         </button>
         <button
-          onClick={() => setLang('en')}
+          onClick={() => handleLanguageChange('en')}
           className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-all ${
             lang === 'en'
               ? 'bg-indigo-500 text-white shadow-lg'

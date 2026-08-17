@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo, memo } from 'react';
 import type { Currency } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { CURRENCY_TO_COUNTRY, CURRENCY_FLAG_EMOJI } from '../data/currencies';
+import { trackSelectCurrency } from '../utils/analytics';
 
 function FlagImage({ code, emoji }: { code: string; emoji: string }) {
   const countryCode = CURRENCY_TO_COUNTRY[code];
@@ -83,6 +84,7 @@ export const CurrencySelector = memo(function CurrencySelector({
     onSelect(currency);
     setIsOpen(false);
     setSearchTerm('');
+    trackSelectCurrency(currency.code, id.includes('from') ? 'from' : 'to');
   };
 
   const selectedEmoji = selected ? (CURRENCY_FLAG_EMOJI[selected.code] || '🏳️') : '';
