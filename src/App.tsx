@@ -1,7 +1,8 @@
 /**
- * ГЛАВНЫЙ КОМПОНЕНТ - ПРОДВИНУТЫЙ ДИЗАЙН
+ * ГЛАВНЫЙ КОМПОНЕНТ С МАРШРУТИЗАЦИЕЙ
  */
 
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useCurrencyConverter } from './hooks/useCurrencyConverter'
 import { useCityInfo } from './hooks/useCityInfo'
 import { useLanguage } from './i18n/LanguageContext'
@@ -13,8 +14,10 @@ import { CityInfoCard } from './components/CityInfoCard'
 import { AdBanner } from './components/AdBanner'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { CurrencyTypeSwitcher } from './components/CurrencyTypeSwitcher'
+import { SeoPage } from './components/SeoPage'
+import { seoPages } from './data/seoPages'
 
-function App() {
+function Home() {
   const { t } = useLanguage()
 
   const {
@@ -41,7 +44,7 @@ function App() {
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
-      {/* Декоративные элементы фона — статичные, без blur3d */}
+      {/* Декоративные элементы фона */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-2xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-2xl" />
@@ -50,26 +53,20 @@ function App() {
 
       <LanguageSwitcher />
 
-      {/* Верхний рекламный блок (только мобильные) */}
+      {/* Верхний рекламный блок (мобильные) */}
       <div className="xl:hidden max-w-7xl mx-auto relative z-10">
         <AdBanner position="top" />
       </div>
 
-      {/* Основной контент с боковыми рекламными блоками (десктоп) */}
+      {/* Основной контент */}
       <div className="flex items-start justify-center gap-6 max-w-7xl mx-auto relative z-10">
-        {/* Левая реклама (только десктоп) */}
         <AdBanner position="left" />
 
-        {/* Центральный контент */}
         <div className="max-w-5xl mx-auto relative z-10 flex-1 min-w-0">
           {/* ШАПКА */}
           <header
             className="text-center mb-2 md:mb-4 animate-zoom-in"
-            style={{
-              animationDelay: '0s',
-              opacity: 0,
-              animationFillMode: 'forwards',
-            }}
+            style={{ animationDelay: '0s', opacity: 0, animationFillMode: 'forwards' }}
           >
             <div className="inline-flex relative mb-2 md:mb-4">
               <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 rounded-2xl blur-xl opacity-50 animate-glow" />
@@ -94,10 +91,7 @@ function App() {
           </header>
 
           {/* ПЕРЕКЛЮЧАТЕЛЬ ТИПА ВАЛЮТЫ */}
-          <CurrencyTypeSwitcher
-            value={currencyType}
-            onChange={setCurrencyType}
-          />
+          <CurrencyTypeSwitcher value={currencyType} onChange={setCurrencyType} />
 
           {/* ОСНОВНОЙ БЛОК */}
           <main>
@@ -105,8 +99,7 @@ function App() {
               <div
                 className="mb-4 p-4 rounded-2xl text-center animate-fade-in-scale"
                 style={{
-                  background:
-                    'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1))',
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1))',
                   border: '1px solid rgba(239, 68, 68, 0.4)',
                   boxShadow: '0 10px 30px rgba(239, 68, 68, 0.2)',
                 }}
@@ -118,10 +111,7 @@ function App() {
 
             {isLoading && currencies.length === 0 && (
               <div className="text-center py-12 animate-fade-in-scale">
-                <div
-                  className="loading-spinner mx-auto mb-4"
-                  style={{ width: 40, height: 40 }}
-                />
+                <div className="loading-spinner mx-auto mb-4" style={{ width: 40, height: 40 }} />
                 <p className="text-slate-400 text-lg">{t('loading')}</p>
               </div>
             )}
@@ -129,11 +119,7 @@ function App() {
             {currencies.length > 0 && (
               <div
                 className="glass-card neon-main p-4 md:p-8 mb-4 md:mb-6 animate-zoom-in"
-                style={{
-                  animationDelay: '0.15s',
-                  opacity: 0,
-                  animationFillMode: 'forwards',
-                }}
+                style={{ animationDelay: '0.15s', opacity: 0, animationFillMode: 'forwards' }}
               >
                 <div className="grid md:grid-cols-[1fr,auto,1fr] gap-3 md:gap-4 items-start">
                   <div className="space-y-3 md:space-y-4">
@@ -176,15 +162,13 @@ function App() {
                       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5">
                         <span className="text-slate-400">{t('course')}</span>
                         <span className="font-semibold text-white">
-                          1 {fromCurrency.code} = {exchangeRate.toFixed(4)}{' '}
-                          {toCurrency.code}
+                          1 {fromCurrency.code} = {exchangeRate.toFixed(4)} {toCurrency.code}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5">
                         <span className="text-slate-400">{t('reverse')}</span>
                         <span className="font-semibold text-white">
-                          1 {toCurrency.code} = {(1 / exchangeRate).toFixed(4)}{' '}
-                          {fromCurrency.code}
+                          1 {toCurrency.code} = {(1 / exchangeRate).toFixed(4)} {fromCurrency.code}
                         </span>
                       </div>
                     </div>
@@ -199,14 +183,7 @@ function App() {
                 className="grid md:grid-cols-2 gap-3 md:gap-4"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
               >
-                <div
-                  className="animate-slide-in-left"
-                  style={{
-                    animationDelay: '0.3s',
-                    opacity: 0,
-                    animationFillMode: 'forwards',
-                  }}
-                >
+                <div className="animate-slide-in-left" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
                   <CityInfoCard
                     weather={fromWeather}
                     cityName={fromCity.cityName}
@@ -214,15 +191,7 @@ function App() {
                     currencyCode={fromCurrency.code}
                   />
                 </div>
-
-                <div
-                  className="animate-slide-in-right"
-                  style={{
-                    animationDelay: '0.45s',
-                    opacity: 0,
-                    animationFillMode: 'forwards',
-                  }}
-                >
+                <div className="animate-slide-in-right" style={{ animationDelay: '0.45s', opacity: 0, animationFillMode: 'forwards' }}>
                   <CityInfoCard
                     weather={toWeather}
                     cityName={toCity.cityName}
@@ -237,66 +206,84 @@ function App() {
           {/* ПОДВАЛ */}
           <footer
             className="text-center mt-8 pb-4 animate-fade-in-up"
-            style={{
-              contentVisibility: 'auto',
-              containIntrinsicSize: 'auto 200px',
-              animationDelay: '0.6s',
-              opacity: 0,
-              animationFillMode: 'forwards',
-            }}
+            style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px', animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}
           >
             <div className="inline-flex flex-col items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-sm">
               <div className="flex items-center gap-4 text-base text-slate-400">
-                <a
-                  href="https://open.er-api.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
+                <a href="https://open.er-api.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   {t('ratesFrom')} open.er-api.com
                 </a>
                 <span className="text-white/20">•</span>
-                <a
-                  href="https://open-meteo.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
-                >
+                <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   {t('weatherFrom')} Open-Meteo
                 </a>
               </div>
               <p className="text-sm text-slate-500">{t('ratesUpdated')}</p>
-              <a
-                href="/privacy.html"
-                className="text-sm text-slate-500 hover:text-white transition-colors"
-              >
+              <a href="/privacy.html" className="text-sm text-slate-500 hover:text-white transition-colors">
                 {t('privacy')}
               </a>
-              <a
-                href="/terms.html"
-                className="text-sm text-slate-500 hover:text-white transition-colors"
-              >
+              <a href="/terms.html" className="text-sm text-slate-500 hover:text-white transition-colors">
                 {t('terms')}
               </a>
-              <a
-                href="mailto:info@cconverter.ru"
-                className="text-sm text-slate-500 hover:text-white transition-colors"
-              >
+              <a href="mailto:info@cconverter.ru" className="text-sm text-slate-500 hover:text-white transition-colors">
                 ✉ info@cconverter.ru
               </a>
+
+              {/* Внутренние ссылки для SEO */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2 pt-2 border-t border-white/5">
+                <Link to="/usd-rub" className="text-xs text-slate-500 hover:text-white transition-colors">USD/RUB</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/eur-rub" className="text-xs text-slate-500 hover:text-white transition-colors">EUR/RUB</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/eur-usd" className="text-xs text-slate-500 hover:text-white transition-colors">EUR/USD</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/btc-usd" className="text-xs text-slate-500 hover:text-white transition-colors">BTC/USD</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/usd-kzt" className="text-xs text-slate-500 hover:text-white transition-colors">USD/KZT</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/usd-uah" className="text-xs text-slate-500 hover:text-white transition-colors">USD/UAH</Link>
+                <span className="text-white/10">•</span>
+                <Link to="/usd-cny" className="text-xs text-slate-500 hover:text-white transition-colors">USD/CNY</Link>
+              </div>
             </div>
           </footer>
         </div>
 
-        {/* Правая реклама (только десктоп) */}
         <AdBanner position="right" />
       </div>
 
-      {/* Нижний рекламный блок (только мобильные) */}
+      {/* Нижний рекламный блок (мобильные) */}
       <div className="xl:hidden max-w-7xl mx-auto relative z-10">
         <AdBanner position="bottom" />
       </div>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {seoPages.map(page => (
+          <Route
+            key={page.path}
+            path={page.path}
+            element={
+              <SeoPage
+                title={page.title}
+                description={page.description}
+                h1={page.h1}
+                fromCode={page.fromCode}
+                toCode={page.toCode}
+                faq={page.faq}
+                content={page.content}
+              />
+            }
+          />
+        ))}
+      </Routes>
+    </BrowserRouter>
   )
 }
 

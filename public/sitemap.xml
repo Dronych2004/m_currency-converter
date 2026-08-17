@@ -11,6 +11,69 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/" />
   </url>
   <url>
+    <loc>https://cconverter.ru/usd-rub</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/usd-rub?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/usd-rub?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/usd-rub" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/eur-rub</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/eur-rub?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/eur-rub?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/eur-rub" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/eur-usd</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/eur-usd?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/eur-usd?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/eur-usd" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/btc-usd</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/btc-usd?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/btc-usd?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/btc-usd" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/usd-kzt</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/usd-kzt?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/usd-kzt?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/usd-kzt" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/usd-uah</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/usd-uah?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/usd-uah?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/usd-uah" />
+  </url>
+  <url>
+    <loc>https://cconverter.ru/usd-cny</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cconverter.ru/usd-cny?lang=ru" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cconverter.ru/usd-cny?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cconverter.ru/usd-cny" />
+  </url>
+  <url>
     <loc>https://cconverter.ru/privacy.html</loc>
     <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
