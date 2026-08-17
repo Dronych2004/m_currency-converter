@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Встраивание конвертера валют — cconverter.ru</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: Inter, system-ui, sans-serif;
+        background: #030014;
+        color: #e2e8f0;
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+      .container { max-width: 800px; margin: 0 auto; }
+      h1 { font-size: 32px; margin-bottom: 8px; }
+      .subtitle { color: #94a3b8; margin-bottom: 32px; }
+      h2 { font-size: 20px; margin: 32px 0 16px; color: #a5b4fc; }
+      p { color: #94a3b8; line-height: 1.6; margin-bottom: 16px; }
+      .code-block {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 16px;
+        font-family: 'Fira Code', monospace;
+        font-size: 13px;
+        overflow-x: auto;
+        margin-bottom: 16px;
+        white-space: pre;
+        color: #a5b4fc;
+      }
+      .preview {
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 24px 0;
+      }
+      .note {
+        background: rgba(234, 179, 8, 0.1);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #fbbf24;
+        margin: 16px 0;
+      }
+      a { color: #6366f1; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>💱 Встраивание конвертера</h1>
+      <p class="subtitle">Добавьте конвертер валют на свой сайт за 2 минуты</p>
+
+      <h2>1. Базовый код (iframe)</h2>
+      <p>Скопируйте и вставьте на свой сайт:</p>
+      <div class="code-block">&lt;iframe
+  src="https://cconverter.ru/embed"
+  width="400"
+  height="450"
+  frameborder="0"
+  style="border: none; border-radius: 16px;"
+&gt;&lt;/iframe&gt;</div>
+
+      <h2>2. Минимальный размер</h2>
+      <div class="code-block">&lt;iframe
+  src="https://cconverter.ru/embed"
+  width="350"
+  height="400"
+  frameborder="0"
+  style="border: none; border-radius: 12px;"
+&gt;&lt;/iframe&gt;</div>
+
+      <h2>3. Полный код с ссылкой</h2>
+      <div class="code-block">&lt;div style="text-align: center;"&gt;
+  &lt;iframe
+    src="https://cconverter.ru/embed"
+    width="400"
+    height="480"
+    frameborder="0"
+    style="border: none; border-radius: 16px;"
+  &gt;&lt;/iframe&gt;
+  &lt;p style="margin-top: 8px;"&gt;
+    &lt;a href="https://cconverter.ru" target="_blank"&gt;
+      Курсы валют онлайн
+    &lt;/a&gt;
+  &lt;/p&gt;
+&lt;/div&gt;</div>
+
+      <h2>Пример</h2>
+      <div class="preview">
+        <iframe
+          src="/embed"
+          width="400"
+          height="450"
+          frameborder="0"
+          style="border: none; border-radius: 16px;"
+        ></iframe>
+      </div>
+
+      <div class="note">
+        ⚠️ Виджет работает на HTTPS. Убедитесь, что ваш сайт использует HTTPS.
+      </div>
+
+      <h2>Преимущества</h2>
+      <p>• Бесплатно — никаких скрытых платежей<br>
+         • Актуальные курсы — обновляются автоматически<br>
+         • 150+ валют — фиатные и криптовалюты<br>
+         • Адаптивный — работает на мобильных<br>
+         • Тёмная тема — вписывается в любой дизайн</p>
+
+      <h2>Вопросы?</h2>
+      <p>Пишите: <a href="mailto:info@cconverter.ru">info@cconverter.ru</a></p>
+    </div>
+  </body>
+</html>
