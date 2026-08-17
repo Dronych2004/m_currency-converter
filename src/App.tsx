@@ -93,6 +93,33 @@ function Home() {
           {/* ПЕРЕКЛЮЧАТЕЛЬ ТИПА ВАЛЮТЫ */}
           <CurrencyTypeSwitcher value={currencyType} onChange={setCurrencyType} />
 
+          {/* БЫСТРЫЙ ДОСТУП К ПОПУЛЯРНЫМ ПАРАМ */}
+          <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Link to="/usd-rub" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                USD/RUB
+              </Link>
+              <Link to="/eur-rub" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                EUR/RUB
+              </Link>
+              <Link to="/eur-usd" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                EUR/USD
+              </Link>
+              <Link to="/btc-usd" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                BTC/USD
+              </Link>
+              <Link to="/usd-kzt" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                USD/KZT
+              </Link>
+              <Link to="/usd-uah" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                USD/UAH
+              </Link>
+              <Link to="/usd-cny" className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                USD/CNY
+              </Link>
+            </div>
+          </div>
+
           {/* ОСНОВНОЙ БЛОК */}
           <main>
             {error && (
@@ -228,23 +255,6 @@ function Home() {
               <a href="mailto:info@cconverter.ru" className="text-sm text-slate-500 hover:text-white transition-colors">
                 ✉ info@cconverter.ru
               </a>
-
-              {/* Внутренние ссылки для SEO */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-2 pt-2 border-t border-white/5">
-                <Link to="/usd-rub" className="text-xs text-slate-500 hover:text-white transition-colors">USD/RUB</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/eur-rub" className="text-xs text-slate-500 hover:text-white transition-colors">EUR/RUB</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/eur-usd" className="text-xs text-slate-500 hover:text-white transition-colors">EUR/USD</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/btc-usd" className="text-xs text-slate-500 hover:text-white transition-colors">BTC/USD</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/usd-kzt" className="text-xs text-slate-500 hover:text-white transition-colors">USD/KZT</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/usd-uah" className="text-xs text-slate-500 hover:text-white transition-colors">USD/UAH</Link>
-                <span className="text-white/10">•</span>
-                <Link to="/usd-cny" className="text-xs text-slate-500 hover:text-white transition-colors">USD/CNY</Link>
-              </div>
             </div>
           </footer>
         </div>
