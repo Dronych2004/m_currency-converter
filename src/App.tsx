@@ -131,6 +131,7 @@ function Home() {
 
           {/* БЫСТРЫЙ ДОСТУП К ПОПУЛЯРНЫМ ПАРАМ */}
           <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
+            <h2 className="sr-only">Популярные валютные пары</h2>
             <div className="flex flex-wrap items-center justify-center gap-2">
               <Link to="/usd-rub" onClick={() => trackQuickPair('USD', 'RUB')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                 USD/RUB
@@ -278,6 +279,7 @@ function Home() {
                 className="grid md:grid-cols-2 gap-3 md:gap-4"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
               >
+                <h2 className="sr-only">Погода и время в столицах</h2>
                 <div className="animate-slide-in-left self-stretch" style={{ animationDelay: '0.3s', opacity: 0, animationFillMode: 'forwards' }}>
                   <CityInfoCard
                     weather={fromWeather}
@@ -299,6 +301,7 @@ function Home() {
 
             {/* ИЗБРАННОЕ */}
             <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.55s', opacity: 0, animationFillMode: 'forwards' }}>
+              <h2 className="sr-only">Избранные пары</h2>
               <FavoritesCard
                 favorites={favorites}
                 onSelect={handleSelectPair}
@@ -308,6 +311,7 @@ function Home() {
 
             {/* ИСТОРИЯ */}
             <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
+              <h2 className="sr-only">История конвертаций</h2>
               <HistoryCard
                 history={history}
                 onRepeat={handleSelectPair}

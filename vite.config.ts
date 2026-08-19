@@ -23,5 +23,9 @@ export default defineConfig({
         },
       },
     },
+    // Оптимизация производительности
+    target: 'es2020',
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 500,
   },
 })
