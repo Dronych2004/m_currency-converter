@@ -114,6 +114,8 @@ export function SeoPage({
     document.title = title
     const meta = document.querySelector('meta[name="description"]')
     if (meta) meta.setAttribute('content', description)
+    // Сигнал для prerenderer: страница готова к захвату
+    document.dispatchEvent(new Event('custom-render-trigger'))
   }, [title, description])
 
   return (

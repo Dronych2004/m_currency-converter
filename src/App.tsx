@@ -53,6 +53,11 @@ function Home() {
   // Автоматически сохраняем конвертацию при изменении результата
   const lastConversionRef = useRef<string>('')
 
+  // Сигнал для prerenderer: страница готова к захвату
+  useEffect(() => {
+    document.dispatchEvent(new Event('custom-render-trigger'))
+  }, [])
+
   useEffect(() => {
     if (fromCurrency && toCurrency && convertedAmount !== null && amount) {
       const key = `${fromCurrency.code}-${toCurrency.code}-${amount}`
