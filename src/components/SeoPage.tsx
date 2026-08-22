@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { CurrencySelector } from './CurrencySelector'
 import { AmountInput } from './AmountInput'
@@ -110,15 +111,24 @@ export function SeoPage({
     ],
   }
 
+  // Сигнал для prerenderer: страница готова к захвату
   useEffect(() => {
-    document.title = title
-    const meta = document.querySelector('meta[name="description"]')
-    if (meta) meta.setAttribute('content', description)
-    // Сигнал для prerenderer: страница готова к захвату
     document.dispatchEvent(new Event('custom-render-trigger'))
-  }, [title, description])
+  }, [])
+
+  const canonicalUrl = `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}`
 
   return (
+    <>
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <link rel="canonical" href={canonicalUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:type" content="website" />
+    </Helmet>
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
       {/* Декоративные элементы фона */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -293,5 +303,6 @@ export function SeoPage({
         <div className="hidden xl:flex flex-col items-center justify-start shrink-0 w-[300px] min-h-[250px] pt-24" />
       </div>
     </div>
+    </>
   )
 }

@@ -4,6 +4,7 @@
 
 import { useRef, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { useCurrencyConverter } from './hooks/useCurrencyConverter'
 import { useCityInfo } from './hooks/useCityInfo'
 import { useHistory } from './hooks/useHistory'
@@ -85,6 +86,15 @@ function Home() {
 
   return (
     <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
+      <Helmet>
+        <title>{t('title')}</title>
+        <meta name="description" content={t('subtitle')} />
+        <link rel="canonical" href="https://cconverter.ru" />
+        <meta property="og:title" content={t('title')} />
+        <meta property="og:description" content={t('subtitle')} />
+        <meta property="og:url" content="https://cconverter.ru" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       {/* Декоративные элементы фона */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-2xl" />
