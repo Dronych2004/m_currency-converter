@@ -1,25 +1,15 @@
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { writeFileSync, mkdirSync, copyFileSync } from 'fs'
+import { generateSeoRoutes } from './seo-routes.mjs'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const distDir = resolve(__dirname, '../dist')
 
-// Все маршруты для prerendering
-const routes = [
-  '/',
-  '/usd-rub',
-  '/eur-rub',
-  '/eur-usd',
-  '/btc-usd',
-  '/usd-kzt',
-  '/usd-uah',
-  '/usd-cny',
-  '/rub-byn',
-  '/rub-kzt',
-  '/rub-try',
-  '/rub-egp',
-]
+// Динамическая генерация всех маршрутов
+const routes = ['/', ...generateSeoRoutes()]
+
+console.log(`Total routes to prerender: ${routes.length}`)
 
 async function prerender() {
   const Prerenderer = (await import('@prerenderer/prerenderer')).default

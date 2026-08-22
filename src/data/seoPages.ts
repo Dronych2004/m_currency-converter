@@ -1,3 +1,5 @@
+import { generateSeoPageData, ALL_PAIRS } from '../utils/seoGenerator'
+
 export interface SeoPageData {
   path: string
   title: string
@@ -9,9 +11,12 @@ export interface SeoPageData {
   content: string
 }
 
-export const seoPages: SeoPageData[] = [
-  {
-    path: '/usd-rub',
+// ============================================
+// РУКОПИСНЫЙ КОНТЕНТ ДЛЯ ТОП-ПАР
+// ============================================
+
+const MANUAL_PAGES: Record<string, Omit<SeoPageData, 'path'>> = {
+  'usd-rub': {
     title: 'Курс доллара к рублю сегодня — конвертер USD/RUB | cconverter.ru',
     description:
       'Актуальный курс доллара к рублю онлайн. Конвертер USD/RUB с реальными курсами, конвертация по курсу ЦБ РФ.',
@@ -66,8 +71,8 @@ export const seoPages: SeoPageData[] = [
       <p>Вы также можете нажать кнопку обмена (⇄), чтобы перевести рубли в доллары.</p>
     `,
   },
-  {
-    path: '/eur-rub',
+
+  'eur-rub': {
     title: 'Курс евро к рублю онлайн — конвертер EUR/RUB | cconverter.ru',
     description:
       'Актуальный курс евро к рублю. Конвертер EUR/RUB с реальными курсами. Бесплатная конвертация евро в рубли.',
@@ -107,8 +112,8 @@ export const seoPages: SeoPageData[] = [
       <p>Введите сумму в евро, и конвертер автоматически покажет эквивалент в рублях. Вы можете переключить направление конвертации кнопкой обмена.</p>
     `,
   },
-  {
-    path: '/eur-usd',
+
+  'eur-usd': {
     title: 'Курс евро к доллару — конвертер EUR/USD | cconverter.ru',
     description:
       'Актуальный курс евро к доллару онлайн. Конвертер EUR/USD с реальными курсами в реальном времени.',
@@ -119,7 +124,7 @@ export const seoPages: SeoPageData[] = [
       {
         question: 'Какой курс евро к доллару?',
         answer:
-          'Курс евро к доллару обновляется в реальном времени. На cconverter.ru вы можете看到 актуальный курс и мгновенно конвертировать валюту.',
+          'Курс евро к доллару обновляется в реальном времени. На cconverter.ru вы можете видеть актуальный курс и мгновенно конвертировать валюту.',
       },
       {
         question: 'Что сильнее: евро или доллар?',
@@ -147,8 +152,8 @@ export const seoPages: SeoPageData[] = [
       <p>Используйте наш конвертер: выберите EUR → USD, введите сумму и получите результат мгновенно.</p>
     `,
   },
-  {
-    path: '/btc-usd',
+
+  'btc-usd': {
     title: 'Биткоин в доллары — конвертер BTC/USD | cconverter.ru',
     description:
       'Курс биткоина к доллару онлайн. Конвертер BTC/USD с актуальными курсами криптовалют.',
@@ -159,7 +164,7 @@ export const seoPages: SeoPageData[] = [
       {
         question: 'Сколько стоит биткоин в долларах?',
         answer:
-          'Курс биткоина к доллару постоянно меняется. На cconverter.ru вы можете看到 актуальный курс BTC/USD и конвертировать биткоины в доллары.',
+          'Курс биткоина к доллару постоянно меняется. На cconverter.ru вы можете видеть актуальный курс BTC/USD и конвертировать биткоины в доллары.',
       },
       {
         question: 'Как конвертировать биткоин в доллары?',
@@ -187,8 +192,8 @@ export const seoPages: SeoPageData[] = [
       <p>Наш конвертер поддерживает криптовалюты. Выберите BTC и USD, введите количество биткоинов и получите сумму в долларах.</p>
     `,
   },
-  {
-    path: '/usd-kzt',
+
+  'usd-kzt': {
     title: 'Курс доллара к тенге — конвертер USD/KZT | cconverter.ru',
     description:
       'Актуальный курс доллара к тенге. Конвертер USD/KZT с реальными курсами.',
@@ -219,8 +224,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/usd-uah',
+
+  'usd-uah': {
     title: 'Курс доллара к гривне — конвертер USD/UAH | cconverter.ru',
     description:
       'Актуальный курс доллара к украинской гривне. Конвертер USD/UAH с реальными курсами.',
@@ -251,8 +256,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/usd-cny',
+
+  'usd-cny': {
     title: 'Курс доллара к юаню — конвертер USD/CNY | cconverter.ru',
     description:
       'Актуальный курс доллара к китайскому юаню. Конвертер USD/CNY с реальными курсами.',
@@ -283,8 +288,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/rub-byn',
+
+  'rub-byn': {
     title: 'Курс рубля к белорусскому рублю — конвертер RUB/BYN | cconverter.ru',
     description:
       'Актуальный курс рубля к белорусскому рублю. Конвертер RUB/BYN с реальными курсами.',
@@ -315,8 +320,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/rub-kzt',
+
+  'rub-kzt': {
     title: 'Курс рубля к тенге — конвертер RUB/KZT | cconverter.ru',
     description:
       'Актуальный курс рубля к казахстанскому тенге. Конвертер RUB/KZT с реальными курсами.',
@@ -347,8 +352,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/rub-try',
+
+  'rub-try': {
     title: 'Курс рубля к турецкой лире — конвертер RUB/TRY | cconverter.ru',
     description:
       'Актуальный курс рубля к турецкой лире. Конвертер RUB/TRY с реальными курсами.',
@@ -379,8 +384,8 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-  {
-    path: '/rub-egp',
+
+  'rub-egp': {
     title: 'Курс рубля к египетскому фунту — конвертер RUB/EGP | cconverter.ru',
     description:
       'Актуальный курс рубля к египетскому фунту. Конвертер RUB/EGP с реальными курсами.',
@@ -411,4 +416,22 @@ export const seoPages: SeoPageData[] = [
       </ul>
     `,
   },
-]
+}
+
+// ============================================
+// ГЕНЕРАЦИЯ + MERGE С РУКОПИСНЫМ КОНТЕНТОМ
+// ============================================
+
+export const seoPages: SeoPageData[] = ALL_PAIRS.map(([from, to]) => {
+  const key = `${from.toLowerCase()}-${to.toLowerCase()}`
+  const manual = MANUAL_PAGES[key]
+
+  if (manual) {
+    return {
+      path: `/${key}`,
+      ...manual,
+    }
+  }
+
+  return generateSeoPageData(from, to)
+})
