@@ -1,6 +1,10 @@
 # Enable Rewrite Engine
 RewriteEngine On
 
+# www → non-www redirect (avoid duplicate content)
+RewriteCond %{HTTP_HOST} ^www\.cconverter\.ru$ [NC]
+RewriteRule ^(.*)$ https://cconverter.ru/$1 [R=301,L]
+
 # Handle clean URLs for prerendered pages
 # /usd-rub -> /usd-rub/index.html
 RewriteCond %{REQUEST_FILENAME} !-f

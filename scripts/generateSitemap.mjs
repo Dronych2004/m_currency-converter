@@ -14,23 +14,13 @@ const MANUAL_ROUTES = new Set([
   '/rub-byn', '/rub-kzt', '/rub-try', '/rub-egp',
 ])
 
-function urlEntry(loc, changefreq, priority, alternate = true) {
-  let xml = `  <url>
+function urlEntry(loc, changefreq, priority) {
+  return `  <url>
     <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>`
-
-  if (alternate) {
-    xml += `
-    <xhtml:link rel="alternate" hreflang="ru" href="${loc}?lang=ru" />
-    <xhtml:link rel="alternate" hreflang="en" href="${loc}?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />`
-  }
-
-  xml += `
+    <priority>${priority}</priority>
   </url>`
-  return xml
 }
 
 const routes = generateSeoRoutes()
@@ -47,12 +37,11 @@ for (const route of routes) {
 }
 
 // Статические страницы
-entries.push(urlEntry(`${hostname}/privacy.html`, 'monthly', 0.3, false))
-entries.push(urlEntry(`${hostname}/terms.html`, 'monthly', 0.3, false))
+entries.push(urlEntry(`${hostname}/privacy.html`, 'monthly', 0.3))
+entries.push(urlEntry(`${hostname}/terms.html`, 'monthly', 0.3))
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries.join('\n')}
 </urlset>
 `
