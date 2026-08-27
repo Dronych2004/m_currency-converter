@@ -19,6 +19,360 @@ const PRIORITY_CRYPTO = [
 ]
 
 // ============================================
+// СЛОВАРЬ УНИКАЛЬНЫХ ДАННЫХ О ВАЛЮТАХ
+// ============================================
+
+interface CurrencyInfo {
+  fullNameRu: string
+  country: string
+  countryEn: string
+  centralBank: string
+  fact: string
+  economicRole: string
+  /** Краткое описание для использования в тексте */
+  shortDesc: string
+}
+
+const CURRENCY_INFO: Record<string, CurrencyInfo> = {
+  USD: {
+    fullNameRu: 'Американский доллар',
+    country: 'США',
+    countryEn: 'USA',
+    centralBank: 'Федеральная резервная система (ФРС)',
+    fact: 'Доллар США является основной мировой резервной валютой — около 60% всех международных резервов хранится в долларах.',
+    economicRole: 'Основная резервная валюта мира, используется для定价 нефти и большинства международных расчётов.',
+    shortDesc: 'главная мировая резервная валюта',
+  },
+  EUR: {
+    fullNameRu: 'Евро',
+    country: 'Европейский союз',
+    countryEn: 'EU',
+    centralBank: 'Европейский центральный банк (ЕЦБ)',
+    fact: 'Евро — вторая по популярности резервная валюта в мире. Ею пользуются более 340 миллионов человек в 20 странах Евросоюза.',
+    economicRole: 'Вторая мировая резервная валюта, основная валюта еврозоны.',
+    shortDesc: 'валюта Европейского союза',
+  },
+  RUB: {
+    fullNameRu: 'Российский рубль',
+    country: 'Россия',
+    countryEn: 'Russia',
+    centralBank: 'Центральный банк Российской Федерации',
+    fact: 'Рубль — одна из старейших валют мира. Первые упоминания о рубле относятся к 13 веку.',
+    economicRole: 'Национальная валюта России, крупнейшей страны мира по площади.',
+    shortDesc: 'национальная валюта России',
+  },
+  GBP: {
+    fullNameRu: 'Британский фунт стерлингов',
+    country: 'Великобритания',
+    countryEn: 'UK',
+    centralBank: 'Банк Англии',
+    fact: 'Фунт стерлингов — старейшая валюта в мире, которая всё ещё используется. Банк Англии был основан в 1694 году.',
+    economicRole: 'Одна из главных мировых резервных валют, традиционно сильная валюта.',
+    shortDesc: 'старейшая валюта мира',
+  },
+  JPY: {
+    fullNameRu: 'Японская иена',
+    country: 'Япония',
+    countryEn: 'Japan',
+    centralBank: 'Банк Японии',
+    fact: 'Иена — третья по популярности резервная валюта. Япония — третья экономика мира по размеру ВВП.',
+    economicRole: 'Валюта крупнейшей азиатской экономики, основная резервная валюта Азии.',
+    shortDesc: 'валюта крупнейшей азиатской экономики',
+  },
+  CNY: {
+    fullNameRu: 'Китайский юань',
+    country: 'Китай',
+    countryEn: 'China',
+    centralBank: 'Народный банк Китая',
+    fact: 'Юань — валюта второй экономики мира. Китай активно продвигает юань как международную валюту.',
+    economicRole: 'Валюта крупнейшей экспортной экономики мира.',
+    shortDesc: 'валюта крупнейшей экспортной экономики',
+  },
+  KZT: {
+    fullNameRu: 'Казахстанский тенге',
+    country: 'Казахстан',
+    countryEn: 'Kazakhstan',
+    centralBank: 'Национальный банк Казахстана',
+    fact: 'Тенге был введён в 1993 году после распада СССР. Название происходит от слов «теньге» (монета) и «тенгри» (небо).',
+    economicRole: 'Национальная валюта крупнейшей центральноазиатской экономики.',
+    shortDesc: 'валюта Казахстана',
+  },
+  UAH: {
+    fullNameRu: 'Украинская гривна',
+    country: 'Украина',
+    countryEn: 'Ukraine',
+    centralBank: 'Национальный банк Украины',
+    fact: 'Гривна — одна из самых древних единиц веса на территории Восточной Европы. Современная гривна была введена в 1996 году.',
+    economicRole: 'Национальная валюта Украины.',
+    shortDesc: 'валюта Украины',
+  },
+  BYN: {
+    fullNameRu: 'Белорусский рубль',
+    country: 'Беларусь',
+    countryEn: 'Belarus',
+    centralBank: 'Национальный банк Республики Беларусь',
+    fact: 'Белорусский рубль был введён в 1996 году, заменив прежний рубль образца 1992 года.',
+    economicRole: 'Национальная валюта Беларуси.',
+    shortDesc: 'валюта Беларуси',
+  },
+  TRY: {
+    fullNameRu: 'Турецкая лира',
+    country: 'Турция',
+    countryEn: 'Turkey',
+    centralBank: 'Центральный банк Турецкой Республики',
+    fact: 'Турция — крупнейшая экономика Ближнего Востока. Страна является мостом между Европой и Азией.',
+    economicRole: 'Валюта крупнейшей экономики Ближнего Востока и основного туристического направления.',
+    shortDesc: 'валюта Турции',
+  },
+  EGP: {
+    fullNameRu: 'Египетский фунт',
+    country: 'Египет',
+    countryEn: 'Egypt',
+    centralBank: 'Центральный банк Египта',
+    fact: 'Египетский фунт — одна из старейших валют Африки. Египет является крупнейшим туристическим направлением на континенте.',
+    economicRole: 'Национальная валюта крупнейшей экономики арабского мира.',
+    shortDesc: 'валюта Египта',
+  },
+  GEL: {
+    fullNameRu: 'Грузинский лари',
+    country: 'Грузия',
+    countryEn: 'Georgia',
+    centralBank: 'Национальный банк Грузии',
+    fact: 'Лари был введён в 1995 году. Название происходит от грузинского слова «лари» (okaneoba — сокровище).',
+    economicRole: 'Национальная валюта Грузии, страны с быстрорастущей экономикой.',
+    shortDesc: 'валюта Грузии',
+  },
+  AMD: {
+    fullNameRu: 'Армянский драм',
+    country: 'Армения',
+    countryEn: 'Armenia',
+    centralBank: 'Центральный банк Республики Армения',
+    fact: 'Драм был введён в 1993 году. Название происходит от древнегреческого «драмахма».',
+    economicRole: 'Национальная валюта Армении.',
+    shortDesc: 'валюта Армении',
+  },
+  AZN: {
+    fullNameRu: 'Азербайджанский манат',
+    country: 'Азербайджан',
+    countryEn: 'Azerbaijan',
+    centralBank: 'Центральный банк Азербайджанской Республики',
+    fact: 'Манат был введён в 1992 году. Азербайджан является крупным экспортёром нефти.',
+    economicRole: 'Национальная валюта Азербайджана, крупного нефтедобывающего государства.',
+    shortDesc: 'валюта Азербайджана',
+  },
+  KRW: {
+    fullNameRu: 'Южнокорейская вона',
+    country: 'Южная Корея',
+    countryEn: 'South Korea',
+    centralBank: 'Банк Кореи',
+    fact: 'Южная Корея — одна из ведущих мировых экономик. Страна является мировым лидером в производстве электроники и автомобилей.',
+    economicRole: 'Валюта 10-й экономики мира.',
+    shortDesc: 'валюта Южной Кореи',
+  },
+  INR: {
+    fullNameRu: 'Индийская рупия',
+    country: 'Индия',
+    countryEn: 'India',
+    centralBank: 'Резервный банк Индии',
+    fact: 'Индия — пятая экономика мира по размеру ВВП. Страна является крупнейшей в мире по населению.',
+    economicRole: 'Валюта крупнейшей в мире по населению страны.',
+    shortDesc: 'валюта Индии',
+  },
+  BRL: {
+    fullNameRu: 'Бразильский реал',
+    country: 'Бразилия',
+    countryEn: 'Brazil',
+    centralBank: 'Центральный банк Бразилии',
+    fact: 'Бразилия — крупнейшая экономика Латинской Америки. Страна является крупным экспортёром сельскохозяйственной продукции.',
+    economicRole: 'Валюта крупнейшей экономики Южной Америки.',
+    shortDesc: 'валюта Бразилии',
+  },
+  CAD: {
+    fullNameRu: 'Канадский доллар',
+    country: 'Канада',
+    countryEn: 'Canada',
+    centralBank: 'Банк Канады',
+    fact: 'Канада — вторая по площади страна мира. Канадский доллар является одной из шести основных мировых резервных валют.',
+    economicRole: 'Одна из основных мировых резервных валют.',
+    shortDesc: 'валюта Канады',
+  },
+  AUD: {
+    fullNameRu: 'Австралийский доллар',
+    country: 'Австралия',
+    countryEn: 'Australia',
+    centralBank: 'Резервный банк Австралии',
+    fact: 'Австралия — крупнейшая островная экономика мира. Австралийский доллар является пятой по популярности валютой наForex.',
+    economicRole: 'Валюта крупнейшей островной экономики.',
+    shortDesc: 'валюта Австралии',
+  },
+  CHF: {
+    fullNameRu: 'Швейцарский франк',
+    country: 'Швейцария',
+    countryEn: 'Switzerland',
+    centralBank: 'Национальный банк Швейцарии',
+    fact: 'Швейцария — одна из богатейших стран мира. Швейцарский франк традиционно считается «валютой-убежищем».',
+    economicRole: 'Валюта-убежище, стабильная резервная валюта.',
+    shortDesc: 'валюта-убежище',
+  },
+  // Криптовалюты
+  BTC: {
+    fullNameRu: 'Биткоин',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет (децентрализованная)',
+    fact: 'Биткоин был создан в 2009 году Сатоши Накамото. Максимальная эмиссия — 21 миллион монет.',
+    economicRole: 'Первая и крупнейшая криптовалюта по рыночной капитализации.',
+    shortDesc: 'первая и крупнейшая криптовалюта',
+  },
+  ETH: {
+    fullNameRu: 'Эфириум',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет (децентрализованная)',
+    fact: 'Эфириум был создан Виталиком Бутериным в 2015 году. Это первая платформа для смарт-контрактов.',
+    economicRole: 'Вторая по капитализации криптовалюта, основа для DeFi и NFT.',
+    shortDesc: 'платформа для смарт-контрактов',
+  },
+  USDT: {
+    fullNameRu: 'Тетер (USDT)',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет (стейблкоин)',
+    fact: 'USDT — стейблкоин, привязанный к доллару США. Каждая монета обеспечена реальными долларами.',
+    economicRole: 'Крупнейший стейблкоин, основной инструмент для торговли криптовалютами.',
+    shortDesc: 'стейблкоин, привязанный к доллару',
+  },
+  USDC: {
+    fullNameRu: 'USD Coin (USDC)',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет (стейблкоин)',
+    fact: 'USDC — стейблкоин, выпущенный Circle. Обеспечен реальными долларовыми резервами.',
+    economicRole: 'Стейблкоин с высокой прозрачностью резервов.',
+    shortDesc: 'прозрачный стейблкоин',
+  },
+  BNB: {
+    fullNameRu: 'Бинанскоин',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет (токен Binance)',
+    fact: 'BNB — нативный токен биржи Binance, крупнейшей криптобиржи в мире по объёму торгов.',
+    economicRole: 'Токен крупнейшей криптобиржи, используется для снижения комиссий.',
+    shortDesc: 'токен крупнейшей криптобиржи',
+  },
+  XRP: {
+    fullNameRu: 'Рипл',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'XRP создан Ripple Labs для быстрых международных банковских переводов.',
+    economicRole: 'Криптовалюта для банковских переводов.',
+    shortDesc: 'криптовалюта для банковских переводов',
+  },
+  SOL: {
+    fullNameRu: 'Солана',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Солана — высокоскоростная блокчейн-платформа, способная обрабатывать до 65 000 транзакций в секунду.',
+    economicRole: 'Высокоскоростная блокчейн-платформа для DeFi и NFT.',
+    shortDesc: 'высокоскоростная блокчейн-платформа',
+  },
+  ADA: {
+    fullNameRu: 'Кардано',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Кардано была создана соучредителем Ethereum Чарльзом Хоскинсоном. Платформа использует научный подход к разработке.',
+    economicRole: 'Блокчейн-платформа с научным подходом к разработке.',
+    shortDesc: 'блокчейн-платформа с научным подходом',
+  },
+  DOGE: {
+    fullNameRu: 'Догикоин',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Догикоин был создан в 2013 году как шутка, но стал популярной криптовалютой благодаря Илону Маску.',
+    economicRole: 'Мем-криптовалюта с активным сообществом.',
+    shortDesc: 'мем-криптовалюта',
+  },
+  TRX: {
+    fullNameRu: 'Трон',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Трон — блокчейн-платформа для контента и развлечений, основанная Джастином Саном.',
+    economicRole: 'Блокчейн для децентрализованных приложений и контента.',
+    shortDesc: 'блокчейн для контента и развлечений',
+  },
+  DOT: {
+    fullNameRu: 'Полкадот',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Полкадот создан сооснователем Ethereum Гэвином Вудом. Платформа объединяет разные блокчейны.',
+    economicRole: 'Мультичейн-платформа для объединения разных блокчейнов.',
+    shortDesc: 'мультичейн-платформа',
+  },
+  LINK: {
+    fullNameRu: 'Чейнлинк',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Chainlink обеспечивает связь смарт-контрактов с реальными данными через оракулы.',
+    economicRole: 'Оракулинг для смарт-контрактов.',
+    shortDesc: 'оракулинг для смарт-контрактов',
+  },
+  MATIC: {
+    fullNameRu: 'Полигон',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Polygon (ранее Matic Network) — решает проблему масштабируемости Ethereum.',
+    economicRole: 'Решение для масштабирования Ethereum.',
+    shortDesc: 'решение для масштабирования Ethereum',
+  },
+  LTC: {
+    fullNameRu: 'Лайткоин',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Лайткоин был создан Чарли Ли в 2011 году как «серебро к золоту Биткоина».',
+    economicRole: 'Одна из первых криптовалют, «серебро к золоту Биткоина».',
+    shortDesc: 'старейшая криптовалюта после Биткоина',
+  },
+  UNI: {
+    fullNameRu: 'Юнисвап',
+    country: 'Децентрализованная',
+    countryEn: 'Decentralized',
+    centralBank: 'Нет',
+    fact: 'Uniswap — крупнейший децентрализованный обменник (DEX) на платформе Ethereum.',
+    economicRole: 'Токен крупнейшего децентрализованного обменника.',
+    shortDesc: 'токен децентрализованного обменника',
+  },
+}
+
+function getCurrencyInfo(code: string): CurrencyInfo {
+  return CURRENCY_INFO[code] || {
+    fullNameRu: getCurrencyName(code, 'ru'),
+    country: '',
+    countryEn: '',
+    centralBank: '',
+    fact: '',
+    economicRole: '',
+    shortDesc: getCurrencyName(code, 'ru'),
+  }
+}
+
+function getCurrencyTypeLabel(code: string): string {
+  return getCurrencyInfo(code).fullNameRu || getCurrencyName(code, 'ru')
+}
+
+function isCryptoCode(code: string): boolean {
+  return !!currencies[code]?.crypto
+}
+
+// ============================================
 // ГЕНЕРАЦИЯ ПАР
 // ============================================
 
@@ -76,156 +430,301 @@ function generatePairs(): [string, string][] {
 }
 
 // ============================================
-// ШАБЛОНЫ КОНТЕНТА
+// УНИКАЛЬНЫЙ КОНТЕНТ ДЛЯ КАЖДОЙ ПАРЫ
 // ============================================
 
-function getCurrencyTypeLabel(code: string): string {
-  if (code === 'BTC') return 'Биткоин'
-  if (code === 'ETH') return 'Эфириум'
-  if (code === 'USDT') return 'Тетер (USDT)'
-  if (code === 'USDC') return 'USD Coin (USDC)'
-  if (code === 'BNB') return 'Бинанскоин'
-  if (code === 'XRP') return 'Рипл'
-  if (code === 'SOL') return 'Солана'
-  if (code === 'ADA') return 'Кардано'
-  if (code === 'DOGE') return 'Догикоин'
-  return getCurrencyName(code, 'ru')
+/** Детерминированный хеш строки для вариативности контента */
+function simpleHash(str: string): number {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0
+  }
+  return Math.abs(hash)
 }
 
-function isCryptoCode(code: string): boolean {
-  return !!currencies[code]?.crypto
+function pick<T>(arr: T[], seed: string): T {
+  return arr[simpleHash(seed) % arr.length]
 }
 
 function generateContent(from: string, to: string): string {
-  const fromName = getCurrencyTypeLabel(from)
-  const toName = getCurrencyTypeLabel(to)
+  const fromInfo = getCurrencyInfo(from)
+  const toInfo = getCurrencyInfo(to)
   const fromIsCrypto = isCryptoCode(from)
   const toIsCrypto = isCryptoCode(to)
+  const seed = `${from}-${to}`
 
   const sections: string[] = []
 
-  // Заголовок и вступление
-  sections.push(`
-    <h2>Курс ${from} к ${to}: актуальная информация</h2>
-    <p>${fromName} (${from}) — ${fromIsCrypto ? 'популярная криптовалюта' : 'международная валюта'}. ${toName} (${to}) — ${toIsCrypto ? 'востребованная криптовалюта' : 'национальная валюта'}. Конвертер ${from}/${to} позволяет мгновенно перевести средства по актуальному курсу.</p>
-  `)
+  // --- Вступление (уникальное для каждой пары) ---
+  if (fromIsCrypto && toIsCrypto) {
+    sections.push(`
+      <h2>Обмен ${fromInfo.fullNameRu} на ${toInfo.fullNameRu}</h2>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет мгновенно перевести одну криптовалюту в другую по актуальному рыночному курсу.</p>
+      <p>${fromInfo.fact} ${toInfo.fact}</p>
+    `)
+  } else if (fromIsCrypto) {
+    sections.push(`
+      <h2>Продажа ${fromInfo.fullNameRu} за ${toInfo.fullNameRu}</h2>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет продать ${fromInfo.fullNameRu} за ${toInfo.fullNameRu} по текущему курсу.</p>
+      <p>${fromInfo.fact}</p>
+      <p>Продажа ${fromInfo.fullNameRu} за ${toInfo.shortDesc} — удобный способ зафиксировать прибыль или перевести криптоактивы в фиатную валюту.</p>
+    `)
+  } else if (toIsCrypto) {
+    sections.push(`
+      <h2>Покупка ${toInfo.fullNameRu} за ${fromInfo.fullNameRu}</h2>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет купить ${toInfo.fullNameRu} за ${fromInfo.fullNameRu} по текущему курсу.</p>
+      <p>${toInfo.fact}</p>
+      <p>Покупка ${toInfo.shortDesc} за ${fromInfo.shortDesc} — популярный способ приобрести криптовалюту.</p>
+    `)
+  } else {
+    // Обе фиатные — уникальное описание в зависимости от валют
+    const introVariants = [
+      `<p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет мгновенно перевести средства по актуальному курсу.</p>`,
+      `<p>Курс ${fromInfo.fullNameRu} к ${toInfo.fullNameRu} — важный показатель для тех, кто работает с ${fromInfo.country} и ${toInfo.country}. Наш конвертер позволяет рассчитать точную сумму по актуальному курсу.</p>`,
+      `<p>Конвертация ${fromInfo.fullNameRu} в ${toInfo.shortDesc} — востребованная операция для путешественников, бизнеса и переводов. Используйте наш бесплатный калькулятор для расчёта.</p>`,
+    ]
+    sections.push(`
+      <h2>Курс ${fromInfo.fullNameRu} к ${toInfo.fullNameRu}: актуальная информация</h2>
+      ${pick(introVariants, seed)}
+      <p>${fromInfo.fact} ${toInfo.fact}</p>
+    `)
+  }
 
-  // Как конвертировать
+  // --- Как конвертировать (вариативный текст) ---
+  const howToVariants = [
+    {
+      intro: `Для конвертации ${fromInfo.fullNameRu} в ${toInfo.shortDesc}:`,
+      steps: [
+        'Убедитесь, что выбраны нужные валюты',
+        'Введите сумму для конвертации',
+        'Получите результат мгновенно по текущему курсу',
+      ],
+      outro: `Вы также можете нажать кнопку обмена (⇄), чтобы перевести ${toInfo.shortDesc} в ${fromInfo.shortDesc}.`,
+    },
+    {
+      intro: `Чтобы перевести ${from} в ${to}:`,
+      steps: [
+        'Проверьте, что в полях «Из» и «В» выбраны правильные валюты',
+        'Введите любую сумму',
+        'Результат рассчитается автоматически',
+      ],
+      outro: `Для обратной конвертации (${to} → ${from}) нажмите кнопку обмена.`,
+    },
+  ]
+  const howTo = pick(howToVariants, seed + '-howto')
   sections.push(`
     <h2>Как конвертировать ${from} в ${to}</h2>
-    <p>Для конвертации ${fromName} в ${toName}:</p>
+    <p>${howTo.intro}</p>
     <ol>
-      <li>Убедитесь, что выбраны валюты ${from} → ${to}</li>
-      <li>Введите сумму для конвертации</li>
-      <li>Получите результат мгновенно по текущему курсу</li>
+      ${howTo.steps.map(s => `<li>${s}</li>`).join('\n      ')}
     </ol>
-    <p>Вы также можете нажать кнопку обмена (⇄), чтобы перевести ${toName} в ${fromName}.</p>
+    <p>${howTo.outro}</p>
   `)
 
-  // Особенности пары
+  // --- Уникальные особенности пары ---
   if (fromIsCrypto && toIsCrypto) {
     sections.push(`
       <h2>Особенности обмена ${from} на ${to}</h2>
-      <p>Обмен криптовалют ${from} на ${to} осуществляется на основе рыночного курса. Курсы криптовалют значительно варьируются в течение дня, поэтому рекомендуем проверять актуальный курс перед операцией.</p>
+      <p>Обмен ${fromInfo.fullNameRu} на ${toInfo.shortDesc} осуществляется на основе рыночного курса. Курсы криптовалют значительно варьируются в течение дня, поэтому рекомендуем проверять актуальный курс перед операцией.</p>
       <ul>
-        <li><strong>Высокая волатильность</strong> — курс криптовалют может измениться на несколько процентов за час.</li>
-        <li><strong>Круглосуточная торговля</strong> — криптовалюты торгуются 24/7 без выходных.</li>
-        <li><strong>Глобальный рынок</strong> — обмен доступен из любой точки мира.</li>
+        <li><strong>Высокая волатильность</strong> — курс ${from} может измениться на несколько процентов за час.</li>
+        <li><strong>Круглосуточная торговля</strong> — обмен ${from} на ${to} доступен 24/7 без выходных.</li>
+        <li><strong>Глобальный рынок</strong> — конвертация доступна из любой точки мира.</li>
+        <li><strong>Без посредников</strong> — обмен напрямую между криптовалютами.</li>
       </ul>
     `)
   } else if (fromIsCrypto) {
     sections.push(`
-      <h2>Как продать ${fromName} за ${toName}</h2>
-      <p>Конвертация ${fromName} в ${toName} — удобный способ зафиксировать прибыль или перевести криптоактивы в фиатную валюту.</p>
+      <h2>Как продать ${fromInfo.fullNameRu} за ${toInfo.shortDesc}</h2>
+      <p>Конвертация ${fromInfo.fullNameRu} в ${toInfo.shortDesc} — удобный способ зафиксировать прибыль или перевести криптоактивы в ${toInfo.shortDesc}.</p>
       <ul>
         <li><strong>Быстрая конвертация</strong> — результат мгновенно.</li>
-        <li><strong>Актуальный курс</strong> — данные обновляются регулярно.</li>
+        <li><strong>Актуальный курс</strong> — данные обновляются регулярно из CoinGecko.</li>
         <li><strong>Без регистрации</strong> — конвертация доступна без создания аккаунта.</li>
+        <li><strong>Прозрачный курс</strong> — вы видите точный результат до конвертации.</li>
       </ul>
     `)
   } else if (toIsCrypto) {
     sections.push(`
-      <h2>Как купить ${toName} за ${fromName}</h2>
-      <p>Конвертация ${fromName} в ${toName} — популярный способ приобрести криптовалюту.</p>
+      <h2>Как купить ${toInfo.shortDesc} за ${fromInfo.shortDesc}</h2>
+      <p>Покупка ${toInfo.shortDesc} за ${fromInfo.shortDesc} — популярный способ приобрести криптовалюту.</p>
       <ul>
         <li><strong>Простая покупка</strong> — выберите валюты и введите сумму.</li>
         <li><strong>Прозрачный курс</strong> — видите точный результат до конвертации.</li>
+        <li><strong>Без регистрации</strong> — покупка доступна без аккаунта.</li>
         <li><strong>Поддержка криптовалют</strong> — доступно более 15 криптовалют.</li>
       </ul>
     `)
   } else {
-    // Обе фиатные
+    // Обе фиатные — уникальные факторы для каждой пары
+    const fiatVariants = [
+      {
+        title: `Факторы, влияющие на курс ${from}/${to}`,
+        factors: [
+          `<strong>Процентные ставки</strong> ${fromInfo.centralBank} и ${toInfo.centralBank} — основной фактор курса.`,
+          `<strong>Экономические показатели</strong> ${fromInfo.country} и ${toInfo.country} — ВВП, инфляция, безработица.`,
+          `<strong>Геополитика</strong> — политические события и санкции могут существенно влиять на курс.`,
+          `<strong>Торговый баланс</strong> — соотношение экспорта и импорта между ${fromInfo.country} и ${toInfo.country}.`,
+        ],
+      },
+      {
+        title: `Особенности курса ${from}/${to}`,
+        factors: [
+          `<strong>Монетарная политика</strong> — решения ${fromInfo.centralBank} напрямую влияют на курс ${from}.`,
+          `<strong>Экономика ${toInfo.country}</strong> — ${toInfo.shortDesc} зависит от макроэкономических показателей.`,
+          `<strong>Торговые связи</strong> — объём торговли между ${fromInfo.country} и ${toInfo.country}.`,
+          `<strong>Курс ${from} к доллару</strong> —间接影响 на курс ${from}/${to}.`,
+        ],
+      },
+    ]
+    const variant = pick(fiatVariants, seed + '-factors')
     sections.push(`
-      <h2>Особенности курса ${from}/${to}</h2>
-      <p>Курс ${fromName} к ${toName} формируется на основе спроса и предложения на международном валютном рынке. На курс влияют:</p>
+      <h2>${variant.title}</h2>
+      <p>Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} формируется на основе спроса и предложения на международном валютном рынке. На курс влияют:</p>
       <ul>
-        <li><strong>Процентные ставки</strong> центральных банков обеих стран.</li>
-        <li><strong>Экономические показатели</strong> — ВВП, инфляция, безработица.</li>
-        <li><strong>Геополитика</strong> — политические события и санкции.</li>
-        <li><strong>Торговый баланс</strong> — соотношение экспорта и импорта.</li>
+        ${variant.factors.map(f => `<li>${f}</li>`).join('\n        ')}
       </ul>
     `)
   }
 
-  // Популярные суммы
+  // --- Интересные факты (уникальные для каждой пары) ---
+  if (!fromIsCrypto && !toIsCrypto) {
+    const factsVariants = [
+      {
+        title: `Интересные факты о ${from}/${to}`,
+        facts: [
+          `${fromInfo.fullNameRu} (${from}) является ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}.`,
+          `${fromInfo.country} и ${toInfo.country} — экономики с уникальными особенностями, которые влияют на курс ${from}/${to}.`,
+          `Конвертация ${from} в ${to} особенно востребована среди путешественников и бизнесменов.`,
+        ],
+      },
+      {
+        title: `О валютах ${from} и ${to}`,
+        facts: [
+          `${fromInfo.fact}`,
+          `${toInfo.fact}`,
+          `Пара ${from}/${to} является одной из торгуемых на международном валютном рынке.`,
+        ],
+      },
+    ]
+    const facts = pick(factsVariants, seed + '-facts')
+    sections.push(`
+      <h2>${facts.title}</h2>
+      <ul>
+        ${facts.facts.map(f => `<li>${f}</li>`).join('\n        ')}
+      </ul>
+    `)
+  } else if (fromIsCrypto && !toIsCrypto) {
+    sections.push(`
+      <h2>О ${fromInfo.fullNameRu}</h2>
+      <p>${fromInfo.fact}</p>
+      <p>Конвертация ${fromInfo.shortDesc} в ${toInfo.shortDesc} позволяет перевести криптоактивы в национальную валюту ${toInfo.country}.</p>
+    `)
+  } else if (!fromIsCrypto && toIsCrypto) {
+    sections.push(`
+      <h2>О ${toInfo.fullNameRu}</h2>
+      <p>${toInfo.fact}</p>
+      <p>Покупка ${toInfo.shortDesc} за ${fromInfo.shortDesc} — популярный способ приобрести криптовалюту.</p>
+    `)
+  }
+
+  // --- Как пользоваться конвертером ---
   sections.push(`
-    <h2>Популярные суммы для конвертации</h2>
-    <p>Вот сколько ${toName} вы получите за стандартные суммы ${fromName}:</p>
-    <ul>
-      <li>1 ${from} = курс ${from}/${to}</li>
-      <li>10 ${from} = 10 × курс</li>
-      <li>100 ${from} = 100 × курс</li>
-      <li>1 000 ${from} = 1 000 × курс</li>
-    </ul>
-    <p>Точный результат зависит от текущего курса. Используйте наш конвертер для расчёта любой суммы.</p>
+    <h2>Как пользоваться конвертером ${from}/${to}</h2>
+    <p>Наш конвертер позволяет быстро и удобно перевести ${fromInfo.shortDesc} в ${toInfo.shortDesc}:</p>
+    <ol>
+      <li>Убедитесь, что выбраны валюты ${from} → ${to}</li>
+      <li>Введите сумму в ${fromInfo.fullNameRu}</li>
+      <li>Получите результат в ${toInfo.shortDesc} мгновенно</li>
+    </ol>
+    <p>Курсы обновляются регулярно из открытых API. Конвертация полностью бесплатная и не требует регистрации.</p>
   `)
 
   return sections.join('\n')
 }
 
+// ============================================
+// УНИКАЛЬНЫЙ FAQ
+// ============================================
+
 function generateFaq(from: string, to: string): { question: string; answer: string }[] {
-  const fromName = getCurrencyTypeLabel(from)
-  const toName = getCurrencyTypeLabel(to)
+  const fromInfo = getCurrencyInfo(from)
+  const toInfo = getCurrencyInfo(to)
   const fromIsCrypto = isCryptoCode(from)
   const toIsCrypto = isCryptoCode(to)
+  const seed = `${from}-${to}`
 
-  const faq: { question: string; answer: string }[] = [
+  const faq: { question: string; answer: string }[] = []
+
+  // Базовые вопросы (вариативные формулировки)
+  const q1Variants = [
     {
-      question: `Какой курс ${from} к ${to}?`,
-      answer: `Актуальный курс ${from} к ${to} можно посмотреть на cconverter.ru. Курсы обновляются регулярно и берутся из открытых API.`,
+      q: `Какой сейчас курс ${from} к ${to}?`,
+      a: `Актуальный курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} можно посмотреть на cconverter.ru. Курсы обновляются регулярно из открытых API.`,
     },
     {
-      question: `Как конвертировать ${from} в ${to}?`,
-      answer: `Введите сумму, выберите ${from} в поле "Из" и ${to} в поле "В". Конвертер автоматически рассчитает результат по текущему курсу.`,
+      q: `Сколько стоит ${from} в ${to}?`,
+      a: `Текущий курс ${from}/${to} отображается в нашем конвертере. Данные берутся из открытых источников и обновляются регулярно.`,
+    },
+    {
+      q: `Какой курс ${from} к ${to} сегодня?`,
+      a: `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} на сегодня можно проверить на cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
     },
   ]
+  faq.push(pick(q1Variants, seed + '-q1'))
 
+  // Как конвертировать
+  const q2Variants = [
+    {
+      q: `Как конвертировать ${from} в ${to}?`,
+      a: `Введите сумму, выберите ${from} в поле «Из» и ${to} в поле «В». Конвертер автоматически рассчитает результат по текущему курсу.`,
+    },
+    {
+      q: `Как перевести ${from} в ${to}?`,
+      a: `Откройте конвертер, убедитесь что выбраны нужные валюты, введите сумму — результат появится мгновенно.`,
+    },
+    {
+      q: `Как быстро конвертировать ${fromInfo.shortDesc} в ${toInfo.shortDesc}?`,
+      a: `Используйте наш онлайн-конвертер — просто введите сумму и получите результат за долю секунды.`,
+    },
+  ]
+  faq.push(pick(q2Variants, seed + '-q2'))
+
+  // Специфичные вопросы в зависимости от типа пары
   if (fromIsCrypto && toIsCrypto) {
     faq.push({
-      question: `Можно ли обменять ${from} на ${to}?`,
-      answer: `Да, конвертер поддерживает обмен ${fromName} на ${toName}. Курс формируется на основе рыночных данных.`,
+      q: `Можно ли обменять ${fromInfo.fullNameRu} на ${toInfo.shortDesc}?`,
+      a: `Да, конвертер поддерживает обмен ${fromInfo.fullNameRu} на ${toInfo.shortDesc}. Курс формируется на основе рыночных данных.`,
     })
   } else if (fromIsCrypto) {
     faq.push({
-      question: `Как продать ${from} за ${to}?`,
-      answer: `Выберите ${from} в поле "Из" и ${to} в поле "В", введите количество ${fromName}, и конвертер покажет сумму в ${toName}.`,
+      q: `Как продать ${fromInfo.shortDesc} за ${toInfo.shortDesc}?`,
+      a: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите количество ${fromInfo.shortDesc}, и конвертер покажет сумму в ${toInfo.shortDesc}.`,
     })
   } else if (toIsCrypto) {
     faq.push({
-      question: `Как купить ${to} за ${from}?`,
-      answer: `Выберите ${from} в поле "Из" и ${to} в поле "В", введите сумму ${fromName}, и конвертер покажет количество ${toName}.`,
+      q: `Как купить ${toInfo.shortDesc} за ${fromInfo.shortDesc}?`,
+      a: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите сумму ${fromInfo.shortDesc}, и конвертер покажет количество ${toInfo.shortDesc}.`,
     })
   } else {
     faq.push({
-      question: `Как часто обновляется курс ${from}/${to}?`,
-      answer: `Курс ${from}/${to} обновляется ежедневно. Для точных данных рекомендуем проверять официальные источники.`,
+      q: `Как часто обновляется курс ${from}/${to}?`,
+      a: `Курс ${from}/${to} обновляется ежедневно. Для точных данных рекомендуем проверять официальные источники: ${fromInfo.centralBank} и ${toInfo.centralBank}.`,
     })
   }
 
-  faq.push({
-    question: `Где посмотреть курс ${from} к ${to}?`,
-    answer: `Курс ${from} к ${to} доступен на сайте cconverter.ru. Мы показываем актуальный курс с возможностью мгновенной конвертации.`,
-  })
+  // Где посмотреть курс (уникальные формулировки)
+  const q4Variants = [
+    {
+      q: `Где посмотреть актуальный курс ${from} к ${to}?`,
+      a: `Курс ${fromInfo.shortDesc} к ${toInfo.shortDesc} доступен на сайте cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
+    },
+    {
+      q: `Где найти курс ${from}/${to}?`,
+      a: `Актуальный курс ${from} к ${to} можно найти на нашем сайте. Конвертер полностью бесплатный и не требует регистрации.`,
+    },
+  ]
+  faq.push(pick(q4Variants, seed + '-q4'))
 
   return faq
 }
@@ -235,14 +734,27 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
 // ============================================
 
 export function generateSeoPageData(from: string, to: string): SeoPageData {
-  const fromName = getCurrencyName(from, 'ru')
-  const toName = getCurrencyName(to, 'ru')
+  const fromInfo = getCurrencyInfo(from)
+  const toInfo = getCurrencyInfo(to)
+  const seed = `${from}-${to}`
+
+  // Уникальные title и description
+  const titleVariants = [
+    `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} — конвертер ${from}/${to} | cconverter.ru`,
+    `${from}/${to} — актуальный курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} | cconverter.ru`,
+    `Конвертер ${from}/${to} — перевод ${fromInfo.fullNameRu} в ${toInfo.shortDesc} | cconverter.ru`,
+  ]
+  const descVariants = [
+    `Конвертируйте ${fromInfo.shortDesc} в ${toInfo.shortDesc} по актуальному курсу. Бесплатный онлайн калькулятор с мгновенным результатом.`,
+    `Актуальный курс ${from}/${to} сегодня. Бесплатная конвертация ${fromInfo.fullNameRu} в ${toInfo.shortDesc} по рыночному курсу.`,
+    `Переведите ${fromInfo.shortDesc} в ${toInfo.shortDesc} за секунду. Бесплатный конвертер валют с реальными курсами.`,
+  ]
 
   return {
     path: `/${from.toLowerCase()}-${to.toLowerCase()}`,
-    title: `Курс ${fromName} к ${toName} — конвертер ${from}/${to} | cconverter.ru`,
-    description: `Конвертируйте ${from} в ${to} по актуальному курсу. Бесплатный онлайн калькулятор с мгновенным результатом.`,
-    h1: `Курс ${fromName} к ${toName} сегодня`,
+    title: pick(titleVariants, seed + '-title'),
+    description: pick(descVariants, seed + '-desc'),
+    h1: `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} сегодня`,
     fromCode: from,
     toCode: to,
     faq: generateFaq(from, to),
