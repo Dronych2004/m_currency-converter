@@ -17,7 +17,7 @@ const MAX_HISTORY = 20
 
 function loadHistory(): ConversionRecord[] {
   try {
-    const raw = localStorage.getItem(HISTORY_KEY)
+    const raw = sessionStorage.getItem(HISTORY_KEY)
     if (!raw) return []
     return JSON.parse(raw) as ConversionRecord[]
   } catch {
@@ -27,9 +27,9 @@ function loadHistory(): ConversionRecord[] {
 
 function saveHistory(history: ConversionRecord[]): void {
   try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
+    sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history))
   } catch {
-    // localStorage переполнен
+    // sessionStorage переполнена
   }
 }
 
@@ -76,7 +76,7 @@ export function useHistory() {
 
   const clearHistory = useCallback(() => {
     setHistory([])
-    localStorage.removeItem(HISTORY_KEY)
+    sessionStorage.removeItem(HISTORY_KEY)
   }, [])
 
   const removeRecord = useCallback((id: string) => {

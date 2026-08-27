@@ -12,7 +12,7 @@ const MAX_FAVORITES = 10
 
 function loadFavorites(): FavoritePair[] {
   try {
-    const raw = localStorage.getItem(FAVORITES_KEY)
+    const raw = sessionStorage.getItem(FAVORITES_KEY)
     if (!raw) return []
     return JSON.parse(raw) as FavoritePair[]
   } catch {
@@ -22,9 +22,9 @@ function loadFavorites(): FavoritePair[] {
 
 function saveFavorites(favorites: FavoritePair[]): void {
   try {
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
+    sessionStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
   } catch {
-    // localStorage переполнен
+    // sessionStorage переполнена
   }
 }
 
