@@ -364,10 +364,6 @@ function getCurrencyInfo(code: string): CurrencyInfo {
   }
 }
 
-function getCurrencyTypeLabel(code: string): string {
-  return getCurrencyInfo(code).fullNameRu || getCurrencyName(code, 'ru')
-}
-
 function isCryptoCode(code: string): boolean {
   return !!currencies[code]?.crypto
 }
@@ -659,16 +655,16 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
   // Базовые вопросы (вариативные формулировки)
   const q1Variants = [
     {
-      q: `Какой сейчас курс ${from} к ${to}?`,
-      a: `Актуальный курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} можно посмотреть на cconverter.ru. Курсы обновляются регулярно из открытых API.`,
+      question: `Какой сейчас курс ${from} к ${to}?`,
+      answer: `Актуальный курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} можно посмотреть на cconverter.ru. Курсы обновляются регулярно из открытых API.`,
     },
     {
-      q: `Сколько стоит ${from} в ${to}?`,
-      a: `Текущий курс ${from}/${to} отображается в нашем конвертере. Данные берутся из открытых источников и обновляются регулярно.`,
+      question: `Сколько стоит ${from} в ${to}?`,
+      answer: `Текущий курс ${from}/${to} отображается в нашем конвертере. Данные берутся из открытых источников и обновляются регулярно.`,
     },
     {
-      q: `Какой курс ${from} к ${to} сегодня?`,
-      a: `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} на сегодня можно проверить на cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
+      question: `Какой курс ${from} к ${to} сегодня?`,
+      answer: `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} на сегодня можно проверить на cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
     },
   ]
   faq.push(pick(q1Variants, seed + '-q1'))
@@ -676,16 +672,16 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
   // Как конвертировать
   const q2Variants = [
     {
-      q: `Как конвертировать ${from} в ${to}?`,
-      a: `Введите сумму, выберите ${from} в поле «Из» и ${to} в поле «В». Конвертер автоматически рассчитает результат по текущему курсу.`,
+      question: `Как конвертировать ${from} в ${to}?`,
+      answer: `Введите сумму, выберите ${from} в поле «Из» и ${to} в поле «В». Конвертер автоматически рассчитает результат по текущему курсу.`,
     },
     {
-      q: `Как перевести ${from} в ${to}?`,
-      a: `Откройте конвертер, убедитесь что выбраны нужные валюты, введите сумму — результат появится мгновенно.`,
+      question: `Как перевести ${from} в ${to}?`,
+      answer: `Откройте конвертер, убедитесь что выбраны нужные валюты, введите сумму — результат появится мгновенно.`,
     },
     {
-      q: `Как быстро конвертировать ${fromInfo.shortDesc} в ${toInfo.shortDesc}?`,
-      a: `Используйте наш онлайн-конвертер — просто введите сумму и получите результат за долю секунды.`,
+      question: `Как быстро конвертировать ${fromInfo.shortDesc} в ${toInfo.shortDesc}?`,
+      answer: `Используйте наш онлайн-конвертер — просто введите сумму и получите результат за долю секунды.`,
     },
   ]
   faq.push(pick(q2Variants, seed + '-q2'))
@@ -693,35 +689,35 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
   // Специфичные вопросы в зависимости от типа пары
   if (fromIsCrypto && toIsCrypto) {
     faq.push({
-      q: `Можно ли обменять ${fromInfo.fullNameRu} на ${toInfo.shortDesc}?`,
-      a: `Да, конвертер поддерживает обмен ${fromInfo.fullNameRu} на ${toInfo.shortDesc}. Курс формируется на основе рыночных данных.`,
+      question: `Можно ли обменять ${fromInfo.fullNameRu} на ${toInfo.shortDesc}?`,
+      answer: `Да, конвертер поддерживает обмен ${fromInfo.fullNameRu} на ${toInfo.shortDesc}. Курс формируется на основе рыночных данных.`,
     })
   } else if (fromIsCrypto) {
     faq.push({
-      q: `Как продать ${fromInfo.shortDesc} за ${toInfo.shortDesc}?`,
-      a: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите количество ${fromInfo.shortDesc}, и конвертер покажет сумму в ${toInfo.shortDesc}.`,
+      question: `Как продать ${fromInfo.shortDesc} за ${toInfo.shortDesc}?`,
+      answer: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите количество ${fromInfo.shortDesc}, и конвертер покажет сумму в ${toInfo.shortDesc}.`,
     })
   } else if (toIsCrypto) {
     faq.push({
-      q: `Как купить ${toInfo.shortDesc} за ${fromInfo.shortDesc}?`,
-      a: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите сумму ${fromInfo.shortDesc}, и конвертер покажет количество ${toInfo.shortDesc}.`,
+      question: `Как купить ${toInfo.shortDesc} за ${fromInfo.shortDesc}?`,
+      answer: `Выберите ${from} в поле «Из» и ${to} в поле «В», введите сумму ${fromInfo.shortDesc}, и конвертер покажет количество ${toInfo.shortDesc}.`,
     })
   } else {
     faq.push({
-      q: `Как часто обновляется курс ${from}/${to}?`,
-      a: `Курс ${from}/${to} обновляется ежедневно. Для точных данных рекомендуем проверять официальные источники: ${fromInfo.centralBank} и ${toInfo.centralBank}.`,
+      question: `Как часто обновляется курс ${from}/${to}?`,
+      answer: `Курс ${from}/${to} обновляется ежедневно. Для точных данных рекомендуем проверять официальные источники: ${fromInfo.centralBank} и ${toInfo.centralBank}.`,
     })
   }
 
   // Где посмотреть курс (уникальные формулировки)
   const q4Variants = [
     {
-      q: `Где посмотреть актуальный курс ${from} к ${to}?`,
-      a: `Курс ${fromInfo.shortDesc} к ${toInfo.shortDesc} доступен на сайте cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
+      question: `Где посмотреть актуальный курс ${from} к ${to}?`,
+      answer: `Курс ${fromInfo.shortDesc} к ${toInfo.shortDesc} доступен на сайте cconverter.ru — мы показываем актуальный курс с возможностью мгновенной конвертации.`,
     },
     {
-      q: `Где найти курс ${from}/${to}?`,
-      a: `Актуальный курс ${from} к ${to} можно найти на нашем сайте. Конвертер полностью бесплатный и не требует регистрации.`,
+      question: `Где найти курс ${from}/${to}?`,
+      answer: `Актуальный курс ${from} к ${to} можно найти на нашем сайте. Конвертер полностью бесплатный и не требует регистрации.`,
     },
   ]
   faq.push(pick(q4Variants, seed + '-q4'))
