@@ -31,7 +31,7 @@ const SUPPORTED_CURRENCIES = new Set(Object.keys(capitalCities));
 // Основной API курсов валют
 const EXCHANGE_RATE_API_BASE = 'https://open.er-api.com/v6/latest';
 // Резервный API (fallback при недоступности основного)
-const EXCHANGE_RATE_FALLBACK_BASE = 'https://open.er-api.com/v6/latest';
+const EXCHANGE_RATE_FALLBACK_BASE = 'https://api.frankfurter.app/latest';
 
 // API погоды
 const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
@@ -67,7 +67,7 @@ export async function fetchCurrencies(lang: Lang = 'ru'): Promise<Currency[]> {
   try {
     const data = await fetchWithFallback(
       `${EXCHANGE_RATE_API_BASE}/USD`,
-      `${EXCHANGE_RATE_FALLBACK_BASE}/USD`
+      `${EXCHANGE_RATE_FALLBACK_BASE}?from=USD`
     );
 
     const currencies: Currency[] = Object.entries(data.rates)
@@ -113,7 +113,7 @@ export async function convertCurrency(
     if (!fromIsCrypto && !toIsCrypto) {
       const data = await fetchWithFallback(
         `${EXCHANGE_RATE_API_BASE}/${from}`,
-        `${EXCHANGE_RATE_FALLBACK_BASE}/${from}`
+        `${EXCHANGE_RATE_FALLBACK_BASE}?from=${from}`
       );
       const rate = data.rates[to];
       if (!rate) {
@@ -164,7 +164,7 @@ async function getFiatRateToUSD(code: string): Promise<number> {
 
   const data = await fetchWithFallback(
     `${EXCHANGE_RATE_API_BASE}/USD`,
-    `${EXCHANGE_RATE_FALLBACK_BASE}/USD`
+    `${EXCHANGE_RATE_FALLBACK_BASE}?from=USD`
   );
   const unitsPerUSD = data.rates[code] || 0;
   const result = unitsPerUSD > 0 ? 1 / unitsPerUSD : 0;

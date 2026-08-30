@@ -114,9 +114,18 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
-        });
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+          // На localhost — удаляем все старые SW и очищаем кэш
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(r => r.unregister());
+          });
+          caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+        } else {
+          // В production — регистрируем SW
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+          });
+        }
       }
     </script>
   </body>

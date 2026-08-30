@@ -1,4 +1,15 @@
-const CACHE_NAME = 'cconverter-v1'
+const CACHE_NAME = 'cconverter-v2'
+
+// На localhost SW не нужен — мешает HMR и кэширует бандлы.
+// Если старый SW всё ещё жив, он самоуничтожается при обновлении.
+if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+  self.addEventListener('activate', () => {
+    self.registration.unregister();
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => client.navigate(client.url));
+    });
+  });
+}
 const STATIC_ASSETS = [
   '/',
   '/index.html',

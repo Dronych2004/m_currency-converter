@@ -20,6 +20,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { CurrencyTypeSwitcher } from './components/CurrencyTypeSwitcher'
 import { HistoryCard } from './components/HistoryCard'
 import { FavoritesCard } from './components/FavoritesCard'
+import { PromoBanner } from './components/PromoBanner'
 import { SeoPage } from './components/SeoPage'
 import { seoPages } from './data/seoPages'
 import { trackSwap, trackAddFavorite, trackRemoveFavorite, trackQuickPair } from './utils/analytics'
@@ -33,6 +34,7 @@ function Home() {
     toCurrency,
     amount,
     convertedAmount,
+    convertedForAmount,
     exchangeRate,
     isLoading,
     error,
@@ -42,6 +44,7 @@ function Home() {
     setFromCurrency,
     setToCurrency,
     setAmount,
+    triggerConversion,
     swapCurrencies,
     setCurrencyType,
   } = useCurrencyConverter()
@@ -59,8 +62,9 @@ function Home() {
     document.dispatchEvent(new Event('custom-render-trigger'))
   }, [])
 
+  // Запись в историю — только когда convertedAmount обновился через triggerConversion
   useEffect(() => {
-    if (fromCurrency && toCurrency && convertedAmount !== null && amount) {
+    if (fromCurrency && toCurrency && convertedAmount !== null && convertedForAmount === amount) {
       const key = `${fromCurrency.code}-${toCurrency.code}-${amount}`
       if (lastConversionRef.current !== key) {
         lastConversionRef.current = key
@@ -75,13 +79,14 @@ function Home() {
         )
       }
     }
-  }, [fromCurrency, toCurrency, amount, convertedAmount, exchangeRate, addConversion])
+  }, [convertedAmount, convertedForAmount, exchangeRate, addConversion])
 
   const handleSelectPair = (fromCode: string, toCode: string) => {
     const from = currencies.find(c => c.code === fromCode)
     const to = currencies.find(c => c.code === toCode)
     if (from) setFromCurrency(from)
     if (to) setToCurrency(to)
+    setAmount('0')
   }
 
   return (
@@ -232,15 +237,32 @@ function Home() {
                       label={t('to')}
                       id="to-currency"
                     />
-                    <ConversionResult
-                      amount={amount}
-                      fromCurrency={fromCurrency}
-                      toCurrency={toCurrency}
-                      convertedAmount={convertedAmount}
-                      exchangeRate={exchangeRate}
-                      isLoading={isLoading}
-                    />
                   </div>
+                </div>
+
+                {/* Кнопка конвертировать — под блоком выбора валют */}
+                <div className="flex justify-center mt-4">
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    onClick={triggerConversion}
+                    className="px-12 py-3 rounded-xl bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold text-base shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                  >
+                    {t('convert')}
+                  </button>
+                </div>
+
+                {/* Блок результата — под кнопкой */}
+                <div className="mt-4">
+                  <ConversionResult
+                    amount={amount}
+                    convertedForAmount={convertedForAmount}
+                    fromCurrency={fromCurrency}
+                    toCurrency={toCurrency}
+                    convertedAmount={convertedAmount}
+                    exchangeRate={exchangeRate}
+                    isLoading={isLoading}
+                  />
                 </div>
 
                 {exchangeRate && fromCurrency && toCurrency && (
@@ -335,6 +357,9 @@ function Home() {
               />
             </div>
           </main>
+
+          {/* ПРОМО-БАННЕР */}
+          <PromoBanner />
 
           {/* ПОДВАЛ */}
           <footer

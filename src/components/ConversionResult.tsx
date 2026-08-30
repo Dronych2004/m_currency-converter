@@ -3,6 +3,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 
 interface ConversionResultProps {
   amount: string
+  convertedForAmount: string | null
   fromCurrency: Currency | null
   toCurrency: Currency | null
   convertedAmount: number | null
@@ -12,6 +13,7 @@ interface ConversionResultProps {
 
 export function ConversionResult({
   amount,
+  convertedForAmount,
   fromCurrency,
   toCurrency,
   convertedAmount,
@@ -70,12 +72,13 @@ export function ConversionResult({
           <div className="flex items-center justify-center gap-3">
             <span className="text-3xl">{toCurrency.flag}</span>
             <span className="result-amount">
-              {convertedAmount !== null
-                ? convertedAmount.toLocaleString('ru-RU', {
+              {amount === '0' || amount === '' || convertedAmount === null
+                ? '0.00'
+                : convertedAmount.toLocaleString('ru-RU', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })
-                : '0.00'}
+              }
             </span>
             <span className="text-2xl font-bold text-slate-300">
               {toCurrency.code}
@@ -83,6 +86,14 @@ export function ConversionResult({
           </div>
         )}
       </div>
+
+      {convertedForAmount !== null && convertedForAmount !== amount && (
+        <div className="mt-4 text-center">
+          <span className="text-xs text-slate-500">
+            {t('resultFor')} {parseFloat(convertedForAmount).toLocaleString('ru-RU')} {fromCurrency.code}
+          </span>
+        </div>
+      )}
 
       <div className="mt-6 pt-5 border-t border-white/5">
         <div className="flex items-center justify-center gap-6 text-sm">

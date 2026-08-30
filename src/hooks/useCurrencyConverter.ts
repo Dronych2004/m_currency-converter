@@ -14,6 +14,7 @@ export interface UseCurrencyConverterReturn {
   toCurrency: Currency | null;
   amount: string;
   convertedAmount: number | null;
+  convertedForAmount: string | null;
   exchangeRate: number | null;
   isLoading: boolean;
   error: string | null;
@@ -23,6 +24,7 @@ export interface UseCurrencyConverterReturn {
   setFromCurrency: (currency: Currency) => void;
   setToCurrency: (currency: Currency) => void;
   setAmount: (amount: string) => void;
+  triggerConversion: () => void;
   swapCurrencies: () => void;
   setCurrencyType: (type: CurrencyType) => void;
 }
@@ -40,7 +42,12 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
   const [toCurrency, setToCurrency] = useState<Currency | null>(null);
   const [amount, setAmount] = useState<string>('1');
   const [convertedAmount, setConvertedAmount] = useState<number | null>(null);
+  const [convertedForAmount, setConvertedForAmount] = useState<string | null>(null);
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+
+  // Триггер конвертации: тик увеличивается при каждом нажатии «Конвертировать»
+  const [convertTick, setConvertTick] = useState(0);
+  const convertAmountRef = useRef('1');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [fromWeather, setFromWeather] = useState<WeatherData | null>(null);
@@ -49,6 +56,12 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
 
   // AbortController для отмены устаревших запросов конвертации
   const convertAbortRef = useRef<AbortController | null>(null);
+
+  // Ref-ы для валют — конвертация читает их, но не перезапускается при смене
+  const fromCurrencyRef = useRef(fromCurrency);
+  const toCurrencyRef = useRef(toCurrency);
+  fromCurrencyRef.current = fromCurrency;
+  toCurrencyRef.current = toCurrency;
 
   // Отслеживаем предыдущий currencyType чтобы понять: сброс при смене типа или обновление имён при смене языка
   const prevTypeRef = useRef(currencyType);
@@ -123,15 +136,22 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     loadCurrencies();
   }, [currencyType, lang]);
 
-  // Конвертация с debounce 300ms и кэшированием
+  // Конвертация — ТОЛЬКО при вызове triggerConversion (смена convertTick)
+  // Валюты и сумма берутся из ref, чтобы ничего лишнего не перезапускало эффект
   useEffect(() => {
-    if (!fromCurrency || !toCurrency || !amount) {
+    if (convertTick === 0) return; // пропускаем первый рендер
+
+    const from = fromCurrencyRef.current;
+    const to = toCurrencyRef.current;
+    const convertAmount = convertAmountRef.current;
+
+    if (!from || !to || !convertAmount) {
       setConvertedAmount(null);
       setExchangeRate(null);
       return;
     }
 
-    const amountNumber = parseFloat(amount);
+    const amountNumber = parseFloat(convertAmount);
     if (isNaN(amountNumber) || amountNumber < 0) {
       setConvertedAmount(null);
       setExchangeRate(null);
@@ -139,11 +159,13 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     }
 
     // Ключ кэша: пара + сумма
-    const cacheKey = `${fromCurrency.code}:${toCurrency.code}:${amount}`;
+    const cacheKey = `${from.code}:${to.code}:${convertAmount}`;
     const cached = rateCache.get(cacheKey);
     if (cached) {
       setConvertedAmount(cached.result);
+      setConvertedForAmount(convertAmount);
       setExchangeRate(cached.rate);
+      setIsLoading(false);
       return;
     }
 
@@ -152,40 +174,43 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     const controller = new AbortController();
     convertAbortRef.current = controller;
 
-    const timer = setTimeout(async () => {
+    let cancelled = false;
+
+    (async () => {
       try {
         setIsLoading(true);
         setError(null);
 
         const result = await convertCurrency(
-          fromCurrency.code,
-          toCurrency.code,
+          from.code,
+          to.code,
           amountNumber
         );
 
-        if (!controller.signal.aborted) {
+        if (!cancelled) {
           rateCache.set(cacheKey, result);
           setConvertedAmount(result.result);
+          setConvertedForAmount(convertAmount);
           setExchangeRate(result.rate);
-          trackConversion(fromCurrency.code, toCurrency.code, amountNumber, result.result);
+          trackConversion(from.code, to.code, amountNumber, result.result);
         }
       } catch (err) {
-        if (!controller.signal.aborted) {
+        if (!cancelled) {
           setError(lang === 'ru' ? 'Ошибка конвертации. Попробуйте снова.' : 'Conversion error. Please try again.');
           console.error(err);
         }
       } finally {
-        if (!controller.signal.aborted) {
+        if (!cancelled) {
           setIsLoading(false);
         }
       }
-    }, 300);
+    })();
 
     return () => {
-      clearTimeout(timer);
-      controller.abort();
+      cancelled = true;
+      convertAbortRef.current?.abort();
     };
-  }, [fromCurrency, toCurrency, amount, lang]);
+  }, [convertTick, lang]);
 
   // Погода с кэшированием
   useEffect(() => {
@@ -257,12 +282,18 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     setToCurrency(tempFrom);
   }, [fromCurrency, toCurrency]);
 
+  const triggerConversion = useCallback(() => {
+    convertAmountRef.current = amount;
+    setConvertTick(t => t + 1);
+  }, [amount]);
+
   return {
     currencies,
     fromCurrency,
     toCurrency,
     amount,
     convertedAmount,
+    convertedForAmount,
     exchangeRate,
     isLoading,
     error,
@@ -272,6 +303,7 @@ export function useCurrencyConverter(): UseCurrencyConverterReturn {
     setFromCurrency,
     setToCurrency,
     setAmount,
+    triggerConversion,
     swapCurrencies,
     setCurrencyType,
   };

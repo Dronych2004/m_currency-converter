@@ -9,6 +9,7 @@ import { CityInfoCard } from './CityInfoCard'
 import { useCurrencyConverter } from '../hooks/useCurrencyConverter'
 import { useCityInfo } from '../hooks/useCityInfo'
 import { useLanguage } from '../i18n/LanguageContext'
+import { seoPages } from '../data/seoPages'
 
 interface SeoPageProps {
   title: string
@@ -36,6 +37,7 @@ export function SeoPage({
     toCurrency,
     amount,
     convertedAmount,
+    convertedForAmount,
     exchangeRate,
     isLoading,
     fromWeather,
@@ -197,6 +199,7 @@ export function SeoPage({
               />
               <ConversionResult
                 amount={amount}
+                convertedForAmount={convertedForAmount}
                 fromCurrency={fromCurrency}
                 toCurrency={toCurrency}
                 convertedAmount={convertedAmount}
@@ -263,24 +266,18 @@ export function SeoPage({
             {t('title') === 'Currency Converter' ? 'Other currency pairs' : 'Другие валютные пары'}
           </h3>
           <div className="flex flex-wrap gap-2">
-            {[
-              { from: 'USD', to: 'RUB', label: 'USD/RUB' },
-              { from: 'EUR', to: 'RUB', label: 'EUR/RUB' },
-              { from: 'EUR', to: 'USD', label: 'EUR/USD' },
-              { from: 'BTC', to: 'USD', label: 'BTC/USD' },
-              { from: 'RUB', to: 'BYN', label: 'RUB/BYN' },
-              { from: 'RUB', to: 'KZT', label: 'RUB/KZT' },
-              { from: 'RUB', to: 'TRY', label: 'RUB/TRY' },
-              { from: 'RUB', to: 'EGP', label: 'RUB/EGP' },
-            ].map(pair => (
-              <Link
-                key={pair.label}
-                to={`/${pair.from.toLowerCase()}-${pair.to.toLowerCase()}`}
-                className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors"
-              >
-                {pair.label}
-              </Link>
-            ))}
+            {seoPages
+              .filter(p => p.fromCode === fromCode && p.toCode !== toCode)
+              .slice(0, 10)
+              .map(pair => (
+                <Link
+                  key={pair.path}
+                  to={pair.path}
+                  className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors"
+                >
+                  {pair.fromCode}/{pair.toCode}
+                </Link>
+              ))}
           </div>
         </div>
 

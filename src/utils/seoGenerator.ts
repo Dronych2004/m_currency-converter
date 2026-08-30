@@ -40,7 +40,7 @@ const CURRENCY_INFO: Record<string, CurrencyInfo> = {
     countryEn: 'USA',
     centralBank: 'Федеральная резервная система (ФРС)',
     fact: 'Доллар США является основной мировой резервной валютой — около 60% всех международных резервов хранится в долларах.',
-    economicRole: 'Основная резервная валюта мира, используется для定价 нефти и большинства международных расчётов.',
+    economicRole: 'Основная резервная валюта мира, используется для ценообразования на нефть и большинства международных расчётов.',
     shortDesc: 'главная мировая резервная валюта',
   },
   EUR: {
@@ -569,7 +569,7 @@ function generateContent(from: string, to: string): string {
           `<strong>Монетарная политика</strong> — решения ${fromInfo.centralBank} напрямую влияют на курс ${from}.`,
           `<strong>Экономика ${toInfo.country}</strong> — ${toInfo.shortDesc} зависит от макроэкономических показателей.`,
           `<strong>Торговые связи</strong> — объём торговли между ${fromInfo.country} и ${toInfo.country}.`,
-          `<strong>Курс ${from} к доллару</strong> —间接影响 на курс ${from}/${to}.`,
+          `<strong>Курс ${from} к доллару</strong> — косвенно влияет на курс ${from}/${to}.`,
         ],
       },
     ]

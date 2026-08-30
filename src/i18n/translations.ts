@@ -43,6 +43,9 @@ export const translations = {
     repeat: 'Повторить',
     remove: 'Удалить',
     chart: 'График курса',
+    convert: 'Конвертировать',
+    resultFor: 'Результат для',
+    promoBanner: 'Центр калькуляторов',
   },
   en: {
     title: 'Currency Converter',
@@ -85,6 +88,9 @@ export const translations = {
     repeat: 'Repeat',
     remove: 'Remove',
     chart: 'Rate chart',
+    convert: 'Convert',
+    resultFor: 'Result for',
+    promoBanner: 'Calculator Center',
   },
 } as const
 
