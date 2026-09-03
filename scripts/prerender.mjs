@@ -35,17 +35,19 @@ async function prerender() {
     // Write rendered HTML to files
     for (const rendered of renderedRoutes) {
       const route = rendered.route
-      // For root route, write to index.html (already exists, skip)
       if (route === '/') {
-        console.log(`  Skipped: / (already index.html)`)
-        continue
+        // Root route: overwrite dist/index.html with prerendered version
+        const outputPath = resolve(distDir, 'index.html')
+        writeFileSync(outputPath, rendered.html)
+        console.log(`  Written: /index.html (prerendered)`)
+      } else {
+        // Other routes: write to /route/index.html
+        const dirPath = resolve(distDir, `.${route}`)
+        const outputPath = resolve(dirPath, 'index.html')
+        mkdirSync(dirPath, { recursive: true })
+        writeFileSync(outputPath, rendered.html)
+        console.log(`  Written: ${route}/index.html`)
       }
-      // For other routes, write to /route/index.html
-      const dirPath = resolve(distDir, `.${route}`)
-      const outputPath = resolve(dirPath, 'index.html')
-      mkdirSync(dirPath, { recursive: true })
-      writeFileSync(outputPath, rendered.html)
-      console.log(`  Written: ${route}/index.html`)
     }
 
     // Copy .htaccess to dist
