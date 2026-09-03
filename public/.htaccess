@@ -36,4 +36,25 @@ RewriteRule ^ /index.html [L]
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set X-XSS-Protection "1; mode=block"
+
+  # HSTS — принудительный HTTPS (1 год + поддомены)
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+  # Referrer — передаёт только.origin при переходах на другие сайты
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permissions — запрещаем камеру, микрофон, геолокацию
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+  # Content-Security-Policy
+  Header set Content-Security-Policy "\
+    default-src 'self'; \
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://yandex.ru; \
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+    img-src 'self' data: blob: https://cdn.jsdelivr.net https://flagcdn.com; \
+    font-src 'self' https://fonts.gstatic.com; \
+    connect-src 'self' https://open.er-api.com https://api.frankfurter.app https://api.frankfurter.dev https://api.open-meteo.com https://mc.yandex.ru; \
+    frame-ancestors 'self' https://calccenter.ru; \
+    base-uri 'self'; \
+    form-action 'self'"
 </IfModule>
