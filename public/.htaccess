@@ -53,7 +53,7 @@ RewriteRule ^ /index.html [L]
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
     img-src 'self' data: blob: https://cdn.jsdelivr.net https://flagcdn.com; \
     font-src 'self' https://fonts.gstatic.com; \
-    connect-src 'self' https://open.er-api.com https://api.frankfurter.app https://api.frankfurter.dev https://api.open-meteo.com https://mc.yandex.ru; \
+    connect-src 'self' https://open.er-api.com https://api.frankfurter.app https://api.frankfurter.dev https://api.open-meteo.com https://api.coingecko.com https://mc.yandex.ru; \
     frame-ancestors 'self' https://calccenter.ru; \
     base-uri 'self'; \
     form-action 'self'"
