@@ -17,16 +17,16 @@ export const AmountInput = memo(function AmountInput({ value, onChange }: Amount
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
       <label
         htmlFor="amount-input"
-        className="block text-sm font-semibold mb-3 tracking-wide uppercase"
+        className="block text-[10px] md:text-sm font-semibold mb-0.5 md:mb-3 tracking-wide uppercase"
         style={{ color: 'var(--text-secondary)' }}
       >
         {t('amount')}
       </label>
 
-      <div className="relative group">
+      <div className="relative group flex-1">
         <input
           id="amount-input"
           type="text"
@@ -34,7 +34,7 @@ export const AmountInput = memo(function AmountInput({ value, onChange }: Amount
           value={value}
           onChange={handleChange}
           placeholder="0.00"
-          className="input-glass"
+          className="converter-input"
         />
 
         <div className="absolute inset-0 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none"

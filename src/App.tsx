@@ -90,7 +90,7 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen py-4 px-3 md:py-8 md:px-4 relative">
+    <div className="min-h-screen py-2 px-2 md:py-4 md:px-4 lg:py-8 relative">
       <Helmet>
         <title>{t('title')}</title>
         <meta name="description" content={t('subtitle')} />
@@ -102,9 +102,9 @@ function Home() {
       </Helmet>
       {/* Декоративные элементы фона */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-2xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-2xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-cyan-500/5 rounded-full blur-2xl" />
+        <div className="absolute top-20 left-10 w-48 h-48 md:w-72 md:h-72 bg-purple-500/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-10 w-64 h-64 md:w-96 md:h-96 bg-indigo-500/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 md:w-150 md:h-150 bg-cyan-500/5 rounded-full blur-2xl" />
       </div>
 
       <LanguageSwitcher />
@@ -115,7 +115,7 @@ function Home() {
       </div>
 
       {/* Основной контент */}
-      <div className="flex items-start justify-center gap-6 max-w-7xl mx-auto relative z-10">
+      <div className="flex items-start justify-center gap-4 md:gap-6 max-w-7xl mx-auto relative z-10">
         <AdBanner position="left" />
 
         <div className="max-w-5xl mx-auto relative z-10 flex-1 min-w-0">
@@ -124,61 +124,30 @@ function Home() {
             className="text-center mb-2 md:mb-4 animate-zoom-in"
             style={{ animationDelay: '0s', opacity: 0, animationFillMode: 'forwards' }}
           >
-            <div className="inline-flex relative mb-2 md:mb-4">
-              <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 rounded-2xl blur-xl opacity-50 animate-glow" />
-              <div className="relative flex items-center justify-center w-20 h-20 rounded-2xl bg-linear-to-br from-indigo-500 via-purple-500 to-cyan-500 shadow-2xl">
-                <span className="text-4xl drop-shadow-lg">💱</span>
+            <div className="inline-flex relative mb-1 md:mb-3">
+              <div className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-500 rounded-xl md:rounded-2xl blur-xl opacity-50 animate-glow" />
+              <div className="relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-linear-to-br from-indigo-500 via-purple-500 to-cyan-500 shadow-2xl">
+                <span className="text-2xl md:text-3xl drop-shadow-lg">💱</span>
               </div>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-2 text-gradient tracking-tight">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mb-1 md:mb-2 text-gradient tracking-tight">
               {t('title')}
             </h1>
 
-            <p className="text-xl text-slate-400 max-w-md mx-auto mb-4">
+            <p className="text-sm md:text-lg text-slate-400 max-w-md mx-auto mb-2 md:mb-4">
               {t('subtitle')}
             </p>
 
-            <div className="mt-4 flex items-center justify-center gap-2">
-              <div className="h-px w-16 bg-linear-to-r from-transparent to-indigo-500/50" />
-              <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              <div className="h-px w-16 bg-linear-to-l from-transparent to-indigo-500/50" />
+            <div className="mt-2 md:mt-4 flex items-center justify-center gap-2">
+              <div className="h-px w-12 md:w-16 bg-linear-to-r from-transparent to-indigo-500/50" />
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-indigo-500 animate-pulse" />
+              <div className="h-px w-12 md:w-16 bg-linear-to-l from-transparent to-indigo-500/50" />
             </div>
           </header>
 
           {/* ПЕРЕКЛЮЧАТЕЛЬ ТИПА ВАЛЮТЫ */}
           <CurrencyTypeSwitcher value={currencyType} onChange={setCurrencyType} />
-
-          {/* БЫСТРЫЙ ДОСТУП К ПОПУЛЯРНЫМ ПАРАМ */}
-          <div className="mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0, animationFillMode: 'forwards' }}>
-            <h2 className="sr-only">Популярные валютные пары</h2>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <Link to="/usd-rub" onClick={() => trackQuickPair('USD', 'RUB')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                USD/RUB
-              </Link>
-              <Link to="/eur-rub" onClick={() => trackQuickPair('EUR', 'RUB')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                EUR/RUB
-              </Link>
-              <Link to="/eur-usd" onClick={() => trackQuickPair('EUR', 'USD')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                EUR/USD
-              </Link>
-              <Link to="/btc-usd" onClick={() => trackQuickPair('BTC', 'USD')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                BTC/USD
-              </Link>
-              <Link to="/rub-byn" onClick={() => trackQuickPair('RUB', 'BYN')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                RUB/BYN
-              </Link>
-              <Link to="/rub-kzt" onClick={() => trackQuickPair('RUB', 'KZT')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                RUB/KZT
-              </Link>
-              <Link to="/rub-try" onClick={() => trackQuickPair('RUB', 'TRY')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                RUB/TRY
-              </Link>
-              <Link to="/rub-egp" onClick={() => trackQuickPair('RUB', 'EGP')} className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
-                RUB/EGP
-              </Link>
-            </div>
-          </div>
 
           {/* ОСНОВНОЙ БЛОК */}
           <main>
@@ -205,55 +174,63 @@ function Home() {
 
             {currencies.length > 0 && (
               <div
-                className="glass-card neon-main p-4 md:p-8 mb-4 md:mb-6 animate-zoom-in"
+                className="glass-card neon-main p-2 md:p-6 lg:p-8 mb-3 md:mb-6 animate-zoom-in"
                 style={{ animationDelay: '0.15s', opacity: 0, animationFillMode: 'forwards' }}
               >
-                <div className="grid md:grid-cols-[1fr,auto,1fr] gap-3 md:gap-4 items-start">
-                  <div className="space-y-3 md:space-y-4">
-                    <CurrencySelector
-                      currencies={currencies}
-                      selected={fromCurrency}
-                      onSelect={setFromCurrency}
-                      label={t('from')}
-                      id="from-currency"
-                    />
+                {/* Строка 1: Сумма + Валюта "Из" */}
+                <div className="flex gap-2 items-stretch">
+                  <div className="flex-[7] min-w-0">
                     <AmountInput value={amount} onChange={setAmount} />
                   </div>
-
-                  <div className="flex items-center justify-center pt-10">
-                    <SwapButton onClick={() => {
-                      if (fromCurrency && toCurrency) {
-                        trackSwap(fromCurrency.code, toCurrency.code)
-                      }
-                      swapCurrencies()
-                    }} disabled={isLoading} />
-                  </div>
-
-                  <div className="space-y-4">
-                    <CurrencySelector
-                      currencies={currencies}
-                      selected={toCurrency}
-                      onSelect={setToCurrency}
-                      label={t('to')}
-                      id="to-currency"
-                    />
+                  <div className="flex-[5] min-w-0 flex flex-col">
+                    <div className="flex-1">
+                      <CurrencySelector
+                        currencies={currencies}
+                        selected={fromCurrency}
+                        onSelect={setFromCurrency}
+                        label={t('from')}
+                        id="from-currency"
+                        hideLabel
+                      />
+                    </div>
                   </div>
                 </div>
 
+                {/* Строка 2: Кнопка swap */}
+                <div className="flex justify-center py-1 md:py-2">
+                  <SwapButton onClick={() => {
+                    if (fromCurrency && toCurrency) {
+                      trackSwap(fromCurrency.code, toCurrency.code)
+                    }
+                    swapCurrencies()
+                  }} disabled={isLoading} />
+                </div>
+
+                {/* Строка 3: Валюта "В" */}
+                <div className="min-h-[52px] md:min-h-[68px]">
+                  <CurrencySelector
+                    currencies={currencies}
+                    selected={toCurrency}
+                    onSelect={setToCurrency}
+                    label={t('to')}
+                    id="to-currency"
+                  />
+                </div>
+
                 {/* Кнопка конвертировать — под блоком выбора валют */}
-                <div className="flex justify-center mt-4">
+                <div className="flex justify-center mt-2 md:mt-4">
                   <button
                     type="button"
                     disabled={isLoading}
                     onClick={triggerConversion}
-                    className="px-12 py-3 rounded-xl bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold text-base shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                    className="px-8 md:px-12 py-2 md:py-3 rounded-xl bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm md:text-base shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                   >
                     {t('convert')}
                   </button>
                 </div>
 
                 {/* Блок результата — под кнопкой */}
-                <div className="mt-4">
+                <div className="mt-2 md:mt-4">
                   <ConversionResult
                     amount={amount}
                     convertedForAmount={convertedForAmount}
@@ -266,8 +243,8 @@ function Home() {
                 </div>
 
                 {exchangeRate && fromCurrency && toCurrency && (
-                  <div className="mt-6 pt-4 border-t border-white/5">
-                    <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+                  <div className="mt-3 md:mt-6 pt-3 md:pt-4 border-t border-white/5">
+                    <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 text-xs md:text-sm">
                       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5">
                         <span className="text-slate-400">{t('course')}</span>
                         <span className="font-semibold text-white">
@@ -313,7 +290,7 @@ function Home() {
             {/* ИНФОРМАЦИОННЫЕ КАРТОЧКИ */}
             {fromCurrency && toCurrency && (
               <div
-                className="grid md:grid-cols-2 gap-3 md:gap-4"
+                className="grid md:grid-cols-2 gap-2 md:gap-4"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}
               >
                 <h2 className="sr-only">Погода и время в столицах</h2>
@@ -336,8 +313,39 @@ function Home() {
               </div>
             )}
 
+            {/* БЫСТРЫЙ ДОСТУП К ПОПУЛЯРНЫМ ПАРАМ */}
+            <div className="mt-3 md:mt-4 animate-fade-in-up" style={{ animationDelay: '0.5s', opacity: 0, animationFillMode: 'forwards' }}>
+              <h2 className="sr-only">Популярные валютные пары</h2>
+              <div className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2">
+                <Link to="/usd-rub" onClick={() => trackQuickPair('USD', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  USD/RUB
+                </Link>
+                <Link to="/eur-rub" onClick={() => trackQuickPair('EUR', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  EUR/RUB
+                </Link>
+                <Link to="/eur-usd" onClick={() => trackQuickPair('EUR', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  EUR/USD
+                </Link>
+                <Link to="/btc-usd" onClick={() => trackQuickPair('BTC', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  BTC/USD
+                </Link>
+                <Link to="/rub-byn" onClick={() => trackQuickPair('RUB', 'BYN')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  RUB/BYN
+                </Link>
+                <Link to="/rub-kzt" onClick={() => trackQuickPair('RUB', 'KZT')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  RUB/KZT
+                </Link>
+                <Link to="/rub-try" onClick={() => trackQuickPair('RUB', 'TRY')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  RUB/TRY
+                </Link>
+                <Link to="/rub-egp" onClick={() => trackQuickPair('RUB', 'EGP')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                  RUB/EGP
+                </Link>
+              </div>
+            </div>
+
             {/* ИЗБРАННОЕ */}
-            <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.55s', opacity: 0, animationFillMode: 'forwards' }}>
+            <div className="mt-3 md:mt-4 animate-fade-in-up" style={{ animationDelay: '0.55s', opacity: 0, animationFillMode: 'forwards' }}>
               <h2 className="sr-only">Избранные пары</h2>
               <FavoritesCard
                 favorites={favorites}
@@ -347,7 +355,7 @@ function Home() {
             </div>
 
             {/* ИСТОРИЯ */}
-            <div className="mt-4 animate-fade-in-up" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
+            <div className="mt-3 md:mt-4 animate-fade-in-up" style={{ animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}>
               <h2 className="sr-only">История конвертаций</h2>
               <HistoryCard
                 history={history}
@@ -363,7 +371,7 @@ function Home() {
 
           {/* ПОДВАЛ */}
           <footer
-            className="text-center mt-8 pb-4 animate-fade-in-up"
+            className="text-center mt-6 md:mt-8 pb-4 animate-fade-in-up"
             style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 200px', animationDelay: '0.6s', opacity: 0, animationFillMode: 'forwards' }}
           >
             <div className="inline-flex flex-col items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-sm">

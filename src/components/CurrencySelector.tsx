@@ -47,6 +47,8 @@ interface CurrencySelectorProps {
   onSelect: (currency: Currency) => void;
   label: string;
   id: string;
+  hideLabel?: boolean;
+  className?: string;
 }
 
 export const CurrencySelector = memo(function CurrencySelector({
@@ -55,6 +57,8 @@ export const CurrencySelector = memo(function CurrencySelector({
   onSelect,
   label,
   id,
+  hideLabel = false,
+  className = '',
 }: CurrencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,20 +94,22 @@ export const CurrencySelector = memo(function CurrencySelector({
   const selectedEmoji = selected ? (CURRENCY_FLAG_EMOJI[selected.code] || '🏳️') : '';
 
   return (
-    <div className="relative" ref={containerRef}>
-      <label
-        htmlFor={id}
-        className="block text-sm font-semibold mb-3 tracking-wide uppercase"
-        style={{ color: 'var(--text-secondary)' }}
-      >
-        {label}
-      </label>
+    <div className={`relative h-full ${className}`} ref={containerRef}>
+      {!hideLabel && (
+        <label
+          htmlFor={id}
+          className="block text-xs md:text-sm font-semibold mb-1.5 md:mb-3 tracking-wide uppercase"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          {label}
+        </label>
+      )}
 
       <button
         id={id}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="currency-btn"
+        className="converter-currency-btn"
         style={{
           borderColor: isOpen ? 'var(--accent-1)' : undefined,
           boxShadow: isOpen ? '0 0 25px var(--accent-glow)' : undefined,
@@ -115,19 +121,19 @@ export const CurrencySelector = memo(function CurrencySelector({
           <>
             <FlagImage code={selected.code} emoji={selectedEmoji} />
             <div className="flex-1 min-w-0">
-              <div className="font-bold text-3xl text-white">
+              <div className="font-bold text-xl md:text-3xl text-white">
                 {selected.code}
               </div>
-              <div className="text-lg text-slate-400">
+              <div className="text-xs md:text-lg text-slate-400 truncate">
                 {selected.name}
               </div>
             </div>
-            <div className="text-2xl font-light text-slate-300">
+            <div className="text-lg md:text-2xl font-light text-slate-300">
               {selected.symbol}
             </div>
           </>
         ) : (
-          <span className="text-slate-400">{t('selectCurrency')}</span>
+          <span className="text-slate-400 text-sm">{t('selectCurrency')}</span>
         )}
 
         <svg
