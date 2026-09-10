@@ -423,6 +423,34 @@ body::before {
    КОНВЕРТЕР — единая высота инпутов
    ============================================ */
 
+.converter-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.converter-row-amount {
+  flex: 7;
+  min-width: 0;
+}
+
+.converter-row-currency {
+  flex: 5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .converter-row-amount {
+    flex: 3;
+  }
+
+  .converter-row-currency {
+    flex: 4;
+  }
+}
+
 .converter-input {
   background: rgba(255, 255, 255, 0.03);
   border: 2px solid var(--glass-border);

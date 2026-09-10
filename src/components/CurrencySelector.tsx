@@ -13,7 +13,7 @@ function FlagImage({ code, emoji }: { code: string; emoji: string }) {
     : '';
 
   if (!flagUrl) {
-    return <span style={{ fontSize: '24px' }}>{emoji}</span>;
+    return <span className="text-lg md:text-2xl shrink-0">{emoji}</span>;
   }
 
   return (
@@ -24,7 +24,7 @@ function FlagImage({ code, emoji }: { code: string; emoji: string }) {
       height="22"
       loading="lazy"
       decoding="async"
-      style={{ borderRadius: '3px', flexShrink: 0 }}
+      className="w-6 h-4 md:w-8 md:h-6 rounded-[2px] shrink-0"
       onError={(e) => {
         const target = e.target as HTMLImageElement;
         target.style.display = 'none';
@@ -121,14 +121,14 @@ export const CurrencySelector = memo(function CurrencySelector({
           <>
             <FlagImage code={selected.code} emoji={selectedEmoji} />
             <div className="flex-1 min-w-0">
-              <div className="font-bold text-xl md:text-3xl text-white">
+              <div className="font-bold text-base md:text-3xl text-white leading-tight">
                 {selected.code}
               </div>
-              <div className="text-xs md:text-lg text-slate-400 truncate">
+              <div className="text-[10px] md:text-lg text-slate-400 truncate leading-tight">
                 {selected.name}
               </div>
             </div>
-            <div className="text-lg md:text-2xl font-light text-slate-300">
+            <div className="hidden md:block text-2xl font-light text-slate-300 shrink-0">
               {selected.symbol}
             </div>
           </>

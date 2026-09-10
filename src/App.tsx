@@ -178,11 +178,11 @@ function Home() {
                 style={{ animationDelay: '0.15s', opacity: 0, animationFillMode: 'forwards' }}
               >
                 {/* Строка 1: Сумма + Валюта "Из" */}
-                <div className="flex gap-2 items-stretch">
-                  <div className="flex-[7] min-w-0">
+                <div className="converter-row">
+                  <div className="converter-row-amount">
                     <AmountInput value={amount} onChange={setAmount} />
                   </div>
-                  <div className="flex-[5] min-w-0 flex flex-col">
+                  <div className="converter-row-currency">
                     <div className="flex-1">
                       <CurrencySelector
                         currencies={currencies}
