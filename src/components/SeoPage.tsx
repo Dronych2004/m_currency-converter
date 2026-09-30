@@ -4,12 +4,40 @@ import { Helmet } from 'react-helmet-async'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { CurrencySelector } from './CurrencySelector'
 import { AmountInput } from './AmountInput'
+import { SwapButton } from './SwapButton'
 import { ConversionResult } from './ConversionResult'
 import { CityInfoCard } from './CityInfoCard'
 import { useCurrencyConverter } from '../hooks/useCurrencyConverter'
 import { useCityInfo } from '../hooks/useCityInfo'
 import { useLanguage } from '../i18n/LanguageContext'
 import { seoPages } from '../data/seoPages'
+import { cryptoCodes, getCryptoName, getCryptoSymbol, getCryptoIcon } from '../services/crypto'
+import { getCurrencyMeta } from '../data/currencies'
+import type { Currency } from '../types'
+
+/**
+ * Собираем объект валюты из статических метаданных (без курса).
+ * Позволяет показать пару страницы сразу при открытии, не дожидаясь
+ * загрузки курсов с API, — и для пользователя, и для prerender.
+ */
+function buildCurrencyStub(code: string, lang: 'ru' | 'en'): Currency | null {
+  if (cryptoCodes.has(code)) {
+    return {
+      code,
+      name: getCryptoName(code, lang),
+      flag: getCryptoIcon(code),
+      symbol: getCryptoSymbol(code),
+    }
+  }
+  const meta = getCurrencyMeta(code)
+  if (!meta) return null
+  return {
+    code,
+    name: meta.name[lang],
+    flag: meta.flag,
+    symbol: meta.symbol,
+  }
+}
 
 interface SeoPageProps {
   title: string
@@ -30,7 +58,7 @@ export function SeoPage({
   faq,
   content,
 }: SeoPageProps) {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const {
     currencies,
     fromCurrency,
@@ -45,20 +73,28 @@ export function SeoPage({
     setFromCurrency,
     setToCurrency,
     setAmount,
+    setCurrencyType,
+    triggerConversion,
+    swapCurrencies,
   } = useCurrencyConverter()
 
   const fromCity = useCityInfo(fromCurrency)
   const toCity = useCityInfo(toCurrency)
 
-  // Устанавливаем валюты по умолчанию для этой страницы
+  // Криптовалютные пары требуют списка с крипто — переключаем тип валют
   useEffect(() => {
-    if (currencies.length > 0) {
-      const from = currencies.find(c => c.code === fromCode)
-      const to = currencies.find(c => c.code === toCode)
-      if (from) setFromCurrency(from)
-      if (to) setToCurrency(to)
-    }
-  }, [currencies, fromCode, toCode, setFromCurrency, setToCurrency])
+    const needsCrypto = cryptoCodes.has(fromCode) || cryptoCodes.has(toCode)
+    setCurrencyType(needsCrypto ? 'crypto' : 'traditional')
+  }, [fromCode, toCode, setCurrencyType])
+
+  // Устанавливаем валюты страницы. Пока курсы не загружены — показываем
+  // пару из статических метаданных, чтобы конвертер сразу отображал нужную пару
+  useEffect(() => {
+    const from = currencies.find(c => c.code === fromCode) ?? buildCurrencyStub(fromCode, lang)
+    const to = currencies.find(c => c.code === toCode) ?? buildCurrencyStub(toCode, lang)
+    if (from) setFromCurrency(from)
+    if (to) setToCurrency(to)
+  }, [currencies, fromCode, toCode, lang, setFromCurrency, setToCurrency])
 
   // JSON-LD FAQPage schema
   const faqSchema = {
@@ -113,10 +149,20 @@ export function SeoPage({
     ],
   }
 
-  // Сигнал для prerenderer: страница готова к захвату
+  // Сигнал для prerenderer: страница готова к захвату, когда конвертер показывает
+  // пару страницы (stub из метаданных появляется сразу). Fallback-таймер —
+  // на случай недоступности API, чтобы prerender не ждал полный таймаут.
   useEffect(() => {
-    document.dispatchEvent(new Event('custom-render-trigger'))
-  }, [])
+    const ready = fromCurrency?.code === fromCode && toCurrency?.code === toCode
+    if (ready) {
+      document.dispatchEvent(new Event('custom-render-trigger'))
+      return
+    }
+    const timer = setTimeout(() => {
+      document.dispatchEvent(new Event('custom-render-trigger'))
+    }, 8000)
+    return () => clearTimeout(timer)
+  }, [fromCurrency, toCurrency, fromCode, toCode])
 
   const canonicalUrl = `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}`
 
@@ -162,51 +208,65 @@ export function SeoPage({
         <p className="text-slate-400 text-lg mb-8">{description}</p>
 
         {/* Конвертер */}
-        <div className="glass-card neon-main p-4 md:p-6 mb-8">
-          <div className="grid md:grid-cols-[1fr,auto,1fr] gap-3 md:gap-4 items-start">
-            <div className="space-y-3">
-              <CurrencySelector
-                currencies={currencies}
-                selected={fromCurrency}
-                onSelect={setFromCurrency}
-                label={t('from')}
-                id="from-currency"
-              />
+        <div className="glass-card neon-main p-2 md:p-6 lg:p-8 mb-8">
+          {/* Строка 1: Сумма + Валюта "Из" */}
+          <div className="converter-row">
+            <div className="converter-row-amount">
               <AmountInput value={amount} onChange={setAmount} />
             </div>
-            <div className="flex items-center justify-center pt-10">
-              <button
-                onClick={() => {
-                  if (fromCurrency && toCurrency) {
-                    const temp = fromCurrency
-                    setFromCurrency(toCurrency)
-                    setToCurrency(temp)
-                  }
-                }}
-                className="swap-button"
-                disabled={isLoading}
-              >
-                ⇄
-              </button>
+            <div className="converter-row-currency">
+              <div className="flex-1">
+                <CurrencySelector
+                  currencies={currencies}
+                  selected={fromCurrency}
+                  onSelect={setFromCurrency}
+                  label={t('from')}
+                  id="from-currency"
+                  hideLabel
+                />
+              </div>
             </div>
-            <div className="space-y-4">
-              <CurrencySelector
-                currencies={currencies}
-                selected={toCurrency}
-                onSelect={setToCurrency}
-                label={t('to')}
-                id="to-currency"
-              />
-              <ConversionResult
-                amount={amount}
-                convertedForAmount={convertedForAmount}
-                fromCurrency={fromCurrency}
-                toCurrency={toCurrency}
-                convertedAmount={convertedAmount}
-                exchangeRate={exchangeRate}
-                isLoading={isLoading}
-              />
-            </div>
+          </div>
+
+          {/* Строка 2: Кнопка swap */}
+          <div className="flex justify-center py-1 md:py-2">
+            <SwapButton onClick={swapCurrencies} disabled={isLoading} />
+          </div>
+
+          {/* Строка 3: Валюта "В" */}
+          <div className="min-h-[52px] md:min-h-[68px]">
+            <CurrencySelector
+              currencies={currencies}
+              selected={toCurrency}
+              onSelect={setToCurrency}
+              label={t('to')}
+              id="to-currency"
+            />
+          </div>
+
+          {/* Кнопка конвертировать — под блоком выбора валют */}
+          <div className="flex justify-center mt-2 md:mt-4">
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={triggerConversion}
+              className="px-8 md:px-12 py-2 md:py-3 rounded-xl bg-linear-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm md:text-base shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            >
+              {t('convert')}
+            </button>
+          </div>
+
+          {/* Блок результата — под кнопкой */}
+          <div className="mt-2 md:mt-4">
+            <ConversionResult
+              amount={amount}
+              convertedForAmount={convertedForAmount}
+              fromCurrency={fromCurrency}
+              toCurrency={toCurrency}
+              convertedAmount={convertedAmount}
+              exchangeRate={exchangeRate}
+              isLoading={isLoading}
+            />
           </div>
         </div>
 

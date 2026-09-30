@@ -100,3 +100,82 @@ export function formatDate(isoString: string): string {
     year: 'numeric',
   });
 }
+
+// ============================================
+// MET NORWAY — СИМВОЛЫ ПОГОДЫ
+// ============================================
+
+/**
+ * MET Norway использует текстовые symbol_code (например, "partlycloudy_night").
+ * Порядок важен: более специфичные префиксы идут раньше общих.
+ */
+const metNoSymbols: { prefix: string; description: string; icon: string }[] = [
+  { prefix: 'clearsky', description: 'Ясно', icon: '☀️' },
+  { prefix: 'fair', description: 'Малооблачно', icon: '🌤️' },
+  { prefix: 'partlycloudy', description: 'Переменная облачность', icon: '⛅' },
+  { prefix: 'cloudy', description: 'Облачно', icon: '☁️' },
+  { prefix: 'fog', description: 'Туман', icon: '🌫️' },
+  { prefix: 'lightrain', description: 'Небольшой дождь', icon: '🌦️' },
+  { prefix: 'heavyrain', description: 'Сильный дождь', icon: '🌧️' },
+  { prefix: 'rain', description: 'Дождь', icon: '🌧️' },
+  { prefix: 'lightsleet', description: 'Небольшой дождь со снегом', icon: '🌨️' },
+  { prefix: 'heavysleet', description: 'Сильный дождь со снегом', icon: '🌨️' },
+  { prefix: 'sleet', description: 'Дождь со снегом', icon: '🌨️' },
+  { prefix: 'lightsnow', description: 'Небольшой снег', icon: '🌨️' },
+  { prefix: 'heavysnow', description: 'Сильный снег', icon: '❄️' },
+  { prefix: 'snow', description: 'Снег', icon: '🌨️' },
+  { prefix: 'thunder', description: 'Гроза', icon: '⛈️' },
+];
+
+/**
+ * Получить описание и иконку по symbol_code MET Norway
+ */
+export function getMetNoWeatherInfo(symbolCode: string): { description: string; icon: string } {
+  for (const entry of metNoSymbols) {
+    if (symbolCode.startsWith(entry.prefix)) {
+      return { description: entry.description, icon: entry.icon };
+    }
+  }
+  return { description: 'Переменная облачность', icon: '⛅' };
+}
+
+// ============================================
+// WTTR.IN — АНГЛИЙСКИЕ ОПИСАНИЯ ПОГОДЫ
+// ============================================
+
+/**
+ * wttr.in возвращает weatherDesc на английском (например, "Partly cloudy").
+ * Сопоставляем по ключевым словам (в нижнем регистре, порядок важен).
+ */
+const wttrKeywords: { keyword: string; description: string; icon: string }[] = [
+  { keyword: 'thunder', description: 'Гроза', icon: '⛈️' },
+  { keyword: 'blizzard', description: 'Метель', icon: '❄️' },
+  { keyword: 'sleet', description: 'Дождь со снегом', icon: '🌨️' },
+  { keyword: 'snow', description: 'Снег', icon: '🌨️' },
+  { keyword: 'heavy rain', description: 'Сильный дождь', icon: '🌧️' },
+  { keyword: 'light rain', description: 'Небольшой дождь', icon: '🌦️' },
+  { keyword: 'drizzle', description: 'Морось', icon: '🌦️' },
+  { keyword: 'rain', description: 'Дождь', icon: '🌧️' },
+  { keyword: 'shower', description: 'Ливень', icon: '🌧️' },
+  { keyword: 'fog', description: 'Туман', icon: '🌫️' },
+  { keyword: 'mist', description: 'Дымка', icon: '🌫️' },
+  { keyword: 'haze', description: 'Дымка', icon: '🌫️' },
+  { keyword: 'overcast', description: 'Пасмурно', icon: '☁️' },
+  { keyword: 'cloudy', description: 'Облачно', icon: '☁️' },
+  { keyword: 'partly', description: 'Переменная облачность', icon: '⛅' },
+  { keyword: 'sunny', description: 'Ясно', icon: '☀️' },
+  { keyword: 'clear', description: 'Ясно', icon: '☀️' },
+];
+
+/**
+ * Получить русское описание и иконку по английскому описанию wttr.in
+ */
+export function getWttrWeatherInfo(descriptionEn: string): { description: string; icon: string } {
+  const text = descriptionEn.toLowerCase();
+  for (const entry of wttrKeywords) {
+    if (text.includes(entry.keyword)) {
+      return { description: entry.description, icon: entry.icon };
+    }
+  }
+  return { description: descriptionEn || 'Неизвестно', icon: '🌡️' };
+}

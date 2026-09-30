@@ -734,23 +734,23 @@ export function generateSeoPageData(from: string, to: string): SeoPageData {
   const toInfo = getCurrencyInfo(to)
   const seed = `${from}-${to}`
 
-  // Уникальные title и description
+  // Уникальные title и description — только конкретные названия валют
   const titleVariants = [
-    `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} — конвертер ${from}/${to} | cconverter.ru`,
-    `${from}/${to} — актуальный курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} | cconverter.ru`,
-    `Конвертер ${from}/${to} — перевод ${fromInfo.fullNameRu} в ${toInfo.shortDesc} | cconverter.ru`,
+    `Курс ${fromInfo.fullNameRu} к ${toInfo.fullNameRu} — конвертер ${from}/${to} | cconverter.ru`,
+    `${from}/${to} — актуальный курс ${fromInfo.fullNameRu} к ${toInfo.fullNameRu} | cconverter.ru`,
+    `Конвертер ${from}/${to} — перевод ${fromInfo.fullNameRu} в ${toInfo.fullNameRu} | cconverter.ru`,
   ]
   const descVariants = [
-    `Конвертируйте ${fromInfo.shortDesc} в ${toInfo.shortDesc} по актуальному курсу. Бесплатный онлайн калькулятор с мгновенным результатом.`,
-    `Актуальный курс ${from}/${to} сегодня. Бесплатная конвертация ${fromInfo.fullNameRu} в ${toInfo.shortDesc} по рыночному курсу.`,
-    `Переведите ${fromInfo.shortDesc} в ${toInfo.shortDesc} за секунду. Бесплатный конвертер валют с реальными курсами.`,
+    `Конвертируйте ${fromInfo.fullNameRu} в ${toInfo.fullNameRu} по актуальному курсу. Бесплатный онлайн калькулятор с мгновенным результатом.`,
+    `Актуальный курс ${from}/${to} сегодня. Бесплатная конвертация ${fromInfo.fullNameRu} в ${toInfo.fullNameRu} по рыночному курсу.`,
+    `Переведите ${fromInfo.fullNameRu} в ${toInfo.fullNameRu} за секунду. Бесплатный конвертер валют с реальными курсами.`,
   ]
 
   return {
     path: `/${from.toLowerCase()}-${to.toLowerCase()}`,
     title: pick(titleVariants, seed + '-title'),
     description: pick(descVariants, seed + '-desc'),
-    h1: `Курс ${fromInfo.fullNameRu} к ${toInfo.shortDesc} сегодня`,
+    h1: `Курс ${fromInfo.fullNameRu} к ${toInfo.fullNameRu}`,
     fromCode: from,
     toCode: to,
     faq: generateFaq(from, to),

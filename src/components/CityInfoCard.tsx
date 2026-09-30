@@ -13,12 +13,24 @@ interface CityInfoCardProps {
 
 export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: CityInfoCardProps) {
   const { lang } = useLanguage();
-  const isLoading = !weather;
+
+  // Если погода не загрузилась вообще — после таймаута показываем "недоступна",
+  // а не вечный shimmer. Время и город отображаются всегда.
+  const [weatherTimedOut, setWeatherTimedOut] = useState(false);
 
   // Время обновляется здесь, а не в хуке — не перерендеривает весь App
   const [timeStr, setTimeStr] = useState('--:--:--');
   const [dateStr, setDateStr] = useState('--.--.----');
   const [utcOffset, setUtcOffset] = useState(0);
+
+  useEffect(() => {
+    if (weather) {
+      setWeatherTimedOut(false);
+      return;
+    }
+    const timer = setTimeout(() => setWeatherTimedOut(true), 15000);
+    return () => clearTimeout(timer);
+  }, [weather]);
 
   useEffect(() => {
     // Определяем timezone из currencyMeta
@@ -37,14 +49,6 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
     const interval = setInterval(tick, 30000);
     return () => clearInterval(interval);
   }, [currencyCode]);
-
-  if (isLoading) {
-    return (
-      <div className="info-card neon-card h-full">
-        <div className="skeleton w-full h-32 rounded-xl" />
-      </div>
-    );
-  }
 
   const offsetSign = utcOffset >= 0 ? '+' : '';
   const offsetString = `${offsetSign}${utcOffset}`;
@@ -100,18 +104,26 @@ export function CityInfoCard({ weather, cityName, cityNameEn, currencyCode }: Ci
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-        <span style={{ fontSize: '28px' }}>{weather!.icon}</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-            <span style={{ fontSize: '20px', fontWeight: 700, color: '#fff' }}>{weather!.temperature}°C</span>
-            <span style={{ fontSize: '12px', color: '#94a3b8' }}>{weather!.description}</span>
-          </div>
-          <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
-            💨 {weather!.windSpeed} {lang === 'en' ? 'km/h' : 'км/ч'}
+      {weather ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '28px' }}>{weather.icon}</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+              <span style={{ fontSize: '20px', fontWeight: 700, color: '#fff' }}>{weather.temperature}°C</span>
+              <span style={{ fontSize: '12px', color: '#94a3b8' }}>{weather.description}</span>
+            </div>
+            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+              💨 {weather.windSpeed} {lang === 'en' ? 'km/h' : 'км/ч'}
+            </div>
           </div>
         </div>
-      </div>
+      ) : weatherTimedOut ? (
+        <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>
+          {lang === 'en' ? '☁️ Weather unavailable' : '☁️ Погода временно недоступна'}
+        </div>
+      ) : (
+        <div className="skeleton w-full h-12 rounded-xl" style={{ marginBottom: '8px' }} />
+      )}
 
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', margin: '8px 0' }} />
 

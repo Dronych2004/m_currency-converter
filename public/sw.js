@@ -42,8 +42,8 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET') return
 
-  // Пропускаем API-запросы
-  if (request.url.includes('open.er-api.com') || request.url.includes('coingecko') || request.url.includes('open-meteo')) {
+  // Пропускаем API-запросы (погодные — не кэшируем, чтобы не показывать устаревшую погоду)
+  if (request.url.includes('open.er-api.com') || request.url.includes('coingecko') || request.url.includes('open-meteo') || request.url.includes('api.met.no') || request.url.includes('wttr.in')) {
     return
   }
 

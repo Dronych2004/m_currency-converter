@@ -15,7 +15,7 @@
 import type { Currency, WeatherData, TimezoneData, ExchangeRateResponse } from '../types';
 import { isOpenMeteoResponse } from '../types';
 import { getFlagByCurrencyCode, capitalCities } from '../utils/flags';
-import { getWeatherDescription } from '../utils/weather';
+import { getWeatherDescription, getMetNoWeatherInfo, getWttrWeatherInfo } from '../utils/weather';
 import { createCache } from '../utils/cache';
 import { getCurrencyName, getCurrencySymbol } from '../data/currencies';
 import type { Lang } from '../i18n/translations';
@@ -35,6 +35,23 @@ const EXCHANGE_RATE_FALLBACK_BASE = 'https://api.frankfurter.app/latest';
 
 // API погоды
 const WEATHER_API_BASE = 'https://api.open-meteo.com/v1/forecast';
+// Резервные провайдеры погоды (Open-Meteo может быть заблокирован в некоторых сетях)
+const METNO_API_BASE = 'https://api.met.no/weatherapi/locationforecast/2.0/compact';
+const WTTR_API_BASE = 'https://wttr.in';
+
+// Таймаут одного запроса к API погоды — чтобы быстро переходить к резервному провайдеру
+const WEATHER_TIMEOUT_MS = 8000;
+
+/** fetch с таймаутом: при превышении времени запрос прерывается (AbortError) */
+async function fetchWithTimeout(url: string, timeoutMs: number, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 /** Запрос с fallback на резервный сервис */
 async function fetchWithFallback(url: string, fallbackUrl: string): Promise<ExchangeRateResponse> {
@@ -178,10 +195,15 @@ async function getFiatRateToUSD(code: string): Promise<number> {
 
 /**
  * Получить данные о погоде для столицы страны
- * 
- * Open-Meteo API:
- * https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62&current_weather=true
- * 
+ *
+ * Используется цепочка провайдеров:
+ * 1. Open-Meteo — основной
+ * 2. MET Norway (api.met.no) — резервный
+ * 3. wttr.in — последний шанс
+ *
+ * Если провайдер не ответил за WEATHER_TIMEOUT_MS или вернул ошибку —
+ * автоматически пробуем следующего.
+ *
  * @param latitude - широта столицы
  * @param longitude - долгота столицы
  * @returns - объект с данными о погоде
@@ -202,46 +224,150 @@ export async function fetchWeather(
     };
   }
 
-  try {
-    // Формируем URL с параметрами
-    const url = new URL(WEATHER_API_BASE);
-    url.searchParams.set('latitude', latitude.toString());
-    url.searchParams.set('longitude', longitude.toString());
-    url.searchParams.set('current_weather', 'true');
-    url.searchParams.set('current', 'relative_humidity_2m');
-    url.searchParams.set('timezone', 'auto');
-    
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const providers: ((lat: number, lon: number) => Promise<WeatherData>)[] = [
+    fetchWeatherOpenMeteo,
+    fetchWeatherMetNo,
+    fetchWeatherWttr,
+  ];
+
+  let lastError: unknown = null;
+  for (const provider of providers) {
+    try {
+      return await provider(latitude, longitude);
+    } catch (error) {
+      lastError = error;
+      console.warn('Провайдер погоды недоступен, пробуем следующий...', error);
     }
-    
-    const data = await response.json();
-
-    if (!isOpenMeteoResponse(data)) {
-      throw new Error('Неожиданный формат ответа Open-Meteo');
-    }
-
-    // Извлекаем данные о текущей погоде
-    const currentWeather = data.current_weather;
-    const current = data.current as { relative_humidity_2m?: number } | undefined;
-
-    // Получаем описание погоды по коду
-    const weatherInfo = getWeatherDescription(currentWeather.weathercode);
-
-    return {
-      temperature: currentWeather.temperature,
-      humidity: current?.relative_humidity_2m ?? 0,
-      windSpeed: currentWeather.windspeed,
-      weatherCode: currentWeather.weathercode,
-      description: weatherInfo.description,
-      icon: weatherInfo.icon,
-    };
-  } catch (error) {
-    console.error('Ошибка при загрузке погоды:', error);
-    throw error;
   }
+
+  throw lastError instanceof Error ? lastError : new Error('Все провайдеры погоды недоступны');
+}
+
+/**
+ * Open-Meteo API:
+ * https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62&current_weather=true
+ */
+async function fetchWeatherOpenMeteo(
+  latitude: number,
+  longitude: number
+): Promise<WeatherData> {
+  // Формируем URL с параметрами
+  const url = new URL(WEATHER_API_BASE);
+  url.searchParams.set('latitude', latitude.toString());
+  url.searchParams.set('longitude', longitude.toString());
+  url.searchParams.set('current_weather', 'true');
+  url.searchParams.set('current', 'relative_humidity_2m');
+  url.searchParams.set('timezone', 'auto');
+
+  const response = await fetchWithTimeout(url.toString(), WEATHER_TIMEOUT_MS);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (!isOpenMeteoResponse(data)) {
+    throw new Error('Неожиданный формат ответа Open-Meteo');
+  }
+
+  // Извлекаем данные о текущей погоде
+  const currentWeather = data.current_weather;
+  const current = data.current as { relative_humidity_2m?: number } | undefined;
+
+  // Получаем описание погоды по коду
+  const weatherInfo = getWeatherDescription(currentWeather.weathercode);
+
+  return {
+    temperature: currentWeather.temperature,
+    humidity: current?.relative_humidity_2m ?? 0,
+    windSpeed: currentWeather.windspeed,
+    weatherCode: currentWeather.weathercode,
+    description: weatherInfo.description,
+    icon: weatherInfo.icon,
+  };
+}
+
+/**
+ * MET Norway (api.met.no) — резервный провайдер погоды
+ * https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=55.75&lon=37.62
+ */
+async function fetchWeatherMetNo(
+  latitude: number,
+  longitude: number
+): Promise<WeatherData> {
+  const url = `${METNO_API_BASE}?lat=${latitude}&lon=${longitude}`;
+
+  const response = await fetchWithTimeout(url, WEATHER_TIMEOUT_MS, {
+    headers: { 'User-Agent': 'cconverter.ru/1.0 (info@cconverter.ru)' },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  const details = data?.properties?.timeseries?.[0]?.data?.instant?.details;
+  if (typeof details?.air_temperature !== 'number') {
+    throw new Error('Неожиданный формат ответа MET Norway');
+  }
+
+  // Символ погоды: ближайший час, иначе ближайшие 6 часов
+  const timeseriesData = data.properties.timeseries[0].data;
+  const symbolCode: string =
+    timeseriesData?.next_1_hours?.summary?.symbol_code ??
+    timeseriesData?.next_6_hours?.summary?.symbol_code ??
+    '';
+
+  const weatherInfo = getMetNoWeatherInfo(symbolCode);
+
+  return {
+    temperature: Math.round(details.air_temperature),
+    humidity: Math.round(details.relative_humidity ?? 0),
+    // MET Norway отдаёт ветер в м/с, мы показываем в км/ч
+    windSpeed: Math.round((details.wind_speed ?? 0) * 3.6),
+    weatherCode: -1,
+    description: weatherInfo.description,
+    icon: weatherInfo.icon,
+  };
+}
+
+/**
+ * wttr.in — последний резервный провайдер погоды
+ * https://wttr.in/55.75,37.62?format=j1
+ */
+async function fetchWeatherWttr(
+  latitude: number,
+  longitude: number
+): Promise<WeatherData> {
+  const url = `${WTTR_API_BASE}/${latitude},${longitude}?format=j1`;
+
+  const response = await fetchWithTimeout(url, WEATHER_TIMEOUT_MS);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  const current = data?.current_condition?.[0];
+  const temperature = Number(current?.temp_C);
+  if (!current || Number.isNaN(temperature)) {
+    throw new Error('Неожиданный формат ответа wttr.in');
+  }
+
+  const descEn: string = current.weatherDesc?.[0]?.value ?? '';
+  const weatherInfo = getWttrWeatherInfo(descEn);
+
+  return {
+    temperature,
+    humidity: Number(current.humidity) || 0,
+    windSpeed: Number(current.windspeedKmph) || 0,
+    weatherCode: Number(current.weatherCode) || -1,
+    description: weatherInfo.description,
+    icon: weatherInfo.icon,
+  };
 }
 
 // ============================================
