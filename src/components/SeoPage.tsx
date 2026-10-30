@@ -116,8 +116,6 @@ export function SeoPage({
     '@type': 'Article',
     headline: h1,
     description,
-    datePublished: new Date().toISOString(),
-    dateModified: new Date().toISOString(),
     author: {
       '@type': 'Organization',
       name: 'Currency Converter',
@@ -144,7 +142,7 @@ export function SeoPage({
         '@type': 'ListItem',
         position: 2,
         name: h1,
-        item: `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}`,
+        item: `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}/`,
       },
     ],
   }
@@ -164,7 +162,7 @@ export function SeoPage({
     return () => clearTimeout(timer)
   }, [fromCurrency, toCurrency, fromCode, toCode])
 
-  const canonicalUrl = `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}`
+  const canonicalUrl = `https://cconverter.ru/${fromCode.toLowerCase()}-${toCode.toLowerCase()}/`
 
   return (
     <>

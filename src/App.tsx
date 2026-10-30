@@ -3,7 +3,7 @@
  */
 
 import { useRef, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation, MemoryRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useCurrencyConverter } from './hooks/useCurrencyConverter'
 import { useCityInfo } from './hooks/useCityInfo'
@@ -26,7 +26,7 @@ import { seoPages } from './data/seoPages'
 import { trackSwap, trackAddFavorite, trackRemoveFavorite, trackQuickPair } from './utils/analytics'
 
 function Home() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
 
   const {
     currencies,
@@ -92,9 +92,9 @@ function Home() {
   return (
     <div className="min-h-screen py-2 px-2 md:py-4 md:px-4 lg:py-8 relative">
       <Helmet>
-        <title>{t('title')}</title>
-        <meta name="description" content={t('subtitle')} />
-        <link rel="canonical" href="https://cconverter.ru" />
+        <title>{lang === 'ru' ? 'Конвертер валют онлайн — перевод рублей, долларов и евро | cconverter.ru' : 'Currency Converter — exchange rates | cconverter.ru'}</title>
+        <meta name="description" content={lang === 'ru' ? 'Переводите рубли, доллары, евро и другие валюты онлайн. Справочные курсы, популярные валютные пары и конвертация криптовалют.' : 'Convert currencies online with reference exchange rates and popular currency pairs.'} />
+        <link rel="canonical" href="https://cconverter.ru/" />
         <meta property="og:title" content={t('title')} />
         <meta property="og:description" content={t('subtitle')} />
         <meta property="og:url" content="https://cconverter.ru" />
@@ -317,28 +317,28 @@ function Home() {
             <div className="mt-3 md:mt-4 animate-fade-in-up" style={{ animationDelay: '0.5s', opacity: 0, animationFillMode: 'forwards' }}>
               <h2 className="sr-only">Популярные валютные пары</h2>
               <div className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2">
-                <Link to="/usd-rub" onClick={() => trackQuickPair('USD', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/usd-rub/" onClick={() => trackQuickPair('USD', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   USD/RUB
                 </Link>
-                <Link to="/eur-rub" onClick={() => trackQuickPair('EUR', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/eur-rub/" onClick={() => trackQuickPair('EUR', 'RUB')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   EUR/RUB
                 </Link>
-                <Link to="/eur-usd" onClick={() => trackQuickPair('EUR', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/eur-usd/" onClick={() => trackQuickPair('EUR', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   EUR/USD
                 </Link>
-                <Link to="/btc-usd" onClick={() => trackQuickPair('BTC', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/btc-usd/" onClick={() => trackQuickPair('BTC', 'USD')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   BTC/USD
                 </Link>
-                <Link to="/rub-byn" onClick={() => trackQuickPair('RUB', 'BYN')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/rub-byn/" onClick={() => trackQuickPair('RUB', 'BYN')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   RUB/BYN
                 </Link>
-                <Link to="/rub-kzt" onClick={() => trackQuickPair('RUB', 'KZT')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/rub-kzt/" onClick={() => trackQuickPair('RUB', 'KZT')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   RUB/KZT
                 </Link>
-                <Link to="/rub-try" onClick={() => trackQuickPair('RUB', 'TRY')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/rub-try/" onClick={() => trackQuickPair('RUB', 'TRY')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   RUB/TRY
                 </Link>
-                <Link to="/rub-egp" onClick={() => trackQuickPair('RUB', 'EGP')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
+                <Link to="/rub-egp/" onClick={() => trackQuickPair('RUB', 'EGP')} className="px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs md:text-sm text-slate-300 hover:text-white transition-colors border border-white/5 hover:border-white/15">
                   RUB/EGP
                 </Link>
               </div>
@@ -477,14 +477,6 @@ function Home() {
             alternateName: 'Currency Converter',
             url: 'https://cconverter.ru',
             description: 'Бесплатный онлайн конвертер валют с реальными курсами, погодой и часами в столицах мира',
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: {
-                '@type': 'EntryPoint',
-                urlTemplate: 'https://cconverter.ru/?search={search_term_string}',
-              },
-              'query-input': 'required name=search_term_string',
-            },
           }),
         }}
       />
@@ -492,9 +484,34 @@ function Home() {
   )
 }
 
-function App() {
+function PageViews() {
+  const location = useLocation()
+  const previous = useRef('')
+  useEffect(() => {
+    const url = window.location.href
+    if (previous.current === url) return
+    const timer = window.setTimeout(() => {
+      window.ym?.(111108791, 'hit', url, { title: document.title, referer: previous.current || document.referrer })
+      previous.current = url
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [location.pathname, location.search])
+  return null
+}
+
+function NotFound() {
+  return <main className="min-h-screen flex flex-col items-center justify-center gap-6 text-white">
+    <Helmet><title>Страница не найдена | cconverter.ru</title><meta name="robots" content="noindex, follow" /></Helmet>
+    <h1 className="text-3xl">404 — Страница не найдена</h1>
+    <Link to="/">Открыть конвертер валют</Link>
+  </main>
+}
+
+function App({ prerenderPath }: { prerenderPath?: string } = {}) {
+  const Router = prerenderPath === undefined ? BrowserRouter : MemoryRouter
   return (
-    <BrowserRouter>
+    <Router {...(prerenderPath === undefined ? {} : { initialEntries: [prerenderPath] })}>
+      <PageViews />
       <Routes>
         <Route path="/" element={<Home />} />
         {seoPages.map(page => (
@@ -514,8 +531,9 @@ function App() {
             }
           />
         ))}
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   )
 }
 

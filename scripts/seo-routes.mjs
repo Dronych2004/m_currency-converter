@@ -54,5 +54,5 @@ export function generateSeoRoutes() {
     }
   }
 
-  return pairs.map(([from, to]) => `/${from.toLowerCase()}-${to.toLowerCase()}`)
+  return pairs.map(([from, to]) => `/${from.toLowerCase()}-${to.toLowerCase()}/`)
 }

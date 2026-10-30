@@ -1,74 +1,27 @@
-import { resolve } from 'path'
-import { fileURLToPath } from 'url'
-import { writeFileSync, mkdirSync, copyFileSync } from 'fs'
+import { resolve } from 'node:path'
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { createServer } from 'vite'
 import { generateSeoRoutes } from './seo-routes.mjs'
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
-const distDir = resolve(__dirname, '../dist')
-
-// Динамическая генерация всех маршрутов
-const routes = ['/', ...generateSeoRoutes()]
-
-console.log(`Total routes to prerender: ${routes.length}`)
-
-async function prerender() {
-  const Prerenderer = (await import('@prerenderer/prerenderer')).default
-  const PuppeteerRenderer = (await import('@prerenderer/renderer-puppeteer')).default
-
-  const prerenderer = new Prerenderer({
-    staticDir: distDir,
-    renderer: new PuppeteerRenderer({
-      renderAfterDocumentEvent: 'custom-render-trigger',
-      maxConcurrentRoutes: 4,
-      headless: true,
-      skipThirdPartyRequests: true,
-    }),
-  })
-
-  try {
-    console.log('Starting prerender...')
-    await prerenderer.initialize()
-    console.log('Prerenderer initialized, rendering routes...')
-
-    const renderedRoutes = await prerenderer.renderRoutes(routes)
-
-    // Write rendered HTML to files
-    for (const rendered of renderedRoutes) {
-      const route = rendered.route
-      if (route === '/') {
-        // Root route: overwrite dist/index.html with prerendered version
-        const outputPath = resolve(distDir, 'index.html')
-        writeFileSync(outputPath, rendered.html)
-        console.log(`  Written: /index.html (prerendered)`)
-      } else {
-        // Other routes: write to /route/index.html
-        const dirPath = resolve(distDir, `.${route}`)
-        const outputPath = resolve(dirPath, 'index.html')
-        mkdirSync(dirPath, { recursive: true })
-        writeFileSync(outputPath, rendered.html)
-        console.log(`  Written: ${route}/index.html`)
-      }
-    }
-
-    // Copy .htaccess to dist
-    const htaccessSrc = resolve(__dirname, '../public/.htaccess')
-    const htaccessDest = resolve(distDir, '.htaccess')
-    try {
-      copyFileSync(htaccessSrc, htaccessDest)
-      console.log('Copied .htaccess to dist/')
-    } catch (e) {
-      console.log('No .htaccess to copy')
-    }
-
-    console.log(`\nSuccessfully prerendered ${renderedRoutes.length} routes`)
-
-    await prerenderer.destroy()
-    console.log('Prerender complete!')
-  } catch (error) {
-    console.error('Prerender failed:', error)
-    await prerenderer.destroy()
-    process.exit(1)
+// Render static HTML without a browser, third-party scripts or live API calls.
+const root = fileURLToPath(new URL('../', import.meta.url))
+const dist = resolve(root, 'dist')
+const template = readFileSync(resolve(dist, 'index.html'), 'utf8')
+const server = await createServer({ root, server: { middlewareMode: true }, appType: 'custom' })
+try {
+  const { render } = await server.ssrLoadModule('/src/entry-prerender.tsx')
+  const routes = ['/', ...generateSeoRoutes()]
+  for (const route of routes) {
+    const { body, head } = render(route)
+    const html = template.replace(/<title>[\s\S]*?<\/title>/, '').replace('</head>', `${head}</head>`).replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+    const canonicals = [...html.matchAll(/<link\b[^>]*rel="canonical"[^>]*>/g)]
+    if (canonicals.length !== 1 || !canonicals[0][0].includes(`https://cconverter.ru${route}`)) throw new Error(`Invalid canonical: ${route}`)
+    const output = route === '/' ? resolve(dist, 'index.html') : resolve(dist, `.${route}`, 'index.html')
+    mkdirSync(resolve(output, '..'), { recursive: true })
+    writeFileSync(output, html)
   }
+  console.log(`Prerender complete: ${routes.length} pages; one canonical per page.`)
+} finally {
+  await server.close()
 }
-
-prerender()

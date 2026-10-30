@@ -1,20 +1,14 @@
-# Enable Rewrite Engine
+# Canonical host only. HTTPS is managed by REG.RU at the proxy/hosting layer.
 RewriteEngine On
-
-# www → non-www redirect (avoid duplicate content)
 RewriteCond %{HTTP_HOST} ^www\.cconverter\.ru$ [NC]
-RewriteRule ^(.*)$ https://cconverter.ru/$1 [R=301,L]
+RewriteRule ^ https://cconverter.ru%{REQUEST_URI} [R=301,L]
 
-# Handle clean URLs for prerendered pages
-# /usd-rub -> /usd-rub/index.html
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z]{3}-[a-z]{3})/?$ /$1/index.html [L]
+# Public index.html addresses redirect to their directory URL.
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html(?:[?\s]) [NC]
+RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
 
-# Fallback to index.html for SPA routing
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ /index.html [L]
+# Only real files/directories are served. Missing URLs retain HTTP 404.
+ErrorDocument 404 /404.html
 
 # Enable compression
 <IfModule mod_deflate.c>
@@ -34,7 +28,7 @@ RewriteRule ^ /index.html [L]
 # Security headers
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
+  # Embedding is controlled by CSP frame-ancestors.
   Header set X-XSS-Protection "1; mode=block"
 
   # HSTS — принудительный HTTPS (1 год + поддомены)
@@ -49,11 +43,11 @@ RewriteRule ^ /index.html [L]
   # Content-Security-Policy
   Header set Content-Security-Policy "\
     default-src 'self'; \
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://yandex.ru; \
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru https://mc.yandex.com https://yandex.ru; \
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
     img-src 'self' data: blob: https://cdn.jsdelivr.net https://flagcdn.com; \
     font-src 'self' https://fonts.gstatic.com; \
-    connect-src 'self' https://open.er-api.com https://api.frankfurter.app https://api.frankfurter.dev https://api.open-meteo.com https://api.met.no https://wttr.in https://api.coingecko.com https://mc.yandex.ru; \
+    connect-src 'self' https://open.er-api.com https://api.frankfurter.app https://api.frankfurter.dev https://api.open-meteo.com https://api.met.no https://wttr.in https://api.coingecko.com https://mc.yandex.ru https://mc.yandex.com; \
     frame-ancestors 'self' https://calccenter.ru; \
     base-uri 'self'; \
     form-action 'self'"

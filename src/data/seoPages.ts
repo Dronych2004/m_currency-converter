@@ -428,10 +428,11 @@ export const seoPages: SeoPageData[] = ALL_PAIRS.map(([from, to]) => {
 
   if (manual) {
     return {
-      path: `/${key}`,
+      path: `/${key}/`,
       ...manual,
     }
   }
 
-  return generateSeoPageData(from, to)
+  const page = generateSeoPageData(from, to)
+  return { ...page, path: `${page.path.replace(/\/$/, '')}/` }
 })

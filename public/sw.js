@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cconverter-v2'
+const CACHE_NAME = 'cconverter-v3'
 
 // На localhost SW не нужен — мешает HMR и кэширует бандлы.
 // Если старый SW всё ещё жив, он самоуничтожается при обновлении.
@@ -15,8 +15,8 @@ const STATIC_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/favicon.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  '/icons/icon-192.svg',
+  '/icons/icon-512.svg',
 ]
 
 // Установка — кэшируем статику
@@ -31,7 +31,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k.startsWith('cconverter-') && k !== CACHE_NAME).map((k) => caches.delete(k)))
     )
   )
   self.clients.claim()
@@ -40,7 +40,7 @@ self.addEventListener('activate', (event) => {
 // Запросы — network-first для HTML, cache-first для статики
 self.addEventListener('fetch', (event) => {
   const { request } = event
-  if (request.method !== 'GET') return
+  if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return
 
   // Пропускаем API-запросы (погодные — не кэшируем, чтобы не показывать устаревшую погоду)
   if (request.url.includes('open.er-api.com') || request.url.includes('coingecko') || request.url.includes('open-meteo') || request.url.includes('api.met.no') || request.url.includes('wttr.in')) {
@@ -50,12 +50,15 @@ self.addEventListener('fetch', (event) => {
   // HTML-навигации (prerendered pages): всегда сеть, чтобы Google видел актуальный контент
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match('/index.html'))
+      fetch(request).catch(async () => (await caches.match(request)) || new Response('Нет подключения к интернету. Попробуйте позже.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }))
     )
     return
   }
 
-  // Статика (CSS, JS, изображения): cache-first
+  // Mutable files must always be refreshed.
+  if (!new URL(request.url).pathname.startsWith('/assets/')) return
+
+  // Hashed assets: cache-first
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached

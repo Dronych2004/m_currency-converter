@@ -5,7 +5,7 @@ import { generateSeoRoutes } from './seo-routes.mjs'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const hostname = 'https://cconverter.ru'
-const today = new Date().toISOString().split('T')[0]
+
 
 // Топ-пары с рукописным контентом — приоритет 0.9
 const MANUAL_ROUTES = new Set([
@@ -17,7 +17,6 @@ const MANUAL_ROUTES = new Set([
 function urlEntry(loc, changefreq, priority) {
   return `  <url>
     <loc>${loc}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`
@@ -32,7 +31,7 @@ entries.push(urlEntry(`${hostname}/`, 'daily', 1.0))
 
 // SEO-страницы
 for (const route of routes) {
-  const priority = MANUAL_ROUTES.has(route) ? 0.9 : 0.8
+  const priority = MANUAL_ROUTES.has(route.replace(/\/$/, '')) ? 0.9 : 0.8
   entries.push(urlEntry(`${hostname}${route}`, 'weekly', priority))
 }
 
