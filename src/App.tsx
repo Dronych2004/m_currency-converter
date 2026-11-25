@@ -22,7 +22,9 @@ import { HistoryCard } from './components/HistoryCard'
 import { FavoritesCard } from './components/FavoritesCard'
 import { PromoBanner } from './components/PromoBanner'
 import { SeoPage } from './components/SeoPage'
+import { PairDirectory } from './components/PairDirectory'
 import { seoPages } from './data/seoPages'
+import { homeFaq } from './data/homeFaq'
 import { trackSwap, trackAddFavorite, trackRemoveFavorite, trackQuickPair } from './utils/analytics'
 
 function Home() {
@@ -345,6 +347,13 @@ function Home() {
             </div>
 
             {/* ИЗБРАННОЕ */}
+            <div className="text-center mt-4">
+              <Link to="/pairs/" className="text-indigo-300 hover:underline">
+                {lang === 'ru' ? 'Все валютные пары — каталог конвертеров' : 'All currency pairs — converter directory'}
+              </Link>
+            </div>
+
+            {/* ИЗБРАННОЕ */}
             <div className="mt-3 md:mt-4 animate-fade-in-up" style={{ animationDelay: '0.55s', opacity: 0, animationFillMode: 'forwards' }}>
               <h2 className="sr-only">Избранные пары</h2>
               <FavoritesCard
@@ -364,6 +373,13 @@ function Home() {
                 onClear={clearHistory}
               />
             </div>
+            <section className="glass-card p-4 md:p-6 mt-6">
+              <h2 className="text-xl font-semibold text-white mb-4">Вопросы о конвертере</h2>
+              {homeFaq.map(item => <details key={item.question} className="py-3 border-b border-white/10">
+                <summary className="text-white cursor-pointer">{item.question}</summary>
+                <p className="text-slate-300 mt-3">{item.answer}</p>
+              </details>)}
+            </section>
           </main>
 
           {/* ПРОМО-БАННЕР */}
@@ -413,40 +429,11 @@ function Home() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
-            mainEntity: [
-              {
-                '@type': 'Question',
-                name: 'Как конвертировать валюту онлайн?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Выберите валюту из и в поле "Из" и "В", введите сумму, и конвертер автоматически рассчитает результат по текущему курсу.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Как часто обновляются курсы валют?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Курсы валют обновляются один раз в день. Данные берутся из открытого API open.er-api.com.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Какие валюты поддерживает конвертер?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Конвертер поддерживает более 150 фиатных валют и 15 криптовалют, включая Bitcoin, Ethereum и другие.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Можно ли конвертировать криптовалюты?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Да, конвертер поддерживает 15 криптовалют: BTC, ETH, USDT, BNB, XRP, SOL, ADA, DOGE и другие. Курсы загружаются через CoinGecko API.',
-                },
-              },
-            ],
+            mainEntity: homeFaq.map(item => ({
+              '@type': 'Question',
+              name: item.question,
+              acceptedAnswer: { '@type': 'Answer', text: item.answer },
+            })),
           }),
         }}
       />
@@ -514,6 +501,7 @@ function App({ prerenderPath }: { prerenderPath?: string } = {}) {
       <PageViews />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/pairs/" element={<PairDirectory />} />
         {seoPages.map(page => (
           <Route
             key={page.path}

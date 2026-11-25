@@ -68,6 +68,7 @@ export function SeoPage({
     convertedForAmount,
     exchangeRate,
     isLoading,
+    error,
     fromWeather,
     toWeather,
     setFromCurrency,
@@ -206,6 +207,7 @@ export function SeoPage({
         <p className="text-slate-400 text-lg mb-8">{description}</p>
 
         {/* Конвертер */}
+        {error && <p role="alert" className="mb-4 p-4 rounded-xl bg-red-500/20 text-red-200">{error}</p>}
         <div className="glass-card neon-main p-2 md:p-6 lg:p-8 mb-8">
           {/* Строка 1: Сумма + Валюта "Из" */}
           <div className="converter-row">
@@ -291,6 +293,12 @@ export function SeoPage({
         )}
 
         {/* Контент статьи */}
+        <section className="glass-card p-4 md:p-6 mb-8 text-slate-300">
+          <h2 className="text-xl font-semibold text-white mb-3">Источники и ограничения расчёта</h2>
+          <p>Фиатные курсы: <a className="text-indigo-300 hover:underline" href="https://open.er-api.com">ExchangeRate-API</a>, резервный источник — <a className="text-indigo-300 hover:underline" href="https://frankfurter.dev">Frankfurter</a>.
+            {' '}Криптовалютные котировки: <a className="text-indigo-300 hover:underline" href="https://www.coingecko.com">CoinGecko</a>. Результаты могут сохраняться в кэше до 24 часов.</p>
+          <p className="mt-3">Это справочный расчёт, а не официальный курс ЦБ или предложение банка. Сервис не выполняет обмен, покупку или продажу денег. Комиссии и разница между курсами покупки и продажи не включены.</p>
+        </section>
         <article className="prose prose-invert max-w-none mb-8">
           <div dangerouslySetInnerHTML={{ __html: content }} />
         </article>
@@ -324,6 +332,11 @@ export function SeoPage({
             {t('title') === 'Currency Converter' ? 'Other currency pairs' : 'Другие валютные пары'}
           </h3>
           <div className="flex flex-wrap gap-2">
+            {seoPages.filter(p => p.fromCode === toCode && p.toCode === fromCode).map(pair => (
+              <Link key={pair.path} to={pair.path} className="px-3 py-1.5 rounded-full bg-indigo-500/20 text-sm text-indigo-200 hover:underline">
+                {lang === 'ru' ? 'Обратный расчёт: ' : 'Reverse conversion: '}{pair.fromCode}/{pair.toCode}
+              </Link>
+            ))}
             {seoPages
               .filter(p => p.fromCode === fromCode && p.toCode !== toCode)
               .slice(0, 10)
@@ -337,6 +350,9 @@ export function SeoPage({
                 </Link>
               ))}
           </div>
+          <Link to="/pairs/" className="inline-block mt-4 text-indigo-300 hover:underline">
+            {lang === 'ru' ? 'Все валютные пары' : 'All currency pairs'}
+          </Link>
         </div>
 
         {/* JSON-LD */}

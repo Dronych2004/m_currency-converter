@@ -9,8 +9,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        embed: resolve(__dirname, 'embed.html'),
+        main: resolve(import.meta.dirname, 'index.html'),
+        embed: resolve(import.meta.dirname, 'embed.html'),
       },
       output: {
         manualChunks(id) {

@@ -28,6 +28,7 @@ const entries = []
 
 // Главная
 entries.push(urlEntry(`${hostname}/`, 'daily', 1.0))
+entries.push(urlEntry(`${hostname}/pairs/`, 'weekly', 0.8))
 
 // SEO-страницы
 for (const route of routes) {

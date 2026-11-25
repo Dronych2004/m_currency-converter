@@ -455,20 +455,20 @@ function generateContent(from: string, to: string): string {
   if (fromIsCrypto && toIsCrypto) {
     sections.push(`
       <h2>Обмен ${fromInfo.fullNameRu} на ${toInfo.fullNameRu}</h2>
-      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет мгновенно перевести одну криптовалюту в другую по актуальному рыночному курсу.</p>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} рассчитывает справочный эквивалент одной криптовалюты в другой и не выполняет обмен.</p>
       <p>${fromInfo.fact} ${toInfo.fact}</p>
     `)
   } else if (fromIsCrypto) {
     sections.push(`
       <h2>Продажа ${fromInfo.fullNameRu} за ${toInfo.fullNameRu}</h2>
-      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет продать ${fromInfo.fullNameRu} за ${toInfo.fullNameRu} по текущему курсу.</p>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} рассчитывает справочную стоимость ${fromInfo.fullNameRu} в ${toInfo.fullNameRu}. Сайт не выполняет продажу криптовалюты.</p>
       <p>${fromInfo.fact}</p>
       <p>Продажа ${fromInfo.fullNameRu} за ${toInfo.shortDesc} — удобный способ зафиксировать прибыль или перевести криптоактивы в фиатную валюту.</p>
     `)
   } else if (toIsCrypto) {
     sections.push(`
       <h2>Покупка ${toInfo.fullNameRu} за ${fromInfo.fullNameRu}</h2>
-      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} позволяет купить ${toInfo.fullNameRu} за ${fromInfo.fullNameRu} по текущему курсу.</p>
+      <p>${fromInfo.fullNameRu} (${from}) — ${fromInfo.shortDesc}. ${toInfo.fullNameRu} (${to}) — ${toInfo.shortDesc}. Конвертер ${from}/${to} рассчитывает справочное количество ${toInfo.fullNameRu} для суммы в ${fromInfo.fullNameRu}. Сайт не выполняет покупку криптовалюты.</p>
       <p>${toInfo.fact}</p>
       <p>Покупка ${toInfo.shortDesc} за ${fromInfo.shortDesc} — популярный способ приобрести криптовалюту.</p>
     `)
@@ -493,7 +493,7 @@ function generateContent(from: string, to: string): string {
       steps: [
         'Убедитесь, что выбраны нужные валюты',
         'Введите сумму для конвертации',
-        'Получите результат мгновенно по текущему курсу',
+        'Нажмите «Конвертировать», чтобы получить справочный результат',
       ],
       outro: `Вы также можете нажать кнопку обмена (⇄), чтобы перевести ${toInfo.shortDesc} в ${fromInfo.shortDesc}.`,
     },
@@ -502,7 +502,7 @@ function generateContent(from: string, to: string): string {
       steps: [
         'Проверьте, что в полях «Из» и «В» выбраны правильные валюты',
         'Введите любую сумму',
-        'Результат рассчитается автоматически',
+        'Нажмите «Конвертировать», чтобы получить результат',
       ],
       outro: `Для обратной конвертации (${to} → ${from}) нажмите кнопку обмена.`,
     },
@@ -526,7 +526,7 @@ function generateContent(from: string, to: string): string {
         <li><strong>Высокая волатильность</strong> — курс ${from} может измениться на несколько процентов за час.</li>
         <li><strong>Круглосуточная торговля</strong> — обмен ${from} на ${to} доступен 24/7 без выходных.</li>
         <li><strong>Глобальный рынок</strong> — конвертация доступна из любой точки мира.</li>
-        <li><strong>Без посредников</strong> — обмен напрямую между криптовалютами.</li>
+        <li><strong>Справочный расчёт</strong> — без исполнения сделок и перевода средств.</li>
       </ul>
     `)
   } else if (fromIsCrypto) {
@@ -545,9 +545,9 @@ function generateContent(from: string, to: string): string {
       <h2>Как купить ${toInfo.shortDesc} за ${fromInfo.shortDesc}</h2>
       <p>Покупка ${toInfo.shortDesc} за ${fromInfo.shortDesc} — популярный способ приобрести криптовалюту.</p>
       <ul>
-        <li><strong>Простая покупка</strong> — выберите валюты и введите сумму.</li>
+        <li><strong>Расчёт перед покупкой</strong> — выберите валюты, введите сумму и нажмите «Конвертировать».</li>
         <li><strong>Прозрачный курс</strong> — видите точный результат до конвертации.</li>
-        <li><strong>Без регистрации</strong> — покупка доступна без аккаунта.</li>
+        <li><strong>Без регистрации</strong> — справочный расчёт доступен без аккаунта.</li>
         <li><strong>Поддержка криптовалют</strong> — доступно более 15 криптовалют.</li>
       </ul>
     `)
@@ -631,7 +631,7 @@ function generateContent(from: string, to: string): string {
     <ol>
       <li>Убедитесь, что выбраны валюты ${from} → ${to}</li>
       <li>Введите сумму в ${fromInfo.fullNameRu}</li>
-      <li>Получите результат в ${toInfo.shortDesc} мгновенно</li>
+      <li>Нажмите «Конвертировать» и посмотрите результат в ${to}</li>
     </ol>
     <p>Курсы обновляются регулярно из открытых API. Конвертация полностью бесплатная и не требует регистрации.</p>
   `)
@@ -673,15 +673,15 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
   const q2Variants = [
     {
       question: `Как конвертировать ${from} в ${to}?`,
-      answer: `Введите сумму, выберите ${from} в поле «Из» и ${to} в поле «В». Конвертер автоматически рассчитает результат по текущему курсу.`,
+      answer: `Введите сумму, выберите ${from} в поле «Из» и ${to} в поле «В». Нажмите «Конвертировать», чтобы рассчитать справочный результат.`,
     },
     {
       question: `Как перевести ${from} в ${to}?`,
-      answer: `Откройте конвертер, убедитесь что выбраны нужные валюты, введите сумму — результат появится мгновенно.`,
+      answer: `Откройте конвертер, убедитесь что выбраны нужные валюты, введите сумму и нажмите «Конвертировать».`,
     },
     {
       question: `Как быстро конвертировать ${fromInfo.shortDesc} в ${toInfo.shortDesc}?`,
-      answer: `Используйте наш онлайн-конвертер — просто введите сумму и получите результат за долю секунды.`,
+      answer: `Используйте наш онлайн-конвертер — выберите валюты, введите сумму и нажмите «Конвертировать».`,
     },
   ]
   faq.push(pick(q2Variants, seed + '-q2'))
@@ -690,7 +690,7 @@ function generateFaq(from: string, to: string): { question: string; answer: stri
   if (fromIsCrypto && toIsCrypto) {
     faq.push({
       question: `Можно ли обменять ${fromInfo.fullNameRu} на ${toInfo.shortDesc}?`,
-      answer: `Да, конвертер поддерживает обмен ${fromInfo.fullNameRu} на ${toInfo.shortDesc}. Курс формируется на основе рыночных данных.`,
+      answer: `Конвертер рассчитывает справочный эквивалент ${from} в ${to} по внешним котировкам. Сам обмен на сайте не выполняется.`,
     })
   } else if (fromIsCrypto) {
     faq.push({
